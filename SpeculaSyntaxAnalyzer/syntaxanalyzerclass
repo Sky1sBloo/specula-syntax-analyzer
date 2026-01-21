@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+
+public class SyntaxAnalyzer 
+{
+    private List<Token> _tokens;
+    private int _currentIndex;
+
+    // 1. Empty Constructor
+    public SyntaxAnalyzer() 
+    {
+        _tokens = new List<Token>();
+        _currentIndex = 0;
+    }
+
+    // 2. Constructor accepting an array of Tokens
+    public SyntaxAnalyzer(Token[] tokens) 
+    {
+        _tokens = new List<Token>(tokens);
+        _currentIndex = 0;
+    }
+
+    // 3. Build Function
+    public void Build() 
+    {
+        if (_tokens.Count == 0) return;
+
+        try 
+        {
+            ParseProgram();
+            Console.WriteLine("Build successful: Syntax is valid.");
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine($"Syntax Error: {ex.Message}");
+        }
+    }
+
+    // --- Parsing Helpers ---
+
+    private Token Peek() => _tokens[_currentIndex];
+
+    private Token Advance() 
+    {
+        if (_currentIndex < _tokens.Count) _currentIndex++;
+        return _tokens[_currentIndex - 1];
+    }
+
+    private void Consume(TokenType expected, string errorMessage) 
+    {
+        if (_currentIndex < _tokens.Count && Peek().Type == expected) 
+        {
+            Advance();
+            return;
+        }
+
+        Token current = (_currentIndex < _tokens.Count) ? Peek() : _tokens[_tokens.Count - 1];
+        throw new Exception($"{errorMessage} at Line {current.Line}, Pos {current.CharStart}");
+    }
+
+    // --- Grammar Rules ---
+
+    private void ParseProgram() 
+    {
+        while (_currentIndex < _tokens.Count) 
+        {
+            ParseStatement();
+        }
+    }
+
+    private void ParseStatement() 
+    {
+        Token current = Peek();
+
+        if (current.Type == TokenType.K_LET) 
+        {
+            ParseDeclaration();
+        }
+        else 
+        {
+            // Fallback for simple tokens or skipping unknown structures
+            Advance();
+        }
+    }
+
+    private void ParseDeclaration() 
+    {
+        Consume(TokenType.K_LET, "Expected 'let'");
+        Consume(TokenType.IDENT, "Expected variable identifier");
+        Consume(TokenType.OP_EQUALS, "Expected '='");
+        
+        // Placeholder for expression parsing logic
+        Advance(); 
+
+        Consume(TokenType.D_SEMICOLON, "Expected ';' at end of statement");
+    }
+}
