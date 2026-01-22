@@ -1,2 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+string[] files = args;
+
+foreach (string iFile in files)
+{
+    Console.WriteLine(iFile);
+}
