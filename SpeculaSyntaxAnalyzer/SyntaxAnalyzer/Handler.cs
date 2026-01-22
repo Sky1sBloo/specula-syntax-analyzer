@@ -1,6 +1,12 @@
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
+public enum HandlerStatus 
+{
+    PENDING,
+    FINISHED
+}
+
 public interface Handler
 {
-    public void handleToken(Token token);
+    public HandlerStatus handleToken(Token token);
 }
