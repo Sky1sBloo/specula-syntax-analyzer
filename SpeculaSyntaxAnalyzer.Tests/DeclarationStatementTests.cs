@@ -18,40 +18,31 @@ public class DeclarationStatementTests
     public void SingleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclaration.json");
-        Assert.DoesNotThrow(() =>
-        {
-            analyzer.ReadTokens(output.Tokens);
-        });
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void SingleDeclarationWithValue()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclarationWithValue.json");
-        Assert.DoesNotThrow(() =>
-        {
-            analyzer.ReadTokens(output.Tokens);
-        });
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void MultipleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
-        Assert.DoesNotThrow(() =>
-        {
-            analyzer.ReadTokens(output.Tokens);
-        });
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void NoIdentifier()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoIdentifier.json");
-        Assert.Throws<SyntaxErrorException>(() =>
-        {
-            analyzer.ReadTokens(output.Tokens);
-        });
-
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.Errors.Count, Is.EqualTo(2));
     }
 }
