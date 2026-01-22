@@ -34,8 +34,22 @@
             "value": "int"
         },
         {
-            "char_end": 11,
-            "char_start": 11,
+            "char_end": 13,
+            "char_start": 12,
+            "line": 1,
+            "type": "OP_EQUALS",
+            "value": "="
+        },
+        {
+            "char_end": 15,
+            "char_start": 14,
+            "line": 1,
+            "type": "L_INT",
+            "value": "5"
+        },
+        {
+            "char_end": 15,
+            "char_start": 15,
             "line": 1,
             "type": "D_SEMICOLON",
             "value": ";"
