@@ -15,7 +15,7 @@ public class DeclarationStatementHandler : Handler
         INVALID
     }
 
-    private States currentState = States.IDENTIFIER;
+    private States currentState = States.LET;
     private string identifier = "";
     private string dataType = "";
 
@@ -25,6 +25,9 @@ public class DeclarationStatementHandler : Handler
         {
             switch (currentState)
             {
+                case States.LET:
+                    handleLetState(token);
+                    break;
                 case States.IDENTIFIER:
                     handleIdentState(token);
                     break;
@@ -57,10 +60,10 @@ public class DeclarationStatementHandler : Handler
 
     private void end()
     {
-        SetHandlerFinished();
         currentState = States.LET;
         identifier = "";
         dataType = "";
+        SetHandlerFinished();
     }
 
     private void handleLetState(Token token)
