@@ -48,6 +48,7 @@ public class ValueHandler : Handler
                 break;
             case Type.IDENTIFIER:
                 node = new IdentifierValue(token.Value);
+                SetHandlerFinished(node);
                 break;
             default:
                 throw new SyntaxErrorException(["Literal/Identifier"], token);
@@ -60,7 +61,7 @@ public class ValueHandler : Handler
     {
         switch (token.Type)
         {
-            case Token.Types.K_TYPE:
+            case Token.Types.L_INT:
             case Token.Types.L_FLOAT:
             case Token.Types.L_DOUBLE:
             case Token.Types.L_CHAR:

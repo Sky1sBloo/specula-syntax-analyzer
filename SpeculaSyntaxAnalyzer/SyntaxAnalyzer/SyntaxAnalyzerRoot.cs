@@ -21,27 +21,48 @@ public class SyntaxAnalyzerRoot
     private DeclarationStatementHandler declarationStatementHandler = new();
     private ValueHandler valueHandler = new();
 
+    private Token? currentToken;
+
     public SyntaxAnalyzerRoot()
     {
-        declarationStatementHandler.Finished += (node) => StateStack.Pop();
+        declarationStatementHandler.Finished += node => PopState(node);
         declarationStatementHandler.DelegateToState += newState => StateStack.Push(newState);
-        valueHandler.Finished += (node) => {
-            prevHandleNode = node;
-        };
+
+        valueHandler.Finished += node => PopState(node);
+
+        StateStack.Push(States.START);
     }
 
-    public void ReadTokens(List<Token> tokens)
+    public ParseNode? ReadTokens(List<Token> tokens)
     {
         foreach (var token in tokens)
         {
+            currentToken = token;
             handleToken(token);
         }
+
+        if (prevHandleNode == null)
+        {
+            Errors.Add("Tokens did not produce an output");
+        }
+        return prevHandleNode;
     }
 
     /// Used to delegate current handler to another
     public void PushState(States newState)
     {
         StateStack.Push(newState);
+    }
+
+    public void PopState(ParseNode node)
+    {
+        StateStack.Pop();
+        prevHandleNode = node;
+        if (currentToken == null)
+        {
+            throw new InvalidOperationException("Tried to pop state with an empty token");
+        }
+        handleToken(currentToken);
     }
 
     /// For state handlers 
@@ -57,6 +78,9 @@ public class SyntaxAnalyzerRoot
                 case States.DECL:
                     handleDeclState(token);
                     break;
+                case States.VALUE:
+                    handleValueState(token);
+                    break;
             }
         }
         catch (SyntaxErrorException ex)
@@ -71,13 +95,18 @@ public class SyntaxAnalyzerRoot
         {
             case Token.Types.K_LET:
                 PushState(States.DECL);
-                declarationStatementHandler.handleToken(token);
+                declarationStatementHandler.handleToken(token, prevHandleNode);
                 break;
         }
     }
 
     private void handleDeclState(Token token)
     {
-        declarationStatementHandler.handleToken(token);
+        declarationStatementHandler.handleToken(token, prevHandleNode);
+    }
+
+    private void handleValueState(Token token)
+    {
+        valueHandler.handleToken(token, prevHandleNode);
     }
 }
