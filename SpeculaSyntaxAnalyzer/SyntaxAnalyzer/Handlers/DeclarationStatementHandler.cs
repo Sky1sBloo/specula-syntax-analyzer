@@ -10,9 +10,7 @@ public class DeclarationStatementHandler : Handler
         IDENTIFIER,
         COLON_EQUALS,
         TYPE_CAPABILITY,
-        TYPE,
         EQUALS_SEMI_COLON,
-        VALUE,
         WAIT_FOR_VALUE,
         SEMI_COLON,
         INVALID
@@ -43,9 +41,6 @@ public class DeclarationStatementHandler : Handler
                     break;
                 case States.EQUALS_SEMI_COLON:
                     handleEqualsSemiColonState(token);
-                    break;
-                case States.VALUE:
-                    handleValueState(token);
                     break;
                 case States.WAIT_FOR_VALUE:
                     handleWaitForValueState(token, node);
@@ -95,6 +90,7 @@ public class DeclarationStatementHandler : Handler
         {
             throw new SyntaxErrorException(["IDENTIFIER"], token);
         }
+        identifier = token.Value;
         currentState = States.COLON_EQUALS;
     }
 
@@ -106,7 +102,8 @@ public class DeclarationStatementHandler : Handler
                 currentState = States.TYPE_CAPABILITY;
                 break;
             case Token.Types.OP_EQUALS:
-                currentState = States.VALUE;
+                currentState = States.WAIT_FOR_VALUE;
+                SetDelegateToState(SyntaxAnalyzerRoot.States.VALUE);
                 break;
             default:
                 throw new SyntaxErrorException(["':'", "'='"], token);
@@ -120,7 +117,7 @@ public class DeclarationStatementHandler : Handler
             case Token.Types.IDENT:
             case Token.Types.K_TYPE:
                 dataType = token.Value;
-                currentState = States.TYPE;
+                currentState = States.EQUALS_SEMI_COLON;
                 break;
 
             // todo handle capabilities
@@ -134,7 +131,8 @@ public class DeclarationStatementHandler : Handler
         switch (token.Type)
         {
             case Token.Types.OP_EQUALS:
-                currentState = States.EQUALS_SEMI_COLON;
+                currentState = States.WAIT_FOR_VALUE;
+                SetDelegateToState(SyntaxAnalyzerRoot.States.VALUE);
                 break;
             case Token.Types.D_SEMICOLON:
                 end();
@@ -142,29 +140,6 @@ public class DeclarationStatementHandler : Handler
             default:
                 throw new SyntaxErrorException(["'='", "'[", ";"], token);
         }
-    }
-
-    private void handleValueState(Token token)
-    {
-        currentState = States.WAIT_FOR_VALUE;
-        SetDelegateToState(SyntaxAnalyzerRoot.States.VALUE);
-        // todo handle expressions
-        /*
-        switch (token.Type)
-        {
-            case Token.Types.IDENT:
-            case Token.Types.L_INT:
-            case Token.Types.L_FLOAT:
-            case Token.Types.L_DOUBLE:
-            case Token.Types.L_CHAR:
-            case Token.Types.L_STRING:
-            case Token.Types.L_BOOL:
-            case Token.Types.L_NULL:
-                currentState = States.SEMI_COLON;
-                break;
-            default:
-                throw new SyntaxErrorException(["VALUE", "EXPRESSION"], token);
-        } */
     }
 
     private void handleWaitForValueState(Token token, ParseNode? node)
@@ -176,6 +151,7 @@ public class DeclarationStatementHandler : Handler
         if (node is ValueNode valueNode)
         {
             value = valueNode;
+            currentState = States.SEMI_COLON;
         }
         else
         {
