@@ -5,11 +5,20 @@ public class SyntaxErrorException : Exception
 {
     public override string Message { get; }
 
-    public SyntaxErrorException(Token token, string message)
+    public SyntaxErrorException(List<string> expectedTokens, Token receivedToken)
     {
         StringBuilder outMsg = new StringBuilder();
-        outMsg.AppendFormat("Token: {0} at {1}:{2}. {3}", token.Type.ToString(), token.Line, token.CharStart, message);
+        outMsg.Append("Expected token: ");
+        foreach (string token in expectedTokens)
+        {
+            outMsg.AppendFormat("{0}, ", token);
+        }
+        outMsg.Length--;
+
+        outMsg.AppendFormat(" Received: {0}. ", receivedToken.Type.ToString());
+        outMsg.Append(getTokenPos(receivedToken));
         Message = outMsg.ToString();
+
     }
 
     public SyntaxErrorException(string message)
@@ -17,4 +26,8 @@ public class SyntaxErrorException : Exception
         Message = message;
     }
 
+    private string getTokenPos(Token token)
+    {
+        return $" at {token.CharStart}";
+    }
 }

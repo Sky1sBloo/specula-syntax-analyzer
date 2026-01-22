@@ -9,6 +9,13 @@ public class SyntaxAnalyzer
     }
     private States currentState = States.START;
 
+    private DeclarationStatementHandler declarationStatementHandler;
+
+    public SyntaxAnalyzer()
+    {
+        declarationStatementHandler = new();
+    }
+
     public void ReadTokens(List<Token> tokens)
     {
         foreach (var token in tokens)
@@ -25,4 +32,5 @@ public class SyntaxAnalyzer
                 break;
         }
     }
+
 }
