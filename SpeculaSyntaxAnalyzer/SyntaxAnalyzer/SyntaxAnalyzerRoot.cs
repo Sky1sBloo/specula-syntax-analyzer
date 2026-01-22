@@ -2,7 +2,7 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class SyntaxAnalyzerRoot 
 {
-    private enum States
+    public enum States
     {
         START,
         DECL
