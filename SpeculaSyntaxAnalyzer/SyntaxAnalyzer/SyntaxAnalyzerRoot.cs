@@ -5,23 +5,23 @@ public class SyntaxAnalyzerRoot
     public enum States
     {
         START,
-        DECL
+        DECL,
+        VALUE,
+        FUNC_CALL,
+        STRUCT_BUILDER
     }
-    public States CurrentState { get; private set; } = States.START;
+
+    public Stack<States> StateStack = new();
     public List<string> Errors { get; private set; } = new();
 
-    private DeclarationStatementHandler declarationStatementHandler;
+    private DeclarationStatementHandler declarationStatementHandler = new();
+    private ValueHandler valueHandler = new();
 
     public SyntaxAnalyzerRoot()
     {
-        declarationStatementHandler = new();
-
-        declarationStatementHandler.Finished += backToStartState;
-    }
-
-    private void backToStartState()
-    {
-        CurrentState = States.START;
+        declarationStatementHandler.Finished += () => StateStack.Pop();
+        declarationStatementHandler.DelegateToState += newState => StateStack.Push(newState);
+        valueHandler.Finished += () => {};
     }
 
     public void ReadTokens(List<Token> tokens)
@@ -32,12 +32,18 @@ public class SyntaxAnalyzerRoot
         }
     }
 
+    /// Used to delegate current handler to another
+    public void PushState(States newState)
+    {
+        StateStack.Push(newState);
+    }
+
     /// For state handlers 
     private void handleToken(Token token)
     {
         try
         {
-            switch (CurrentState)
+            switch (StateStack.Peek())
             {
                 case States.START:
                     handleStartState(token);
@@ -58,7 +64,7 @@ public class SyntaxAnalyzerRoot
         switch (token.Type)
         {
             case Token.Types.K_LET:
-                CurrentState = States.DECL;
+                PushState(States.DECL);
                 declarationStatementHandler.handleToken(token);
                 break;
         }
