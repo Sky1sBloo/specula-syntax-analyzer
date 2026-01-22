@@ -11,15 +11,28 @@ public class LexerFileReader
         {
             fileContent = sr.ReadToEnd();
         }
+
+        try
+        {
+            return ParseJson(fileContent);
+        }
+        catch (LexerReadException)
+        {
+            throw new LexerReadException($"Serialize failed on file: {fileName}. Invalid format");
+        }
+    }
+
+    public static LexerOutput ParseJson(string json)
+    {
         var options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-        LexerOutput? output = JsonSerializer.Deserialize<LexerOutput>(fileContent, options);
+        LexerOutput? output = JsonSerializer.Deserialize<LexerOutput>(json, options);
 
         if (output == null)
         {
-            throw new LexerReadException($"Serialize failed on file: {fileName}. Invalid format");
+            throw new LexerReadException($"Serialize failed. Invalid format");
         }
         return output;
     }
