@@ -1,3 +1,3 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public record DeclarationStatementNode(string Identifier, string Type, ParseNode value);
+public record DeclarationStatementNode(string Identifier, string Type, ParseNode value) : ParseNode;
