@@ -1,12 +1,9 @@
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
-public enum HandlerStatus 
+public abstract class Handler
 {
-    PENDING,
-    FINISHED
-}
+    public event Action? Finished;
 
-public interface Handler
-{
-    public HandlerStatus handleToken(Token token);
+    public abstract void handleToken(Token token);
+    protected void FinishHandle() => Finished?.Invoke();
 }
