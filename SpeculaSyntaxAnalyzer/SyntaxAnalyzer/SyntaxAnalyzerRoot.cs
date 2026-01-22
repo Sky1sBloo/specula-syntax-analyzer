@@ -1,3 +1,5 @@
+using SpeculaSyntaxAnalyzer.ParseTree;
+
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class SyntaxAnalyzerRoot
@@ -14,14 +16,18 @@ public class SyntaxAnalyzerRoot
     public Stack<States> StateStack = new();
     public List<string> Errors { get; private set; } = new();
 
+    public ParseNode? prevHandleNode;
+
     private DeclarationStatementHandler declarationStatementHandler = new();
     private ValueHandler valueHandler = new();
 
     public SyntaxAnalyzerRoot()
     {
-        declarationStatementHandler.Finished += () => StateStack.Pop();
+        declarationStatementHandler.Finished += (node) => StateStack.Pop();
         declarationStatementHandler.DelegateToState += newState => StateStack.Push(newState);
-        valueHandler.Finished += () => {};
+        valueHandler.Finished += (node) => {
+            prevHandleNode = node;
+        };
     }
 
     public void ReadTokens(List<Token> tokens)
