@@ -17,7 +17,7 @@ public class DeclarationStatementHandler : Handler
     private string identifier = "";
     private string dataType = "";
 
-    public HandlerStatus handleToken(Token token)
+    public override void handleToken(Token token)
     {
         switch (currentState)
         {
@@ -39,7 +39,6 @@ public class DeclarationStatementHandler : Handler
             case States.VALUE:
                 break;
         }
-        return HandlerStatus.FINISHED;
     }
 
     private void reset()
