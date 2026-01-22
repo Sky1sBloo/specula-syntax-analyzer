@@ -5,8 +5,7 @@ public class SyntaxAnalyzerRoot
     public enum States
     {
         START,
-        DECL,
-        ERROR
+        DECL
     }
     public States CurrentState { get; private set; } = States.START;
     public List<string> Errors { get; private set; } = new();
@@ -46,14 +45,11 @@ public class SyntaxAnalyzerRoot
                 case States.DECL:
                     handleDeclState(token);
                     break;
-                case States.ERROR:
-                    break;
             }
         }
         catch (SyntaxErrorException ex)
         {
             Errors.Add(ex.Message);
-            CurrentState = States.ERROR;
         }
     }
 
