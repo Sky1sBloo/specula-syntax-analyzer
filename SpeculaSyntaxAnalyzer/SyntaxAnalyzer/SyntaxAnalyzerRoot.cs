@@ -7,7 +7,7 @@ public class SyntaxAnalyzerRoot
         START,
         DECL
     }
-    private States currentState = States.START;
+    public States CurrentState { get; private set; } = States.START;
 
     private DeclarationStatementHandler declarationStatementHandler;
 
@@ -20,7 +20,7 @@ public class SyntaxAnalyzerRoot
 
     private void backToStartState()
     {
-        currentState = States.START;
+        CurrentState = States.START;
     }
 
     public void ReadTokens(List<Token> tokens)
@@ -33,7 +33,7 @@ public class SyntaxAnalyzerRoot
     /// For state handlers 
     private void handleToken(Token token)
     {
-        switch (currentState)
+        switch (CurrentState)
         {
             case States.START:
                 handleStartState(token);
@@ -49,7 +49,7 @@ public class SyntaxAnalyzerRoot
         switch (token.Type)
         {
             case Token.Types.K_LET:
-                currentState = States.DECL;
+                CurrentState = States.DECL;
                 declarationStatementHandler.handleToken(token);
                 break;
         }
