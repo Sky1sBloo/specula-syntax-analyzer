@@ -45,4 +45,12 @@ public class DeclarationStatementTests
         analyzer.ReadTokens(output.Tokens);
         Assert.That(analyzer.Errors.Count, Is.EqualTo(2));
     }
+
+    [Test]
+    public void NoType()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.Errors.Count, Is.EqualTo(1));
+    }
 }

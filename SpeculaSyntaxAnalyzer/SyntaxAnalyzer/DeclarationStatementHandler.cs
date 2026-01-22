@@ -47,7 +47,7 @@ public class DeclarationStatementHandler : Handler
                     handleSemiColonState(token);
                     break;
                 case States.INVALID:
-                    handleSemiColonState(token);
+                    handleInvalidState(token);
                     break;
             }
         }
@@ -160,6 +160,15 @@ public class DeclarationStatementHandler : Handler
         if (token.Type != Token.Types.D_SEMICOLON)
         {
             throw new SyntaxErrorException([";"], token);
+        }
+        end();
+    }
+
+    private void handleInvalidState(Token token)
+    {
+        if (token.Type != Token.Types.D_SEMICOLON)
+        {
+            return;
         }
         end();
     }
