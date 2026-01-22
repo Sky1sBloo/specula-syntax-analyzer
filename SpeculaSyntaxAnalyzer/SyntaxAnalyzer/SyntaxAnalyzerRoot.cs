@@ -1,6 +1,6 @@
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
-public class SyntaxAnalyzer
+public class SyntaxAnalyzerRoot 
 {
     private enum States
     {
@@ -11,7 +11,7 @@ public class SyntaxAnalyzer
 
     private DeclarationStatementHandler declarationStatementHandler;
 
-    public SyntaxAnalyzer()
+    public SyntaxAnalyzerRoot()
     {
         declarationStatementHandler = new();
 
