@@ -1,5 +1,4 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public class StatementAttribute : Attribute 
-{
-}
+public abstract record StatementAttribute : ParseNode; 
+
