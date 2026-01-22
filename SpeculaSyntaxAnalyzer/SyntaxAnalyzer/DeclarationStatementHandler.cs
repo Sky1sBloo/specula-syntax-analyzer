@@ -4,16 +4,16 @@ public class DeclarationStatementHandler : Handler
 {
     private enum States
     {
-        LET,
-        IDENT,
-        COLON,
+        IDENTIFIER,
+        COLON_EQUALS,
+        TYPE_CAPABILITY,
         TYPE,
-        EQUALS,
+        EQUALS_SEMI_COLON,
         VALUE,
         SEMI_COLON
     }
 
-    private States currentState = States.LET;
+    private States currentState = States.IDENTIFIER;
     private string identifier = "";
     private string dataType = "";
 
@@ -21,22 +21,23 @@ public class DeclarationStatementHandler : Handler
     {
         switch (currentState)
         {
-            case States.LET:
-                handleLetState(token);
-                break;
-            case States.IDENT:
+            case States.IDENTIFIER:
                 handleIdentState(token);
                 break;
-            case States.COLON:
-                handleColonState(token);
+            case States.COLON_EQUALS:
+                handleColonEqualsState(token);
                 break;
-            case States.TYPE:
-                handleTypeState(token);
+            case States.TYPE_CAPABILITY:
+                handleTypeCapabilityState(token);
                 break;
-            case States.EQUALS:
-                handleEqualsState(token);
+            case States.EQUALS_SEMI_COLON:
+                handleEqualsSemiColonState(token);
                 break;
             case States.VALUE:
+                handleValueState(token);
+                break;
+            case States.SEMI_COLON:
+                handleSemiColonState(token);
                 break;
         }
     }
@@ -44,36 +45,36 @@ public class DeclarationStatementHandler : Handler
     private void end()
     {
         SetHandlerFinished();
-        currentState = States.LET;
+        currentState = States.IDENTIFIER;
         identifier = "";
         dataType = "";
     }
 
-    private void handleLetState(Token token)
+    private void handleIdentState(Token token)
     {
         if (token.Type != Token.Types.IDENT)
         {
             throw new SyntaxErrorException(["IDENTIFIER"], token);
         }
-        currentState = States.IDENT;
+        currentState = States.COLON_EQUALS;
     }
 
-    private void handleIdentState(Token token)
+    private void handleColonEqualsState(Token token)
     {
         switch (token.Type)
         {
             case Token.Types.D_COLON:
-                currentState = States.COLON;
+                currentState = States.TYPE_CAPABILITY;
                 break;
             case Token.Types.OP_EQUALS:
-                currentState = States.EQUALS;
+                currentState = States.EQUALS_SEMI_COLON;
                 break;
             default:
                 throw new SyntaxErrorException(["':'", "'='"], token);
         }
     }
 
-    private void handleColonState(Token token)
+    private void handleTypeCapabilityState(Token token)
     {
         switch (token.Type)
         {
@@ -94,12 +95,12 @@ public class DeclarationStatementHandler : Handler
         }
     }
 
-    private void handleTypeState(Token token)
+    private void handleEqualsSemiColonState(Token token)
     {
         switch (token.Type)
         {
             case Token.Types.OP_EQUALS:
-                currentState = States.EQUALS;
+                currentState = States.EQUALS_SEMI_COLON;
                 break;
             case Token.Types.D_SEMICOLON:
                 end();
@@ -109,7 +110,7 @@ public class DeclarationStatementHandler : Handler
         }
     }
 
-    private void handleEqualsState(Token token)
+    private void handleValueState(Token token)
     {
         // todo handle expressions
         switch (token.Type)
