@@ -1,3 +1,5 @@
+using SpeculaSyntaxAnalyzer.ParseTree;
+
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class ValueHandler : Handler
@@ -5,21 +7,54 @@ public class ValueHandler : Handler
     private enum States
     {
         START,
-        FOUND_IDENT
+        FOUND_IDENT,
+        WAIT_FOR_OUTPUT  // used to receive output from other handler
+    }
+
+    private enum Type
+    {
+        LITERAL,
+        IDENTIFIER,
+        FUNCTION_CALL
     }
 
     private States currentState = States.START;
-    public override void handleToken(Token token)
+    private Type type = Type.LITERAL;
+
+    public override void handleToken(Token token, ParseNode? prevNode)
     {
         switch (currentState)
         {
             case States.START:
                 handleStartState(token);
                 break;
+            case States.FOUND_IDENT:
+                handleIdentState(token);
+                break;
+            case States.WAIT_FOR_OUTPUT:
+                handleWaitForOutputState(token, prevNode);
+                break;
         }
     }
 
-    public void handleStartState(Token token)
+    private void end(Token token)
+    {
+        ValueNode node;
+        switch (type)
+        {
+            case Type.LITERAL:
+                node = new LiteralValue(token.Type.ToString(), token.Value);
+                SetHandlerFinished(node);
+                break;
+            case Type.IDENTIFIER:
+                node = new IdentifierValue(token.Value);
+                break;
+        }
+        currentState = States.START;
+        type = Type.LITERAL;
+    }
+
+    private void handleStartState(Token token)
     {
         switch (token.Type)
         {
@@ -29,7 +64,8 @@ public class ValueHandler : Handler
             case Token.Types.L_CHAR:
             case Token.Types.L_STRING:
             case Token.Types.L_BOOL:
-                end();
+                type = Type.LITERAL;
+                end(token);
                 break;
             case Token.Types.IDENT:
                 currentState = States.FOUND_IDENT;
@@ -37,25 +73,31 @@ public class ValueHandler : Handler
         }
     }
 
-    public void handleIdentState(Token token)
+    private void handleIdentState(Token token)
     {
         switch (token.Type)
         {
             case Token.Types.D_PAR_OP:
                 SetDelegateToState(SyntaxAnalyzerRoot.States.FUNC_CALL);
+                currentState = States.WAIT_FOR_OUTPUT;
                 break;
             case Token.Types.D_CBRAC_OP:
                 SetDelegateToState(SyntaxAnalyzerRoot.States.STRUCT_BUILDER);
+                currentState = States.WAIT_FOR_OUTPUT;
                 break;
             default:
-                end();
+                type = Type.IDENTIFIER;
+                end(token);
                 break;
         }
     }
 
-    private void end()
+    private void handleWaitForOutputState(Token token, ParseNode? node)
     {
-        currentState = States.START;
+        if (node == null)
+        {
+            throw new SyntaxErrorException(["Value"], token);
+        }
     }
 }
 
