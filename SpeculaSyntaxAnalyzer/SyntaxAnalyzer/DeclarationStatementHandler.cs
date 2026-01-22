@@ -4,6 +4,7 @@ public class DeclarationStatementHandler : Handler
 {
     private enum States
     {
+        LET,
         IDENTIFIER,
         COLON_EQUALS,
         TYPE_CAPABILITY,
@@ -45,9 +46,18 @@ public class DeclarationStatementHandler : Handler
     private void end()
     {
         SetHandlerFinished();
-        currentState = States.IDENTIFIER;
+        currentState = States.LET;
         identifier = "";
         dataType = "";
+    }
+
+    private void handleLetState(Token token)
+    {
+        if (token.Type != Token.Types.K_LET)
+        {
+            throw new SyntaxErrorException(["LET"], token);
+        }
+        currentState = States.IDENTIFIER;
     }
 
     private void handleIdentState(Token token)
