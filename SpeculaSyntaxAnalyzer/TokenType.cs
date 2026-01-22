@@ -1,4 +1,4 @@
-namespace SpeculaSyntaxAnalyzer.LexerReader;
+namespace SpeculaSyntaxAnalyzer;
 
 public enum TokenType
 {
