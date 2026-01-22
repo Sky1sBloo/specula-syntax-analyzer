@@ -49,6 +49,8 @@ public class ValueHandler : Handler
             case Type.IDENTIFIER:
                 node = new IdentifierValue(token.Value);
                 break;
+            default:
+                throw new SyntaxErrorException(["Literal/Identifier"], token);
         }
         currentState = States.START;
         type = Type.LITERAL;

@@ -1,3 +1,5 @@
+using SpeculaSyntaxAnalyzer.ParseTree;
+
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class DeclarationStatementHandler : Handler
@@ -11,6 +13,7 @@ public class DeclarationStatementHandler : Handler
         TYPE,
         EQUALS_SEMI_COLON,
         VALUE,
+        WAIT_FOR_VALUE,
         SEMI_COLON,
         INVALID
     }
@@ -18,8 +21,9 @@ public class DeclarationStatementHandler : Handler
     private States currentState = States.LET;
     private string identifier = "";
     private string dataType = "";
+    private ValueNode? value;
 
-    public override void handleToken(Token token)
+    public override void handleToken(Token token, ParseNode? node)
     {
         try
         {
@@ -43,6 +47,9 @@ public class DeclarationStatementHandler : Handler
                 case States.VALUE:
                     handleValueState(token);
                     break;
+                case States.WAIT_FOR_VALUE:
+                    handleWaitForValueState(token, node);
+                    break;
                 case States.SEMI_COLON:
                     handleSemiColonState(token);
                     break;
@@ -60,10 +67,17 @@ public class DeclarationStatementHandler : Handler
 
     private void end()
     {
+        if (value == null)
+        {
+            value = (ValueNode)new LiteralValue("L_NULL", "null");
+        }
+        ParseNode node = new DeclarationStatementNode(identifier, dataType, value);
+        SetHandlerFinished(node);
+
         currentState = States.LET;
         identifier = "";
         dataType = "";
-        SetHandlerFinished();
+        value = null;
     }
 
     private void handleLetState(Token token)
@@ -92,7 +106,7 @@ public class DeclarationStatementHandler : Handler
                 currentState = States.TYPE_CAPABILITY;
                 break;
             case Token.Types.OP_EQUALS:
-                currentState = States.EQUALS_SEMI_COLON;
+                currentState = States.VALUE;
                 break;
             default:
                 throw new SyntaxErrorException(["':'", "'='"], token);
@@ -105,11 +119,6 @@ public class DeclarationStatementHandler : Handler
         {
             case Token.Types.IDENT:
             case Token.Types.K_TYPE:
-            case Token.Types.L_FLOAT:
-            case Token.Types.L_DOUBLE:
-            case Token.Types.L_CHAR:
-            case Token.Types.L_STRING:
-            case Token.Types.L_BOOL:
                 dataType = token.Value;
                 currentState = States.TYPE;
                 break;
@@ -137,7 +146,10 @@ public class DeclarationStatementHandler : Handler
 
     private void handleValueState(Token token)
     {
+        currentState = States.WAIT_FOR_VALUE;
+        SetDelegateToState(SyntaxAnalyzerRoot.States.VALUE);
         // todo handle expressions
+        /*
         switch (token.Type)
         {
             case Token.Types.IDENT:
@@ -152,6 +164,22 @@ public class DeclarationStatementHandler : Handler
                 break;
             default:
                 throw new SyntaxErrorException(["VALUE", "EXPRESSION"], token);
+        } */
+    }
+
+    private void handleWaitForValueState(Token token, ParseNode? node)
+    {
+        if (node == null)
+        {
+            throw new SyntaxErrorException(["Value"], token);
+        }
+        if (node is ValueNode valueNode)
+        {
+            value = valueNode;
+        }
+        else
+        {
+            throw new SyntaxErrorException(["Value"], token);
         }
     }
 
