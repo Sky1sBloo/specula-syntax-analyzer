@@ -29,6 +29,7 @@ public class SyntaxAnalyzerRoot
     {
         foreach (var token in tokens)
         {
+            handleToken(token);
         }
     }
 
@@ -51,7 +52,8 @@ public class SyntaxAnalyzerRoot
         }
         catch (SyntaxErrorException ex)
         {
-            Errors.Append(ex.Message);
+            Errors.Add(ex.Message);
+            CurrentState = States.ERROR;
         }
     }
 
