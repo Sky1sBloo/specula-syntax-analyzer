@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
-namespace SpeculaSyntaxAnalyzer.LexerReader;
+using SpeculaSyntaxAnalyzer.LexerReader;
+namespace SpeculaSyntaxAnalyzer;
 
 public class Token
 {
