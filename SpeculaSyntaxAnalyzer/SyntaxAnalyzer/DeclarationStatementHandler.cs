@@ -41,8 +41,9 @@ public class DeclarationStatementHandler : Handler
         }
     }
 
-    private void reset()
+    private void end()
     {
+        SetHandlerFinished();
         currentState = States.LET;
         identifier = "";
         dataType = "";
@@ -101,7 +102,7 @@ public class DeclarationStatementHandler : Handler
                 currentState = States.EQUALS;
                 break;
             case Token.Types.D_SEMICOLON:
-                reset();
+                end();
                 break;
             default:
                 throw new SyntaxErrorException(["'='", "'[", ";"], token);
@@ -134,6 +135,6 @@ public class DeclarationStatementHandler : Handler
         {
             throw new SyntaxErrorException([";"], token);
         }
-        reset();
+        end();
     }
 }

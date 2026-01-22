@@ -5,5 +5,5 @@ public abstract class Handler
     public event Action? Finished;
 
     public abstract void handleToken(Token token);
-    protected void FinishHandle() => Finished?.Invoke();
+    protected void SetHandlerFinished() => Finished?.Invoke();
 }
