@@ -11,7 +11,8 @@ public class DeclarationStatementHandler : Handler
         TYPE,
         EQUALS_SEMI_COLON,
         VALUE,
-        SEMI_COLON
+        SEMI_COLON,
+        INVALID
     }
 
     private States currentState = States.IDENTIFIER;
@@ -20,26 +21,37 @@ public class DeclarationStatementHandler : Handler
 
     public override void handleToken(Token token)
     {
-        switch (currentState)
+        try
         {
-            case States.IDENTIFIER:
-                handleIdentState(token);
-                break;
-            case States.COLON_EQUALS:
-                handleColonEqualsState(token);
-                break;
-            case States.TYPE_CAPABILITY:
-                handleTypeCapabilityState(token);
-                break;
-            case States.EQUALS_SEMI_COLON:
-                handleEqualsSemiColonState(token);
-                break;
-            case States.VALUE:
-                handleValueState(token);
-                break;
-            case States.SEMI_COLON:
-                handleSemiColonState(token);
-                break;
+            switch (currentState)
+            {
+                case States.IDENTIFIER:
+                    handleIdentState(token);
+                    break;
+                case States.COLON_EQUALS:
+                    handleColonEqualsState(token);
+                    break;
+                case States.TYPE_CAPABILITY:
+                    handleTypeCapabilityState(token);
+                    break;
+                case States.EQUALS_SEMI_COLON:
+                    handleEqualsSemiColonState(token);
+                    break;
+                case States.VALUE:
+                    handleValueState(token);
+                    break;
+                case States.SEMI_COLON:
+                    handleSemiColonState(token);
+                    break;
+                case States.INVALID:
+                    handleSemiColonState(token);
+                    break;
+            }
+        }
+        catch (SyntaxErrorException ex)
+        {
+            currentState = States.INVALID;
+            throw ex;
         }
     }
 

@@ -1,13 +1,15 @@
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
-public class SyntaxAnalyzerRoot 
+public class SyntaxAnalyzerRoot
 {
     public enum States
     {
         START,
-        DECL
+        DECL,
+        ERROR
     }
     public States CurrentState { get; private set; } = States.START;
+    public List<string> Errors { get; private set; } = new();
 
     private DeclarationStatementHandler declarationStatementHandler;
 
@@ -33,14 +35,23 @@ public class SyntaxAnalyzerRoot
     /// For state handlers 
     private void handleToken(Token token)
     {
-        switch (CurrentState)
+        try
         {
-            case States.START:
-                handleStartState(token);
-                break;
-            case States.DECL:
-                handleDeclState(token);
-                break;
+            switch (CurrentState)
+            {
+                case States.START:
+                    handleStartState(token);
+                    break;
+                case States.DECL:
+                    handleDeclState(token);
+                    break;
+                case States.ERROR:
+                    break;
+            }
+        }
+        catch (SyntaxErrorException ex)
+        {
+            Errors.Append(ex.Message);
         }
     }
 
@@ -59,5 +70,4 @@ public class SyntaxAnalyzerRoot
     {
         declarationStatementHandler.handleToken(token);
     }
-
 }
