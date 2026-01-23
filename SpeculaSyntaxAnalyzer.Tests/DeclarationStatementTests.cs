@@ -12,7 +12,7 @@ public class DeclarationStatementTests
     [SetUp]
     public void Setup()
     {
-        analyzer.Reset();
+        analyzer = new();
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class DeclarationStatementTests
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(1));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
-    }
+    } 
 
     [Test]
     public void SingleDeclarationWithValue()
@@ -31,13 +31,15 @@ public class DeclarationStatementTests
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(1));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
-    }
+    } 
 
     [Test]
     public void MultipleDeclaration()
     {
+        Console.WriteLine("Multiple delcaration");
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node.Count, Is.EqualTo(3));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
