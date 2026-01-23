@@ -1,11 +1,10 @@
 ﻿using SpeculaSyntaxAnalyzer.LexerReader;
+using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 string[] files = args;
 
 foreach (string iFile in files)
 {
     LexerOutput output = LexerFileReader.ParseFile(iFile);
-    foreach (var token in output.Tokens)
-    {
-        Console.WriteLine(token.Type.ToString());
-    }
+    SyntaxAnalyzerRoot analyzer = new();
+    var node = analyzer.ReadTokens(output.Tokens);
 }
