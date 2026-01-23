@@ -26,7 +26,7 @@ public class SyntaxAnalyzerRoot
     public SyntaxAnalyzerRoot()
     {
         declarationStatementHandler.Finished += node => PopState(node);
-        declarationStatementHandler.DelegateToState += newState => StateStack.Push(newState);
+        declarationStatementHandler.DelegateToState += newState => PushState(newState);
 
         valueHandler.Finished += node => PopState(node);
 
