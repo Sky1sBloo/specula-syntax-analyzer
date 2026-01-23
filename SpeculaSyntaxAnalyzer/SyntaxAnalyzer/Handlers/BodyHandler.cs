@@ -30,6 +30,7 @@ public class BodyHandler : Handler
                     handleVarAssignStmt();
                     break;
                 case Token.Types.K_IF:
+                    handleIfStatement();
                     break;
             }
             /// todo
@@ -76,6 +77,23 @@ public class BodyHandler : Handler
         else
         {
             throw new InvalidOperationException("Node is not expression for var assign");
+        }
+    }
+
+    private void handleIfStatement()
+    {
+        ParseNode? node = delegateToHandler(new IfStatementHandler(errorHandler));
+        if (node == null)
+        {
+            return;
+        }
+        if (node is Statement statementNode)
+        {
+            statements.Add(statementNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Node is not if statement");
         }
     }
 }
