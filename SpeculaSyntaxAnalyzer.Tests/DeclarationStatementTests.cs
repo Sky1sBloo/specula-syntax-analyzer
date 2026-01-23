@@ -34,6 +34,15 @@ public class DeclarationStatementTests
     }
 
     [Test]
+    public void DeclarationInferType()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/DeclarationInferType.json");
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node.Count, Is.EqualTo(1));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
+    }
+
+    [Test]
     public void MultipleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
