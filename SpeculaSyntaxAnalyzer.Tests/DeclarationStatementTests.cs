@@ -1,5 +1,6 @@
 using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 using SpeculaSyntaxAnalyzer.LexerReader;
+using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.Tests;
 
@@ -11,31 +12,33 @@ public class DeclarationStatementTests
     [SetUp]
     public void Setup()
     {
-        analyzer = new SyntaxAnalyzerRoot();
+        analyzer.Reset();
     }
 
     [Test]
     public void SingleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclaration.json");
-        analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node.Count, Is.EqualTo(1));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void SingleDeclarationWithValue()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclarationWithValue.json");
-        analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node.Count, Is.EqualTo(1));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void MultipleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
-        analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.Errors.Count, Is.EqualTo(0));
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -43,7 +46,7 @@ public class DeclarationStatementTests
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoIdentifier.json");
         analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.Errors.Count, Is.EqualTo(2));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
 
     [Test]
@@ -51,6 +54,6 @@ public class DeclarationStatementTests
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
         analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.Errors.Count, Is.EqualTo(1));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(1));
     }
 }

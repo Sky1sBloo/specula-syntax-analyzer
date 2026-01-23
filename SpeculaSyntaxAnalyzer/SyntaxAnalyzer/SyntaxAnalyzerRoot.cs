@@ -4,109 +4,57 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class SyntaxAnalyzerRoot
 {
-    public enum States
-    {
-        START,
-        DECL,
-        VALUE,
-        FUNC_CALL,
-        STRUCT_BUILDER
-    }
+    private readonly DeclarationHandler declarationHandler;
+    private List<ParseNode> root;
 
-    public Stack<States> StateStack = new();
-    public List<string> Errors { get; private set; } = new();
+    public readonly ErrorsHandler ErrorHandler;
 
-    public ParseNode? prevHandleNode;
-
-    private DeclarationStatementHandler declarationStatementHandler = new();
-    private ValueHandler valueHandler = new();
-
-    private Token? currentToken;
+    private int i = 0;
 
     public SyntaxAnalyzerRoot()
     {
-        declarationStatementHandler.Finished += node => PopState(node);
-        declarationStatementHandler.DelegateToState += newState => PushState(newState);
-
-        valueHandler.Finished += node => PopState(node);
-
-        StateStack.Push(States.START);
+        ErrorHandler = new();
+        declarationHandler = new(ErrorHandler);
+        root = new();
     }
 
-    public ParseNode? ReadTokens(List<Token> tokens)
+    public void Reset()
     {
-        foreach (var token in tokens)
-        {
-            currentToken = token;
-            handleToken(token);
-        }
-
-        if (prevHandleNode == null)
-        {
-            Errors.Add("Tokens did not produce an output");
-        }
-        return prevHandleNode;
+        root.Clear();
+        ErrorHandler.ClearErrors();
     }
 
-    /// Used to delegate current handler to another
-    public void PushState(States newState)
+    public List<ParseNode> ReadTokens(List<Token> tokens)
     {
-        StateStack.Push(newState);
-    }
-
-    public void PopState(ParseNode node)
-    {
-        StateStack.Pop();
-        prevHandleNode = node;
-        if (currentToken == null)
+        while (i < tokens.Count)
         {
-            throw new InvalidOperationException("Tried to pop state with an empty token");
+            ParseNode? node = tokens[i].Type switch
+            {
+                Token.Types.K_LET => delegateToHandler(declarationHandler, tokens),
+                _ => throw new SyntaxErrorException(["Start Symbol"], tokens[i])
+            };
+            if (node != null)
+            {
+                root.Add(node);
+            }
+            i++;
         }
-        handleToken(currentToken);
+        return root;
     }
 
-    /// For state handlers 
-    private void handleToken(Token token)
+    private ParseNode? delegateToHandler(Handler handler, List<Token> token)
     {
         try
         {
-            switch (StateStack.Peek())
-            {
-                case States.START:
-                    handleStartState(token);
-                    break;
-                case States.DECL:
-                    handleDeclState(token);
-                    break;
-                case States.VALUE:
-                    handleValueState(token);
-                    break;
-            }
+            HandlerOutput output = handler.HandleToken(token, i);
+            i = output.endIndex;
+            return output.node;
         }
         catch (SyntaxErrorException ex)
         {
-            Errors.Add(ex.Message);
+            ErrorHandler.AddError(ex);
         }
+        return null;
     }
 
-    private void handleStartState(Token token)
-    {
-        switch (token.Type)
-        {
-            case Token.Types.K_LET:
-                PushState(States.DECL);
-                declarationStatementHandler.handleToken(token, prevHandleNode);
-                break;
-        }
-    }
-
-    private void handleDeclState(Token token)
-    {
-        declarationStatementHandler.handleToken(token, prevHandleNode);
-    }
-
-    private void handleValueState(Token token)
-    {
-        valueHandler.handleToken(token, prevHandleNode);
-    }
 }
