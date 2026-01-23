@@ -13,51 +13,16 @@
             "value": "let"
         },
         {
-            "char_end": 6,
+            "char_end": 8,
             "char_start": 5,
             "line": 1,
             "type": "IDENT",
-            "value": "i"
-        },
-        {
-            "char_end": 6,
-            "char_start": 6,
-            "line": 1,
-            "type": "D_SEMICOLON",
-            "value": ";"
-        },
-        {
-            "char_end": 4,
-            "char_start": 1,
-            "line": 2,
-            "type": "K_LET",
-            "value": "let"
-        },
-        {
-            "char_end": 6,
-            "char_start": 5,
-            "line": 2,
-            "type": "IDENT",
-            "value": "j"
+            "value": "var"
         },
         {
             "char_end": 8,
-            "char_start": 7,
-            "line": 2,
-            "type": "OP_EQUALS",
-            "value": "="
-        },
-        {
-            "char_end": 10,
-            "char_start": 9,
-            "line": 2,
-            "type": "L_INT",
-            "value": "5"
-        },
-        {
-            "char_end": 10,
-            "char_start": 10,
-            "line": 2,
+            "char_start": 8,
+            "line": 1,
             "type": "D_SEMICOLON",
             "value": ";"
         }

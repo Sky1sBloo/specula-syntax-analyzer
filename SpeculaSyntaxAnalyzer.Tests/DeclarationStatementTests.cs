@@ -77,7 +77,7 @@ public class DeclarationStatementTests
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(0));
-        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(1));
     }
 
     [Test]

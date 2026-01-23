@@ -78,14 +78,28 @@ public class DeclarationHandler : Handler
         {
             throw new SyntaxErrorException([";"], CurrentToken);
         }
-        
-        // means we came directly from = without :
+
         if (dataType == null)
         {
-            throw new SyntaxErrorException(["Type annotation (: type)"], CurrentToken);
+            dataType = InferTypeFromExpression(value);
         }
-        
+
         return ConstructNode();
+    }
+
+    private TypeNode InferTypeFromExpression(Expression expr)
+    {
+        if (expr is LiteralValue literal)
+        {
+            return literal.type;
+        }
+
+        if (expr is IdentifierValue)
+        {
+            return new TypeNode(DataTypes.IDENTIFIER);
+        }
+
+        return new TypeNode(DataTypes.UNKNOWN);
     }
 
     private DeclarationStatementNode ConstructNode()
