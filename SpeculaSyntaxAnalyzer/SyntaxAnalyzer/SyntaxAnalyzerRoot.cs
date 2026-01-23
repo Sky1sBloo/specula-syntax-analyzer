@@ -23,6 +23,7 @@ public class SyntaxAnalyzerRoot
             ParseNode? node = tokens[i].Type switch
             {
                 Token.Types.K_LET => delegateToHandler(new DeclarationHandler(ErrorHandler), tokens),
+                Token.Types.D_CBRAC_OP => delegateToHandler(new BodyHandler(ErrorHandler), tokens),
                 _ => throw new SyntaxErrorException(["Start Symbol"], tokens[i])
             };
             if (node != null)
