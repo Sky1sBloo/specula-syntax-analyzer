@@ -88,13 +88,27 @@ public class ForLoopHandler : Handler
 
     private Assignment? handleAssignment()
     {
+        string? identifier = null;
+        if (CurrentToken.Type == Token.Types.IDENT)
+        {
+            identifier = CurrentToken.Value;
+        }
+        
         ParseNode? node = delegateToHandler(varAssignHandler);
         if (node == null)
             return null;
+        if (node is Expression expression)
+        {
+            if (identifier != null)
+            {
+                return new AssignmentStatementNode(identifier, expression);
+            }
+            return null;
+        }
         if (node is Assignment assignment)
             return assignment;
         else
-            throw new InvalidOperationException("Node returned not assignment statement");
+            throw new InvalidOperationException("Node returned not expression or assignment statement");
     }
 
     private Expression? handleExpression()
