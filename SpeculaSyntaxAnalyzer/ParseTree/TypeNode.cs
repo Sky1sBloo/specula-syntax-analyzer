@@ -1,3 +1,17 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public record TypeNode(string type) : ParseNode;
+public enum DataTypes
+{
+    INT,
+    FLOAT,
+    DOUBLE,
+    CHAR,
+    BOOL,
+    STRING,
+    VOID,
+    NULL,
+    IDENTIFIER,
+    UNKNOWN
+}
+public record TypeNode(DataTypes type) : ParseNode;
+

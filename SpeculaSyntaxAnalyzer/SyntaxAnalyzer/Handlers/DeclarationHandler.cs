@@ -41,7 +41,7 @@ public class DeclarationHandler : Handler
             case Token.Types.D_SEMICOLON:
                 {
                     if (dataType == null) throw new SyntaxErrorException(["Definition of datatype"], CurrentToken);
-                    return new DeclarationStatementNode(identifier, dataType, new LiteralValue(new TypeNode("null"), "null"));
+                    return new DeclarationStatementNode(identifier, dataType, new LiteralValue(new TypeNode(DataTypes.NULL), "null"));
                 }
             default:
                 throw new SyntaxErrorException([";", "="], CurrentToken);
