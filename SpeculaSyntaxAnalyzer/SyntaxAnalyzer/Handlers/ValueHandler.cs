@@ -39,12 +39,16 @@ public class ValueHandler : Handler
             }
             incrementIndex();
 
-                //todo: handle functions
-            switch (CurrentToken.Type)
+            // Check if we're at the end of tokens before accessing CurrentToken
+            if (HasMoreTokens)
             {
-                case Token.Types.D_PAR_OP:
-                case Token.Types.D_CBRAC_OP:
-                    break;
+                //todo: handle functions
+                switch (CurrentToken.Type)
+                {
+                    case Token.Types.D_PAR_OP:
+                    case Token.Types.D_CBRAC_OP:
+                        break;
+                }
             }
             return new IdentifierValue(identifier);
         } catch (ArgumentException)

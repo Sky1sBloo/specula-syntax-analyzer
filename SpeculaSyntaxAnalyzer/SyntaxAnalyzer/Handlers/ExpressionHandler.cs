@@ -31,7 +31,7 @@ public class ExpressionHandler : Handler
     {
         Expression left = ParseAddSubtract();
 
-        while (CurrentToken.Type == Token.Types.OP_REL_EQ)
+        while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_REL_EQ)
         {
             incrementIndex();
             Expression right = ParseAddSubtract();
@@ -48,7 +48,7 @@ public class ExpressionHandler : Handler
     {
         Expression left = ParseMultiplyDivide();
 
-        while (CurrentToken.Type == Token.Types.OP_PLUS || CurrentToken.Type == Token.Types.OP_MINUS)
+        while (HasMoreTokens && (CurrentToken.Type == Token.Types.OP_PLUS || CurrentToken.Type == Token.Types.OP_MINUS))
         {
             Token.Types op = CurrentToken.Type;
             incrementIndex();
@@ -69,7 +69,7 @@ public class ExpressionHandler : Handler
     {
         Expression left = ParseUnary();
 
-        while (CurrentToken.Type == Token.Types.OP_MULT || CurrentToken.Type == Token.Types.OP_DIVIDE)
+        while (HasMoreTokens && (CurrentToken.Type == Token.Types.OP_MULT || CurrentToken.Type == Token.Types.OP_DIVIDE))
         {
             Token.Types op = CurrentToken.Type;
             incrementIndex();
@@ -122,7 +122,7 @@ public class ExpressionHandler : Handler
     {
         Expression expr = ParsePrimary();
 
-        while (CurrentToken.Type == Token.Types.OP_INCR || CurrentToken.Type == Token.Types.OP_DECR)
+        while (HasMoreTokens && (CurrentToken.Type == Token.Types.OP_INCR || CurrentToken.Type == Token.Types.OP_DECR))
         {
             Token.Types op = CurrentToken.Type;
             incrementIndex();
