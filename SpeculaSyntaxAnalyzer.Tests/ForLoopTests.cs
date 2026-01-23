@@ -54,6 +54,28 @@ public class ForLoopTests
     }
 
     [Test]
+    public void ForWithCompoundAssignment()
+    {
+        var output = LexerFileReader.ParseFile("Samples/For/ForWithCompoundAssignment.json");
+        HandlerOutput result = forHandler.HandleToken(output.Tokens, 0);
+        Assert.That(result.node, Is.InstanceOf<ForLoop>());
+        var forLoop = (ForLoop)result.node!;
+        Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+    }
+
+    [Test]
+    public void ForWithComplexCondition()
+    {
+        var output = LexerFileReader.ParseFile("Samples/For/ForComplexCondition.json");
+        HandlerOutput result = forHandler.HandleToken(output.Tokens, 0);
+        Assert.That(result.node, Is.InstanceOf<ForLoop>());
+        var forLoop = (ForLoop)result.node!;
+        Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+    }
+
+    [Test]
     public void ForWithBody()
     {
         var output = LexerFileReader.ParseFile("Samples/For/ForWithBody.json");
