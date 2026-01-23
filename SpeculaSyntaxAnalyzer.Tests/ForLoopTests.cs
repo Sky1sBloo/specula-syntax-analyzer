@@ -20,6 +20,29 @@ public class ForLoopTests
     #region Valid Cases
 
     [Test]
+    public void ForInitAssignment()
+    {
+        var output = LexerFileReader.ParseFile("Samples/For/ForInitAssignment.json");
+        HandlerOutput result = forHandler.HandleToken(output.Tokens, 0);
+        Assert.That(result.node, Is.InstanceOf<ForLoop>());
+        var forLoop = (ForLoop)result.node!;
+        Assert.That(forLoop.init, Is.InstanceOf<AssignmentStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+    }
+
+    [Test]
+    public void ForInitDeclaration()
+    {
+        var output = LexerFileReader.ParseFile("Samples/For/ForInitDeclaration.json");
+        HandlerOutput result = forHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(result.node, Is.InstanceOf<ForLoop>());
+        var forLoop = (ForLoop)result.node!;
+        Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+    }
+
+    [Test]
     public void ForWithIncrement()
     {
         var output = LexerFileReader.ParseFile("Samples/For/ForIncrement.json");

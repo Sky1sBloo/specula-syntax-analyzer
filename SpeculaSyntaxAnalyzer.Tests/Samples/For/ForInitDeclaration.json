@@ -34,22 +34,36 @@
             "value": "i"
         },
         {
-            "char_end": 13,
+            "char_end": 12,
             "char_start": 12,
+            "line": 1,
+            "type": "D_COLON",
+            "value": ":"
+        },
+        {
+            "char_end": 15,
+            "char_start": 13,
+            "line": 1,
+            "type": "K_TYPE",
+            "value": "int"
+        },
+        {
+            "char_end": 17,
+            "char_start": 16,
             "line": 1,
             "type": "OP_EQUALS",
             "value": "="
         },
         {
-            "char_end": 15,
-            "char_start": 14,
+            "char_end": 19,
+            "char_start": 18,
             "line": 1,
             "type": "L_INT",
             "value": "0"
         },
         {
-            "char_end": 15,
-            "char_start": 15,
+            "char_end": 19,
+            "char_start": 19,
             "line": 1,
             "type": "D_SEMICOLON",
             "value": ";"
@@ -132,9 +146,9 @@
             "value": "{"
         },
         {
-            "char_end": 38,
-            "char_start": 38,
-            "line": 1,
+            "char_end": 1,
+            "char_start": 1,
+            "line": 2,
             "type": "D_CBRAC_CLO",
             "value": "}"
         }
