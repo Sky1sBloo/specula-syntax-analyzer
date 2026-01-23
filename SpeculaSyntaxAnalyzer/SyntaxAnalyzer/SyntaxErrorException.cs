@@ -28,6 +28,6 @@ public class SyntaxErrorException : Exception
 
     private string getTokenPos(Token token)
     {
-        return $" at {token.CharStart}";
+        return $" at {token.Line}:{token.CharStart}";
     }
 }

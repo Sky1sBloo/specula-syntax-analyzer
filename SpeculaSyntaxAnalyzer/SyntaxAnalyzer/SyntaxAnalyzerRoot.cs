@@ -4,7 +4,6 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class SyntaxAnalyzerRoot
 {
-    private readonly DeclarationHandler declarationHandler;
     private List<ParseNode> root;
 
     public readonly ErrorsHandler ErrorHandler;
@@ -14,14 +13,7 @@ public class SyntaxAnalyzerRoot
     public SyntaxAnalyzerRoot()
     {
         ErrorHandler = new();
-        declarationHandler = new(ErrorHandler);
         root = new();
-    }
-
-    public void Reset()
-    {
-        root.Clear();
-        ErrorHandler.ClearErrors();
     }
 
     public List<ParseNode> ReadTokens(List<Token> tokens)
@@ -30,7 +22,7 @@ public class SyntaxAnalyzerRoot
         {
             ParseNode? node = tokens[i].Type switch
             {
-                Token.Types.K_LET => delegateToHandler(declarationHandler, tokens),
+                Token.Types.K_LET => delegateToHandler(new DeclarationHandler(ErrorHandler), tokens),
                 _ => throw new SyntaxErrorException(["Start Symbol"], tokens[i])
             };
             if (node != null)
