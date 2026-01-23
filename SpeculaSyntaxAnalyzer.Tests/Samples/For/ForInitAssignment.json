@@ -125,9 +125,9 @@
             "value": "{"
         },
         {
-            "char_end": 34,
-            "char_start": 34,
-            "line": 1,
+            "char_end": 1,
+            "char_start": 1,
+            "line": 2,
             "type": "D_CBRAC_CLO",
             "value": "}"
         }
