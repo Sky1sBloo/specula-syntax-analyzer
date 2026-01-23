@@ -74,7 +74,6 @@ public class DeclarationHandler : Handler
         value = getVariableValue();
         if (value == null) return null;
 
-        incrementIndex();
         if (CurrentToken.Type != Token.Types.D_SEMICOLON)
         {
             throw new SyntaxErrorException([";"], CurrentToken);

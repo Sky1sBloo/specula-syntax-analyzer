@@ -23,7 +23,11 @@ public class ValueHandler : Handler
                 case DataTypes.BOOL:
                 case DataTypes.STRING:
                 case DataTypes.NULL:
-                    return new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
+                    {
+                        var literalValue = new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
+                        incrementIndex();
+                        return literalValue;
+                    }
                 case DataTypes.VOID:
                 case DataTypes.UNKNOWN:
                     throw new SyntaxErrorException(["Value"], CurrentToken);

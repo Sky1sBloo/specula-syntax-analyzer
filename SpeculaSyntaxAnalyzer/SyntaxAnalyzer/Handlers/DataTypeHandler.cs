@@ -64,6 +64,8 @@ public class DataTypeHandler : Handler
                 return DataTypes.BOOL;
             case Token.Types.L_NULL:
                 return DataTypes.NULL;
+            case Token.Types.IDENT:
+                return DataTypes.IDENTIFIER;
         }
         throw new ArgumentException("Failed to infer data type");
     }
