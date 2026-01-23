@@ -23,6 +23,138 @@ public class ExpressionStatementTests
         var output = LexerFileReader.ParseFile("Samples/Expression/BinaryExpressions/Addition.json");
         HandlerOutput addNode = expressionHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(addNode.node, Is.InstanceOf<Expression>()); 
+        Assert.That(addNode.node, Is.TypeOf<AddExpression>()); 
+
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/BinaryExpressions/Multiplication.json");
+        HandlerOutput multNode = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(multNode.node, Is.TypeOf<MultExpression>());
+
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/BinaryExpressions/Subtraction.json");
+        HandlerOutput subNode = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(subNode.node, Is.TypeOf<SubExpression>());
+
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/BinaryExpressions/Division.json");
+        HandlerOutput divNode = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(divNode.node, Is.TypeOf<DivExpression>());
+    }
+
+    [Test]
+    public void OperatorPrecedence()
+    {
+        // 2 + 3 * 4 = 2 + (3 * 4) = Add(2, Mult(3, 4))
+        var output = LexerFileReader.ParseFile("Samples/Expression/PrecedenceExpressions/AddMultPrecedence.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<AddExpression>());
+        var addExpr = (AddExpression)node.node!;
+        Assert.That(addExpr.rhs, Is.TypeOf<MultExpression>());
+
+        // (2 + 3) * 4 = Mult(Add(2, 3), 4)
+        output = LexerFileReader.ParseFile("Samples/Expression/PrecedenceExpressions/ParenthesisOverride.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MultExpression>());
+        var multExpr = (MultExpression)node.node!;
+        Assert.That(multExpr.lhs, Is.TypeOf<AddExpression>());
+
+        // 10 - 2 * 3 = 10 - (2 * 3) = Sub(10, Mult(2, 3))
+        output = LexerFileReader.ParseFile("Samples/Expression/PrecedenceExpressions/SubMultPrecedence.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<SubExpression>());
+        var subExpr = (SubExpression)node.node!;
+        Assert.That(subExpr.rhs, Is.TypeOf<MultExpression>());
+    }
+
+    [Test]
+    public void ParenthesesExpressions()
+    {
+        // (5 + 3) * 2
+        var output = LexerFileReader.ParseFile("Samples/Expression/Parentheses/SimpleParenthesis.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MultExpression>());
+
+        // ((1 + 2) * 3) + 4
+        output = LexerFileReader.ParseFile("Samples/Expression/Parentheses/NestedParenthesis.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<AddExpression>());
+        var addExpr = (AddExpression)node.node!;
+        Assert.That(addExpr.lhs, Is.TypeOf<MultExpression>());
+    }
+
+    [Test]
+    public void UnaryPreIncrementDecrement()
+    {
+        // ++x
+        var output = LexerFileReader.ParseFile("Samples/Expression/Unary/PreIncrement.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PreIncExpression>());
+
+        // --y
+        output = LexerFileReader.ParseFile("Samples/Expression/Unary/PreDecrement.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PreDecExpression>());
+    }
+
+    [Test]
+    public void UnaryPostIncrementDecrement()
+    {
+        // x++
+        var output = LexerFileReader.ParseFile("Samples/Expression/Unary/PostIncrement.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PostIncExpression>());
+
+        // y--
+        output = LexerFileReader.ParseFile("Samples/Expression/Unary/PostDecrement.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PostDecExpression>());
+    }
+
+    [Test]
+    public void UnaryPositiveNegative()
+    {
+        // +5
+        var output = LexerFileReader.ParseFile("Samples/Expression/Unary/UnaryPositive.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PrePosExpression>());
+
+        // -3
+        output = LexerFileReader.ParseFile("Samples/Expression/Unary/UnaryNegative.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<PreNegExpression>());
+    }
+
+    [Test]
+    public void MixedUnaryBinary()
+    {
+        // ++x + 5
+        var output = LexerFileReader.ParseFile("Samples/Expression/Mixed/PreIncrementAdd.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<AddExpression>());
+        var addExpr = (AddExpression)node.node!;
+        Assert.That(addExpr.lhs, Is.TypeOf<PreIncExpression>());
+
+        // x++ * 2
+        output = LexerFileReader.ParseFile("Samples/Expression/Mixed/PostIncrementMult.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MultExpression>());
+        var multExpr = (MultExpression)node.node!;
+        Assert.That(multExpr.lhs, Is.TypeOf<PostIncExpression>());
     }
 }
