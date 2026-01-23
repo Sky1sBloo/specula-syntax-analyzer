@@ -5,16 +5,16 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class DeclarationHandler : Handler
 {
     private readonly DataTypeHandler dataTypeHandler;
-    private readonly ValueHandler valueHandler;
+    private readonly ExpressionHandler expressionHandler;
 
     private string identifier = "";
     private TypeNode? dataType = null;
-    private ValueNode? value = null;
+    private Expression? value = null;
 
     public DeclarationHandler(ErrorsHandler errors) : base(errors)
     {
         dataTypeHandler = new(errors);
-        valueHandler = new(errors);
+        expressionHandler = new(errors);
     }
 
     public void Reset()
@@ -42,6 +42,7 @@ public class DeclarationHandler : Handler
             case Token.Types.D_COLON:
                 return sawColonState();
             case Token.Types.OP_EQUALS:
+                incrementIndex();
                 return sawEqualsState();
         }
         throw new SyntaxErrorException([":", "="], CurrentToken);
@@ -78,6 +79,13 @@ public class DeclarationHandler : Handler
         {
             throw new SyntaxErrorException([";"], CurrentToken);
         }
+        
+        // means we came directly from = without :
+        if (dataType == null)
+        {
+            throw new SyntaxErrorException(["Type annotation (: type)"], CurrentToken);
+        }
+        
         return ConstructNode();
     }
 
@@ -103,15 +111,15 @@ public class DeclarationHandler : Handler
         else throw new InvalidOperationException($"Expected type node. received: {parseNode}");
     }
 
-    private ValueNode? getVariableValue()
+    private Expression? getVariableValue()
     {
-        ParseNode? parseNode = delegateToHandler(valueHandler);
+        ParseNode? parseNode = delegateToHandler(expressionHandler);
 
         if (parseNode == null) return null;
-        if (parseNode is ValueNode valueNode)
+        if (parseNode is Expression expression)
         {
-            return valueNode;
+            return expression;
         }
-        else throw new InvalidOperationException($"Expected value node. received : {parseNode}");
+        else throw new InvalidOperationException($"Expected expression. received : {parseNode}");
     }
 }
