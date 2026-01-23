@@ -47,8 +47,6 @@ public class DeclarationStatementTests
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Expressions.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        foreach (var n in node)
-            Console.WriteLine(n);
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.Count, Is.EqualTo(7));
     }
@@ -69,10 +67,6 @@ public class DeclarationStatementTests
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        foreach (var err in analyzer.ErrorHandler.ErrorList)
-        {
-            Console.WriteLine(err);
-        }
         Assert.That(node.Count, Is.EqualTo(0));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
@@ -82,10 +76,6 @@ public class DeclarationStatementTests
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/InvalidOperators.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        foreach (var err in analyzer.ErrorHandler.ErrorList)
-        {
-            Console.WriteLine(err);
-        }
         Assert.That(node.Count, Is.EqualTo(0));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(7));
     }
