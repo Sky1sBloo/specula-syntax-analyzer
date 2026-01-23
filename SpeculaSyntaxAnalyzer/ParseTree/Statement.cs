@@ -1,3 +1,3 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public abstract record Statement : ParseNode;
+public interface Statement : ParseNode;
