@@ -5,17 +5,27 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class DeclarationHandler : Handler
 {
     private readonly DataTypeHandler dataTypeHandler;
+    private readonly ValueHandler valueHandler;
+
+    private string identifier = "";
+    private TypeNode? dataType = null;
+    private ValueNode? value = null;
 
     public DeclarationHandler(ErrorsHandler errors) : base(errors)
     {
         dataTypeHandler = new(errors);
+        valueHandler = new(errors);
+    }
+
+    public void Reset()
+    {
+        identifier = "";
+        dataType = null;
+        value = null;
     }
 
     protected override ParseNode? verifyTokens()
     {
-        string identifier = "";
-        TypeNode? dataType = null;
-        ValueNode? value = null;
         if (CurrentToken.Type != Token.Types.K_LET)
         {
             throw new SyntaxErrorException(["let"], CurrentToken);
@@ -30,26 +40,59 @@ public class DeclarationHandler : Handler
         switch (CurrentToken.Type)
         {
             case Token.Types.D_COLON:
-                dataType = sawColon();
-                break;
+                return sawColonState();
             case Token.Types.OP_EQUALS:
-                break;
+                return sawEqualsState();
         }
+        throw new SyntaxErrorException([":", "="], CurrentToken);
+    }
+
+    private ParseNode? sawColonState()
+    {
+        dataType = getType();
         incrementIndex();
+
         switch (CurrentToken.Type)
         {
+            case Token.Types.OP_EQUALS:
+                incrementIndex();
+                return sawEqualsState();
             case Token.Types.D_SEMICOLON:
                 {
                     if (dataType == null) throw new SyntaxErrorException(["Definition of datatype"], CurrentToken);
-                    return new DeclarationStatementNode(identifier, dataType, new LiteralValue(new TypeNode(DataTypes.NULL), "null"));
+                    value = new LiteralValue(new TypeNode(DataTypes.NULL), "null");
+                    return ConstructNode();
                 }
             default:
                 throw new SyntaxErrorException([";", "="], CurrentToken);
         }
-        //return new DeclarationStatementNode(identifier, dataType, value);
     }
 
-    private TypeNode? sawColon()
+    private ParseNode? sawEqualsState()
+    {
+        value = getVariableValue();
+        if (value == null) return null;
+
+        incrementIndex();
+        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
+        {
+            throw new SyntaxErrorException([";"], CurrentToken);
+        }
+        return ConstructNode();
+    }
+
+    private DeclarationStatementNode ConstructNode()
+    {
+        if (dataType == null || value == null)
+        {
+            throw new InvalidOperationException("Tried to construct node of null datatype or value");
+        }
+        DeclarationStatementNode statementNode = new(identifier, dataType, value);
+        Reset();
+        return statementNode;
+    }
+
+    private TypeNode? getType()
     {
         ParseNode? parseNode = delegateToHandler(dataTypeHandler);
         if (parseNode == null) return null;
@@ -58,5 +101,17 @@ public class DeclarationHandler : Handler
             return typeNode;
         }
         else throw new InvalidOperationException($"Expected type node. received: {parseNode}");
+    }
+
+    private ValueNode? getVariableValue()
+    {
+        ParseNode? parseNode = delegateToHandler(valueHandler);
+
+        if (parseNode == null) return null;
+        if (parseNode is ValueNode valueNode)
+        {
+            return valueNode;
+        }
+        else throw new InvalidOperationException($"Expected value node. received : {parseNode}");
     }
 }
