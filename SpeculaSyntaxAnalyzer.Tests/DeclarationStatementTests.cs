@@ -76,4 +76,17 @@ public class DeclarationStatementTests
         Assert.That(node.Count, Is.EqualTo(0));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
+
+    [Test]
+    public void InvalidOperatorsInDeclaration()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/InvalidOperators.json");
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        foreach (var err in analyzer.ErrorHandler.ErrorList)
+        {
+            Console.WriteLine(err);
+        }
+        Assert.That(node.Count, Is.EqualTo(0));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(7));
+    }
 }
