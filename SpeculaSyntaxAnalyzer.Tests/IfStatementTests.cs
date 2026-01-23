@@ -62,4 +62,12 @@ public class IfStatementTests
         Assert.Throws<SyntaxErrorException>(() => ifHandler.HandleToken(output.Tokens, 0));
         Assert.That(errorsHandler.ErrorList.Count, Is.GreaterThanOrEqualTo(1));
     }
+
+    [Test]
+    public void NoParensCondition_ShouldThrow()
+    {
+        var output = LexerFileReader.ParseFile("Samples/If/Invalid/NoParenthesis.json");
+        Assert.Throws<SyntaxErrorException>(() => ifHandler.HandleToken(output.Tokens, 0));
+        Assert.That(errorsHandler.ErrorList.Count, Is.GreaterThanOrEqualTo(1));
+    }
 }
