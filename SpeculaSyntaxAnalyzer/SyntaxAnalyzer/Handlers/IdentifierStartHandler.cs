@@ -7,12 +7,20 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 /// </summary>
 public class IdentifierStartHandler : Handler
 {
+    private readonly VarAssignHandler varAssignHandler;
     public IdentifierStartHandler(ErrorsHandler errors) : base(errors)
     {
+        varAssignHandler = new(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
+        // assignment statement
+        ParseNode? node = delegateToHandler(varAssignHandler);
+        if (node != null)
+        {
+            return node;
+        } 
         return null;
-    } 
+    }
 }
