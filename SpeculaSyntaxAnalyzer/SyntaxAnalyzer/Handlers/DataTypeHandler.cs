@@ -17,17 +17,18 @@ public class DataTypeHandler : Handler
         {
             case Token.Types.K_TYPE:
             case Token.Types.IDENT:
-                return new TypeNode(tokenToDataType(CurrentToken));
+                return new TypeNode(TokenTypeToDataType(CurrentToken));
             default:
                 throw new SyntaxErrorException(["TYPE", "IDENTIFIER"], CurrentToken);
         }
     }
 
-    private DataTypes tokenToDataType(Token token)
+    public static DataTypes TokenTypeToDataType(Token token)
     {
         if (token.Type == Token.Types.K_TYPE)
         {
-            return token.Value switch {
+            return token.Value switch
+            {
                 "int" => DataTypes.INT,
                 "float" => DataTypes.FLOAT,
                 "double" => DataTypes.DOUBLE,
@@ -37,14 +38,33 @@ public class DataTypeHandler : Handler
                 _ => DataTypes.UNKNOWN
             };
         }
-        if (token.Type == Token.Types.L_NULL)
-        {
-            return DataTypes.NULL;
-        }
+
         if (token.Type == Token.Types.IDENT)
         {
             return DataTypes.IDENTIFIER;
         }
         throw new ArgumentException("Token is not a valid data type");
+    }
+
+    public static DataTypes InferDataTypeFromTokenLiteral(Token token)
+    {
+        switch (token.Type)
+        {
+            case Token.Types.L_INT:
+                return DataTypes.INT;
+            case Token.Types.L_FLOAT:
+                return DataTypes.FLOAT;
+            case Token.Types.L_DOUBLE:
+                return DataTypes.DOUBLE;
+            case Token.Types.L_CHAR:
+                return DataTypes.CHAR;
+            case Token.Types.L_STRING:
+                return DataTypes.STRING;
+            case Token.Types.L_BOOL:
+                return DataTypes.BOOL;
+            case Token.Types.L_NULL:
+                return DataTypes.NULL;
+        }
+        throw new ArgumentException("Failed to infer data type");
     }
 }
