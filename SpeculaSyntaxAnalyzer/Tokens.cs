@@ -92,6 +92,7 @@ public class Token
         OP_PERIOD,
 
         OP_REL_EQ,
+        OP_REL_NOT_EQ,
         OP_REL_LESS_EQ,
         OP_REL_GREATER_EQ,
         OP_REL_LESS,
