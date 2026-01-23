@@ -1,4 +1,5 @@
 ﻿using SpeculaSyntaxAnalyzer.LexerReader;
+using SpeculaSyntaxAnalyzer.ParseTree;
 using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 string[] files = args;
 
@@ -6,5 +7,9 @@ foreach (string iFile in files)
 {
     LexerOutput output = LexerFileReader.ParseFile(iFile);
     SyntaxAnalyzerRoot analyzer = new();
-    var node = analyzer.ReadTokens(output.Tokens);
+    List<ParseNode> nodes = analyzer.ReadTokens(output.Tokens);
+    foreach (var node in nodes)
+    {
+        Console.WriteLine(node);
+    }
 }
