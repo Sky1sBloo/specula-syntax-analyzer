@@ -1,6 +1,7 @@
 using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 using SpeculaSyntaxAnalyzer.LexerReader;
 using SpeculaSyntaxAnalyzer.ParseTree;
+using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Helpers;
 
 namespace SpeculaSyntaxAnalyzer.Tests;
 
@@ -41,6 +42,18 @@ public class DeclarationStatementTests
         Assert.That(node.Count, Is.EqualTo(3));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
+
+    [Test]
+    public void ExpressionValues()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/Expressions.json");
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        foreach (var n in node)
+            Console.WriteLine(n);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.Count, Is.EqualTo(7));
+    }
+ 
 
     [Test]
     public void NoIdentifier()
