@@ -25,20 +25,41 @@ public class ExpressionHandler : Handler
 
     /// <summary>
     /// Parses a complete expression (lowest precedence)
-    /// Handles == operator
     /// </summary>
     private Expression ParseExpression()
     {
         Expression left = ParseAddSubtract();
 
-        while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_REL_EQ)
+        while (HasMoreTokens && IsComparisonOperator(CurrentToken.Type))
         {
+            Token.Types op = CurrentToken.Type;
             incrementIndex();
             Expression right = ParseAddSubtract();
-            left = new AddExpression(left, right); // TODO: Replace with proper comparison expression
+            
+            left = op switch
+            {
+                Token.Types.OP_REL_EQ => new EqCompExpression(left, right),
+                Token.Types.OP_REL_LESS => new LtCompExpression(left, right),
+                Token.Types.OP_REL_GREATER => new GtCompExpression(left, right),
+                Token.Types.OP_REL_LESS_EQ => new LteCompExpression(left, right),
+                Token.Types.OP_REL_GREATER_EQ => new GteCompExpression(left, right),
+                _ => throw new InvalidOperationException($"Unknown comparison operator: {op}")
+            };
         }
 
         return left;
+    }
+
+    /// <summary>
+    /// Checks if the token is a comparison operator
+    /// </summary>
+    private bool IsComparisonOperator(Token.Types type)
+    {
+        return type == Token.Types.OP_REL_EQ ||
+               type == Token.Types.OP_REL_LESS ||
+               type == Token.Types.OP_REL_GREATER ||
+               type == Token.Types.OP_REL_LESS_EQ ||
+               type == Token.Types.OP_REL_GREATER_EQ;
     }
 
     /// <summary>

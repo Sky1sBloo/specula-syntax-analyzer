@@ -150,11 +150,80 @@ public class ExpressionStatementTests
         Assert.That(addExpr.lhs, Is.TypeOf<PreIncExpression>());
 
         // x++ * 2
+        Setup(); // Reset for next assertion
         output = LexerFileReader.ParseFile("Samples/Expression/Mixed/PostIncrementMult.json");
         node = expressionHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<MultExpression>());
         var multExpr = (MultExpression)node.node!;
         Assert.That(multExpr.lhs, Is.TypeOf<PostIncExpression>());
+    }
+
+    [Test]
+    public void ComparisonExpressions()
+    {
+        // 5 == 3
+        var output = LexerFileReader.ParseFile("Samples/Expression/Comparison/Equals.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<EqCompExpression>());
+
+        // 5 < 3
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/LessThan.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<LtCompExpression>());
+
+        // 5 > 3
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/GreaterThan.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<GtCompExpression>());
+
+        // 5 <= 3
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/LessThanOrEqual.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<LteCompExpression>());
+
+        // 5 >= 3
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/GreaterThanOrEqual.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<GteCompExpression>());
+    }
+
+    [Test]
+    public void ComparisonPrecedence()
+    {
+        // 5 + 3 == 8 should be parsed as (5 + 3) == 8
+        var output = LexerFileReader.ParseFile("Samples/Expression/Comparison/AdditionEqualsComparison.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<EqCompExpression>());
+        var eqExpr = (EqCompExpression)node.node!;
+        Assert.That(eqExpr.lhs, Is.TypeOf<AddExpression>());
+
+        // 10 - 2 < 5 should be parsed as (10 - 2) < 5
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/SubtractionLessComparison.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<LtCompExpression>());
+        var ltExpr = (LtCompExpression)node.node!;
+        Assert.That(ltExpr.lhs, Is.TypeOf<SubExpression>());
+
+        // 3 * 4 > 10 should be parsed as (3 * 4) > 10
+        Setup(); // Reset for next assertion
+        output = LexerFileReader.ParseFile("Samples/Expression/Comparison/MultiplicationGreaterComparison.json");
+        node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<GtCompExpression>());
+        var gtExpr = (GtCompExpression)node.node!;
+        Assert.That(gtExpr.lhs, Is.TypeOf<MultExpression>());
     }
 }
