@@ -22,7 +22,7 @@ public class DeclarationStatementTests
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(1));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
-    } 
+    }
 
     [Test]
     public void SingleDeclarationWithValue()
@@ -31,12 +31,11 @@ public class DeclarationStatementTests
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(1));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
-    } 
+    }
 
     [Test]
     public void MultipleDeclaration()
     {
-        Console.WriteLine("Multiple delcaration");
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
         List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node.Count, Is.EqualTo(3));
@@ -47,15 +46,20 @@ public class DeclarationStatementTests
     public void NoIdentifier()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoIdentifier.json");
-        analyzer.ReadTokens(output.Tokens);
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+
+        Assert.That(node.Count, Is.EqualTo(0));
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
 
     [Test]
     public void NoType()
     {
+
+        Console.WriteLine("No typ");
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
-        analyzer.ReadTokens(output.Tokens);
-        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(1));
+        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node.Count, Is.EqualTo(0));
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
 }

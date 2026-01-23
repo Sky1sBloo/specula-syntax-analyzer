@@ -6,12 +6,12 @@ public class ErrorsHandler
 
     public void AddError(string errorMsg)
     {
-        ErrorList.Append(errorMsg);
+        ErrorList.Add(errorMsg);
     }
 
     public void AddError(SyntaxErrorException exception)
     {
-        ErrorList.Append(exception.Message);
+        ErrorList.Add(exception.Message);
     }
 
     public void ClearErrors()

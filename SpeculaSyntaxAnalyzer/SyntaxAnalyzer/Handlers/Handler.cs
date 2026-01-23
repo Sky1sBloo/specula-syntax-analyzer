@@ -56,6 +56,10 @@ public abstract class Handler
         catch (SyntaxErrorException ex)
         {
             errorHandler.AddError(ex);
+            while (CurrentToken.Type != Token.Types.D_SEMICOLON)
+            {
+                incrementIndex();
+            }
         }
         return null;
     }
