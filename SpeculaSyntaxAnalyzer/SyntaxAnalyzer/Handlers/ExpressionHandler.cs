@@ -28,6 +28,72 @@ public class ExpressionHandler : Handler
     /// </summary>
     private Expression ParseExpression()
     {
+        return ParseLogicalOr();
+    }
+
+    /// <summary>
+    /// Parses logical OR expressions (||)
+    /// </summary>
+    private Expression ParseLogicalOr()
+    {
+        Expression left = ParseLogicalAnd();
+
+        while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_OR)
+        {
+            incrementIndex();
+            Expression right = ParseLogicalAnd();
+            left = new OrLogical(left, right);
+        }
+
+        return left;
+    }
+
+    /// <summary>
+    /// Parses logical AND expressions (&&)
+    /// </summary>
+    private Expression ParseLogicalAnd()
+    {
+        Expression left = ParseEquality();
+
+        while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_AND)
+        {
+            incrementIndex();
+            Expression right = ParseEquality();
+            left = new AndLogical(left, right);
+        }
+
+        return left;
+    }
+
+    /// <summary>
+    /// Parses equality expressions (== !=)
+    /// </summary>
+    private Expression ParseEquality()
+    {
+        Expression left = ParseComparison();
+
+        while (HasMoreTokens && IsEqualityOperator(CurrentToken.Type))
+        {
+            Token.Types op = CurrentToken.Type;
+            incrementIndex();
+            Expression right = ParseComparison();
+            
+            left = op switch
+            {
+                Token.Types.OP_REL_EQ => new EqCompExpression(left, right),
+                Token.Types.OP_REL_NOT_EQ => new NotEqCompExpression(left, right),
+                _ => throw new InvalidOperationException($"Unknown equality operator: {op}")
+            };
+        }
+
+        return left;
+    }
+
+    /// <summary>
+    /// Parses comparison expressions (< <= > >=)
+    /// </summary>
+    private Expression ParseComparison()
+    {
         Expression left = ParseAddSubtract();
 
         while (HasMoreTokens && IsComparisonOperator(CurrentToken.Type))
@@ -38,7 +104,6 @@ public class ExpressionHandler : Handler
             
             left = op switch
             {
-                Token.Types.OP_REL_EQ => new EqCompExpression(left, right),
                 Token.Types.OP_REL_LESS => new LtCompExpression(left, right),
                 Token.Types.OP_REL_GREATER => new GtCompExpression(left, right),
                 Token.Types.OP_REL_LESS_EQ => new LteCompExpression(left, right),
@@ -51,12 +116,20 @@ public class ExpressionHandler : Handler
     }
 
     /// <summary>
+    /// Checks if the token is an equality operator
+    /// </summary>
+    private bool IsEqualityOperator(Token.Types type)
+    {
+        return type == Token.Types.OP_REL_EQ ||
+               type == Token.Types.OP_REL_NOT_EQ;
+    }
+
+    /// <summary>
     /// Checks if the token is a comparison operator
     /// </summary>
     private bool IsComparisonOperator(Token.Types type)
     {
-        return type == Token.Types.OP_REL_EQ ||
-               type == Token.Types.OP_REL_LESS ||
+        return type == Token.Types.OP_REL_LESS ||
                type == Token.Types.OP_REL_GREATER ||
                type == Token.Types.OP_REL_LESS_EQ ||
                type == Token.Types.OP_REL_GREATER_EQ;
@@ -105,7 +178,7 @@ public class ExpressionHandler : Handler
     }
 
     /// <summary>
-    /// Parses unary operators (pre-increment/decrement and unary +/-)
+    /// Parses unary operators (pre-increment/decrement, unary +/-, and logical NOT)
     /// </summary>
     private Expression ParseUnary()
     {
@@ -130,6 +203,11 @@ public class ExpressionHandler : Handler
                 incrementIndex();
                 Expression negExpr = ParseUnary();
                 return new PreNegExpression(negExpr);
+
+            case Token.Types.OP_NOT:
+                incrementIndex();
+                Expression notExpr = ParseUnary();
+                return new NotLogical(notExpr);
 
             default:
                 return ParsePostfix();

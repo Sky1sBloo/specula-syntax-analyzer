@@ -69,6 +69,13 @@ public class ForLoopTests
     {
         var output = LexerFileReader.ParseFile("Samples/For/ForComplexCondition.json");
         HandlerOutput result = forHandler.HandleToken(output.Tokens, 0);
+        
+        foreach (var error in errorsHandler.ErrorList)
+        {
+            Console.WriteLine($"Error: {error}");
+        }
+        
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.InstanceOf<ForLoop>());
         var forLoop = (ForLoop)result.node!;
         Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());

@@ -111,18 +111,11 @@
             "value": "i"
         },
         {
-            "char_end": 32,
+            "char_end": 33,
             "char_start": 32,
             "line": 1,
-            "type": "OP_NOT",
-            "value": "!"
-        },
-        {
-            "char_end": 34,
-            "char_start": 33,
-            "line": 1,
-            "type": "OP_EQUALS",
-            "value": "="
+            "type": "OP_REL_NOT_EQ",
+            "value": "!="
         },
         {
             "char_end": 36,
