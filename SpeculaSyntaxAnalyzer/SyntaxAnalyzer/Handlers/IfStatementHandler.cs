@@ -23,6 +23,12 @@ public class IfStatementHandler : Handler
             throw new SyntaxErrorException(["if"], CurrentToken);
         }
         incrementIndex();
+        if (CurrentToken.Type != Token.Types.D_PAR_OP)
+        {
+            SyntaxErrorException ex = new SyntaxErrorException(["("], CurrentToken);
+            errorHandler.AddError(ex);
+            throw ex;
+        }
 
         ParseNode? conditionNode = delegateToHandler(expressionHandler);
         if (conditionNode is null || conditionNode is not Expression conditionExpr)
