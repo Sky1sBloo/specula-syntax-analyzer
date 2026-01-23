@@ -14,6 +14,7 @@ public abstract class Handler
     private List<Token> tokens = new();
 
     protected Token CurrentToken => tokens.ElementAt(i);
+    protected bool HasMoreTokens => i < tokens.Count;
 
     public Handler(ErrorsHandler errorHandler)
     {

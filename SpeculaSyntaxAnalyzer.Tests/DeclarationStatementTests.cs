@@ -1,7 +1,6 @@
 using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 using SpeculaSyntaxAnalyzer.LexerReader;
 using SpeculaSyntaxAnalyzer.ParseTree;
-using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Helpers;
 
 namespace SpeculaSyntaxAnalyzer.Tests;
 
