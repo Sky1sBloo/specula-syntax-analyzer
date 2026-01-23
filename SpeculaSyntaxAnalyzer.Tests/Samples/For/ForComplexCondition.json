@@ -62,120 +62,127 @@
             "value": "("
         },
         {
-            "char_end": 20,
+            "char_end": 19,
             "char_start": 18,
             "line": 1,
             "type": "IDENT",
             "value": "i"
         },
         {
-            "char_end": 22,
-            "char_start": 21,
+            "char_end": 21,
+            "char_start": 20,
             "line": 1,
             "type": "OP_REL_LESS",
             "value": "<"
         },
         {
-            "char_end": 25,
-            "char_start": 23,
+            "char_end": 24,
+            "char_start": 22,
             "line": 1,
             "type": "L_INT",
             "value": "10"
         },
         {
-            "char_end": 26,
-            "char_start": 25,
+            "char_end": 24,
+            "char_start": 24,
             "line": 1,
             "type": "D_PAR_CLO",
             "value": ")"
         },
         {
-            "char_end": 31,
-            "char_start": 27,
+            "char_end": 27,
+            "char_start": 26,
             "line": 1,
             "type": "OP_AND",
             "value": "&&"
         },
         {
-            "char_end": 33,
-            "char_start": 32,
+            "char_end": 29,
+            "char_start": 29,
             "line": 1,
             "type": "D_PAR_OP",
             "value": "("
         },
         {
-            "char_end": 36,
-            "char_start": 34,
+            "char_end": 31,
+            "char_start": 30,
             "line": 1,
             "type": "IDENT",
             "value": "i"
         },
         {
-            "char_end": 40,
-            "char_start": 37,
+            "char_end": 32,
+            "char_start": 32,
             "line": 1,
-            "type": "OP_REL_NOT_EQ",
-            "value": "!="
+            "type": "OP_NOT",
+            "value": "!"
         },
         {
-            "char_end": 42,
-            "char_start": 41,
+            "char_end": 34,
+            "char_start": 33,
+            "line": 1,
+            "type": "OP_EQUALS",
+            "value": "="
+        },
+        {
+            "char_end": 36,
+            "char_start": 35,
             "line": 1,
             "type": "L_INT",
             "value": "5"
         },
         {
-            "char_end": 43,
-            "char_start": 43,
+            "char_end": 36,
+            "char_start": 36,
             "line": 1,
             "type": "D_PAR_CLO",
             "value": ")"
         },
         {
-            "char_end": 43,
-            "char_start": 43,
+            "char_end": 37,
+            "char_start": 37,
             "line": 1,
             "type": "D_SEMICOLON",
             "value": ";"
         },
         {
-            "char_end": 46,
-            "char_start": 45,
+            "char_end": 40,
+            "char_start": 39,
             "line": 1,
             "type": "IDENT",
             "value": "i"
         },
         {
-            "char_end": 50,
-            "char_start": 47,
+            "char_end": 42,
+            "char_start": 41,
             "line": 1,
-            "type": "OP_COMPOUND_ADD",
+            "type": "OP_PLUS_EQ",
             "value": "+="
         },
         {
-            "char_end": 52,
-            "char_start": 51,
+            "char_end": 45,
+            "char_start": 44,
             "line": 1,
             "type": "L_INT",
             "value": "1"
         },
         {
-            "char_end": 33,
-            "char_start": 33,
+            "char_end": 45,
+            "char_start": 45,
             "line": 1,
             "type": "D_PAR_CLO",
             "value": ")"
         },
         {
-            "char_end": 54,
-            "char_start": 54,
+            "char_end": 47,
+            "char_start": 47,
             "line": 1,
             "type": "D_CBRAC_OP",
             "value": "{"
         },
         {
-            "char_end": 56,
-            "char_start": 56,
+            "char_end": 48,
+            "char_start": 48,
             "line": 1,
             "type": "D_CBRAC_CLO",
             "value": "}"
