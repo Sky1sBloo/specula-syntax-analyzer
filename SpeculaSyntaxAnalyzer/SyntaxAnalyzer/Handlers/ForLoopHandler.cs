@@ -9,14 +9,23 @@ public class ForLoopHandler : Handler
 {
     private readonly ExpressionHandler expressionHandler;
     private readonly BodyHandler bodyHandler;
+    private readonly DeclarationHandler declarationHandler;
+    private readonly VarAssignHandler varAssignHandler;
+
     public ForLoopHandler(ErrorsHandler errors) : base(errors)
     {
         expressionHandler = new(errors);
         bodyHandler = new(errors);
+        declarationHandler = new(errors);
+        varAssignHandler = new(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
+        ForInit? forInit = null;
+        Expression? expression;
+        Assignment? assignment;
+        BodyNode? body;
         if (CurrentToken.Type != Token.Types.K_FOR)
         {
             throw new SyntaxErrorException(["for"], CurrentToken);
@@ -27,6 +36,86 @@ public class ForLoopHandler : Handler
             throw new SyntaxErrorException(["("], CurrentToken);
         }
         incrementIndex();
-        return null;
+
+        switch (CurrentToken.Type)
+        {
+            case Token.Types.K_LET:
+                forInit = handleDeclaration();
+                break;
+            case Token.Types.IDENT:
+                forInit = handleAssignment();
+                break;
+        }
+        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
+        {
+            throw new SyntaxErrorException(["{"], CurrentToken);
+        }
+        incrementIndex();
+
+        expression = handleExpression();
+        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
+        {
+            throw new SyntaxErrorException(["{"], CurrentToken);
+        }
+        incrementIndex();
+
+        assignment = handleAssignment();
+        if (CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            throw new SyntaxErrorException(["("], CurrentToken);
+        }
+        incrementIndex();
+        body = handleBody();
+
+        if (forInit is null || expression is null || assignment is null || body is null)
+        {
+            return null;
+        }
+
+        return new ForLoop(forInit, expression, assignment, body);
+    }
+
+    private DeclarationStatementNode? handleDeclaration()
+    {
+        ParseNode? node = delegateToHandler(declarationHandler);
+        if (node == null)
+            return null;
+        if (node is DeclarationStatementNode declarationStatement)
+            return declarationStatement;
+        else
+            throw new InvalidOperationException("Node returned not declaration statement");
+    }
+
+    private Assignment? handleAssignment()
+    {
+        ParseNode? node = delegateToHandler(varAssignHandler);
+        if (node == null)
+            return null;
+        if (node is Assignment assignment)
+            return assignment;
+        else
+            throw new InvalidOperationException("Node returned not assignment statement");
+    }
+
+    private Expression? handleExpression()
+    {
+        ParseNode? node = delegateToHandler(expressionHandler);
+        if (node == null)
+            return null;
+        if (node is Expression expression)
+            return expression;
+        else
+            throw new InvalidOperationException("Node returned not expression");
+    }
+
+    private BodyNode? handleBody()
+    {
+        ParseNode? node = delegateToHandler(bodyHandler);
+        if (node == null)
+            return null;
+        if (node is BodyNode body)
+            return body;
+        else
+            throw new InvalidOperationException("Node returned not body");
     }
 }
