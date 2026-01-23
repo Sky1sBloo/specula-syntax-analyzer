@@ -20,6 +20,7 @@ public class ValueHandler : Handler
 
     private States currentState = States.START;
     private Type type = Type.LITERAL;
+    private string identifier = "";
 
     public override void handleToken(Token token, ParseNode? prevNode)
     {
@@ -47,13 +48,14 @@ public class ValueHandler : Handler
                 SetHandlerFinished(node);
                 break;
             case Type.IDENTIFIER:
-                node = new IdentifierValue(token.Value);
+                node = new IdentifierValue(identifier);
                 SetHandlerFinished(node);
                 break;
             default:
                 throw new SyntaxErrorException(["Literal/Identifier"], token);
         }
         currentState = States.START;
+        identifier = "";
         type = Type.LITERAL;
     }
 
@@ -71,6 +73,7 @@ public class ValueHandler : Handler
                 end(token);
                 break;
             case Token.Types.IDENT:
+                identifier = token.Value;
                 currentState = States.FOUND_IDENT;
                 break;
         }
