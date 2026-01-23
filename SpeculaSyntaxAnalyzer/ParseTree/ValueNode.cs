@@ -1,6 +1,6 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public abstract record ValueNode : Expression;
+public interface ValueNode : Expression;
 
 public record LiteralValue(TypeNode type, string value) : ValueNode;
 public record IdentifierValue(string value) : ValueNode;

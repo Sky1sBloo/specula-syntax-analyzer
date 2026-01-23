@@ -1,6 +1,6 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public abstract record Expression : ParseNode;
+public interface Expression : ParseNode;
 
 public record EqCompExpression(Expression lhs, Expression rhs) : Expression;
 public record GtCompExpression(Expression lhs, Expression rhs) : Expression;
