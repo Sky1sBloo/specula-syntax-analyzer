@@ -14,6 +14,15 @@ public class CapabilityHandler : Handler
         }
         incrementIndex();
         PrintableList<Capability> capabilities = new();
+
+        // Check for empty capability list []
+        if (CurrentToken.Type == Token.Types.D_BRAC_CLO)
+        {
+            var ex = new SyntaxErrorException(["capability"], CurrentToken);
+            errorHandler.AddError(ex);
+            throw ex;
+        }
+
         while (true)
         {
             CapabilityTypes type;
@@ -72,7 +81,9 @@ public class CapabilityHandler : Handler
                     type = CapabilityTypes.NETWORK;
                     break;
                 default:
-                    throw new SyntaxErrorException(["OWN", "CONST", "REF"], CurrentToken);
+                    var ex = new SyntaxErrorException(["OWN", "CONST", "REF"], CurrentToken);
+                    errorHandler.AddError(ex);
+                    throw ex;
             }
             incrementIndex();
             // For [own, network[json]]
@@ -96,18 +107,67 @@ public class CapabilityHandler : Handler
                     if (CurrentToken.Type == Token.Types.D_BRAC_CLO)
                         break;
 
-                    if (CurrentToken.Type == Token.Types.IDENT)
+                    if (CurrentToken.Type == Token.Types.IDENT || CurrentToken.Type == Token.Types.K_THIS)
                     {
                         configuration.Add(CurrentToken.Value);
                         incrementIndex();
                     }
+                    else if (IsCapabilityKeyword(CurrentToken.Type))
+                    {
+                        // Reject stacked capabilities like shared[shared]
+                        var ex = new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
+                        errorHandler.AddError(ex);
+                        throw ex;
+                    }
                     else
                         throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
                 }
+                incrementIndex();
             }
             capabilities.Add(new Capability(type, configuration));
+
+            //  For comma between capabilities
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
+            {
+                incrementIndex();
+
+                // Check for trailing comma
+                if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_BRAC_CLO)
+                {
+                    Token missing = new()
+                    {
+                        Type = Token.Types.UNKNOWN,
+                        Line = getIndex(),
+                        CharStart = 0,
+                        CharEnd = 0
+                    };
+                    var ex = new SyntaxErrorException(["capability"], missing);
+                    errorHandler.AddError(ex);
+                    throw ex;
+                }
+                continue;
+            }
+            else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_BRAC_CLO)
+            {
+                throw new SyntaxErrorException([",", "]"], CurrentToken);
+            }
         }
         incrementIndex();
         return new Capabilities(capabilities);
+    }
+
+    private bool IsCapabilityKeyword(Token.Types type)
+    {
+        return type == Token.Types.K_OWN ||
+               type == Token.Types.K_MOVE ||
+               type == Token.Types.K_SHARED ||
+               type == Token.Types.K_VIEW ||
+               type == Token.Types.K_SHARE ||
+               type == Token.Types.K_MUT ||
+               type == Token.Types.K_CONST ||
+               type == Token.Types.K_THR_LOCAL ||
+               type == Token.Types.K_SYNC ||
+               type == Token.Types.K_INFER ||
+               type == Token.Types.K_NETWORK;
     }
 }
