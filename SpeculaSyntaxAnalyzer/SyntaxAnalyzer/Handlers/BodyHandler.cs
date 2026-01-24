@@ -49,6 +49,9 @@ public class BodyHandler : Handler
                 case Token.Types.K_LET:
                     handleDeclarationStmt();
                     break;
+                case Token.Types.K_FN:
+                    handleFuncDef();
+                    break;
                 case Token.Types.IDENT:
                     int errorCountBefore = errorHandler.ErrorList.Count;
                     if (!tryHandleIdentifierStart())
@@ -95,7 +98,11 @@ public class BodyHandler : Handler
             /// call func
             /// spawn thread
 
-            incrementIndex();
+            // Advance only if we are not sitting on a closing brace; the loop will break on it.
+            if (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
+            {
+                incrementIndex();
+            }
         }
         return new BodyNode(statements);
     }
@@ -114,6 +121,23 @@ public class BodyHandler : Handler
         else
         {
             throw new InvalidOperationException("Node is not declaration statement");
+        }
+    }
+
+    private void handleFuncDef()
+    {
+        ParseNode? node = delegateToHandler(new FuncDefHandler(errorHandler));
+        if (node == null)
+        {
+            return;
+        }
+        if (node is FuncDefNode funcDefNode)
+        {
+            statements.Add(funcDefNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Node is not function definition");
         }
     }
 

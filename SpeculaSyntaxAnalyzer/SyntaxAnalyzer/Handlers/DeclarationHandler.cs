@@ -82,7 +82,7 @@ public class DeclarationHandler : Handler
         {
             TypeNode inferredType = InferTypeFromExpression(value);
             Capabilities defaultCapabilities = generateDefaultCapabilities();
-            typeDefinition = new TypeDefinitionNode(inferredType.type, defaultCapabilities);
+            typeDefinition = new TypeDefinitionNode(inferredType, defaultCapabilities);
         }
 
         return ConstructNode();

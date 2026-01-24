@@ -30,7 +30,21 @@ public class VarDefinitionHandler : Handler
             incrementIndex();
         }
 
-        TypeNode? dataType;
+        TypeNode? dataType = getType();
+        if (dataType == null) return null;
+
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_BRAC_OP)
+        {
+            Capabilities? capabilities = getCapabilities();
+            if (capabilities == null) return null;
+            return new TypeDefinitionNode(dataType, capabilities);
+        }
+
+        Capabilities defaultCapabilities = CapabilityHandler.GenerateDefaultCapabilities();
+        return new TypeDefinitionNode(dataType, defaultCapabilities);
+
+
+        /*
         switch (CurrentToken.Type)
         {
             case Token.Types.K_TYPE:
@@ -44,23 +58,28 @@ public class VarDefinitionHandler : Handler
                         Capabilities? capabilities = getCapabilities();
                         if (capabilities == null) return null;
                         incrementIndex();
-                        return new TypeDefinitionNode(dataType.type, capabilities);
+                        return new TypeDefinitionNode(dataType.DataType, capabilities);
                     }
                     else
                     {
                         Capabilities defaultCapabilities = CapabilityHandler.GenerateDefaultCapabilities();
-                        return new TypeDefinitionNode(dataType.type, defaultCapabilities);
+                        return new TypeDefinitionNode(dataType.DataType, defaultCapabilities);
                     }
                 }
             default:
                 throw new SyntaxErrorException(["TYPE", "IDENTIFIER"], CurrentToken);
-        }
+        } */
     }
 
     private TypeNode? getType()
     {
-        TypeNode typeNode = new TypeNode(DataTypeHandler.TokenTypeToDataType(CurrentToken));
-        return typeNode;
+        ParseNode? parseNode = delegateToHandler(dataTypeHandler);
+        if (parseNode == null) return null;
+        if (parseNode is TypeNode typeNode)
+        {
+            return typeNode;
+        }
+        else throw new InvalidOperationException($"Expected type node. received: {parseNode}");
     }
 
     private Capabilities? getCapabilities()
@@ -73,5 +92,4 @@ public class VarDefinitionHandler : Handler
         }
         else throw new InvalidOperationException($"Expected capabilities node. received: {parseNode}");
     }
-
 }

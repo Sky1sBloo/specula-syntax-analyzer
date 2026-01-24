@@ -26,7 +26,7 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.type, Is.EqualTo(DataTypes.INT));
+        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.INT));
         Assert.That(literalValue.value, Is.EqualTo("42"));
     }
 
@@ -39,7 +39,7 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.type, Is.EqualTo(DataTypes.STRING));
+        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.STRING));
         Assert.That(literalValue.value, Is.EqualTo("\"hello\""));
     }
 
@@ -52,7 +52,7 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.type, Is.EqualTo(DataTypes.BOOL));
+        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.BOOL));
         Assert.That(literalValue.value, Is.EqualTo("true"));
     }
 
@@ -65,7 +65,7 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.type, Is.EqualTo(DataTypes.FLOAT));
+        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.FLOAT));
         Assert.That(literalValue.value, Is.EqualTo("3.14f"));
     }
 
@@ -208,7 +208,7 @@ public class ValueNodeTests
         Assert.That(structInit.keys[1].key, Is.EqualTo("pair"));
         Assert.That(structInit.keys[1].value, Is.TypeOf<LiteralValue>());
         var pairValue = (LiteralValue)structInit.keys[1].value;
-        Assert.That(pairValue.type.type, Is.EqualTo(DataTypes.DOUBLE));
+        Assert.That(pairValue.type.DataType, Is.EqualTo(DataTypes.DOUBLE));
         Assert.That(pairValue.value, Is.EqualTo("5.5"));
     }
 
