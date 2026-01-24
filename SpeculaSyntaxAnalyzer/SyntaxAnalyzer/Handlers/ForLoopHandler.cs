@@ -80,35 +80,15 @@ public class ForLoopHandler : Handler
         ParseNode? node = delegateToHandler(declarationHandler);
         if (node == null)
             return null;
-        if (node is DeclarationStatementNode declarationStatement)
-            return declarationStatement;
-        else
-            throw new InvalidOperationException("Node returned not declaration statement");
+        return (DeclarationStatementNode)node;
     }
 
     private Assignment? handleAssignment()
     {
-        string? identifier = null;
-        if (CurrentToken.Type == Token.Types.IDENT)
-        {
-            identifier = CurrentToken.Value;
-        }
-        
         ParseNode? node = delegateToHandler(varAssignHandler);
         if (node == null)
             return null;
-        if (node is Expression expression)
-        {
-            if (identifier != null)
-            {
-                return new AssignmentStatementNode(identifier, expression);
-            }
-            return null;
-        }
-        if (node is Assignment assignment)
-            return assignment;
-        else
-            throw new InvalidOperationException("Node returned not expression or assignment statement");
+        return (Assignment)node;
     }
 
     private Expression? handleExpression()
@@ -116,10 +96,7 @@ public class ForLoopHandler : Handler
         ParseNode? node = delegateToHandler(expressionHandler);
         if (node == null)
             return null;
-        if (node is Expression expression)
-            return expression;
-        else
-            throw new InvalidOperationException("Node returned not expression");
+        return (Expression)node;
     }
 
     private BodyNode? handleBody()
@@ -127,9 +104,6 @@ public class ForLoopHandler : Handler
         ParseNode? node = delegateToHandler(bodyHandler);
         if (node == null)
             return null;
-        if (node is BodyNode body)
-            return body;
-        else
-            throw new InvalidOperationException("Node returned not body");
+        return (BodyNode)node;
     }
 }

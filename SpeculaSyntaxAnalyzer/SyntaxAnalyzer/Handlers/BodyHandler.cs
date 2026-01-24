@@ -41,6 +41,7 @@ public class BodyHandler : Handler
 
             if (CurrentToken.Type == Token.Types.D_CBRAC_CLO)
             {
+                incrementIndex(); 
                 break;
             }
 
@@ -109,14 +110,7 @@ public class BodyHandler : Handler
         {
             return;
         }
-        if (node is DeclarationStatementNode declarationStatementNode)
-        {
-            statements.Add(declarationStatementNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not declaration statement");
-        }
+        statements.Add((Statement)node);
     }
 
     private void handleFuncDef()
@@ -126,14 +120,7 @@ public class BodyHandler : Handler
         {
             return;
         }
-        if (node is FuncDefNode funcDefNode)
-        {
-            statements.Add(funcDefNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not function definition");
-        }
+        statements.Add((Statement)node);
     }
 
     private bool handleVarAssignStmt()
@@ -143,14 +130,7 @@ public class BodyHandler : Handler
         {
             return false;
         }
-        if (node is Statement statementNode)
-        {
-            statements.Add(statementNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not expression for var assign");
-        }
+        statements.Add((Statement)node);
         return true;
     }
 
@@ -166,14 +146,7 @@ public class BodyHandler : Handler
             }
             throw new SyntaxErrorException(["assignment", "expression"], CurrentToken);
         }
-        if (node is Statement statementNode)
-        {
-            statements.Add(statementNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Identifier start did not produce a statement");
-        }
+        statements.Add((Statement)node);
     }
 
     private bool tryHandleIdentifierStart()
@@ -183,32 +156,18 @@ public class BodyHandler : Handler
         {
             return false;
         }
-        if (node is Statement statementNode)
-        {
-            statements.Add(statementNode);
-            return true;
-        }
-        else
-        {
-            throw new InvalidOperationException("Identifier start did not produce a statement");
-        }
+        statements.Add((Statement)node);
+        return true;
     }
 
     private void handleIfStatement()
     {
-        ParseNode? node = delegateToHandler(new IfStatementHandler(errorHandler));
+        ParseNode? node = delegateToHandler(new ConditionalStatementHandler(errorHandler));
         if (node == null)
         {
             return;
         }
-        if (node is Statement statementNode)
-        {
-            statements.Add(statementNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not if statement");
-        }
+        statements.Add((Statement)node);
     }
 
     private void handleForLoop()
@@ -218,14 +177,7 @@ public class BodyHandler : Handler
         {
             return;
         }
-        if (node is Statement statementNode)
-        {
-            statements.Add(statementNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not for loop");
-        }
+        statements.Add((Statement)node);
     }
 
     private bool handleExpressionStmt()
@@ -235,14 +187,7 @@ public class BodyHandler : Handler
         {
             return false;
         }
-        if (node is Expression expressionNode)
-        {
-            statements.Add(expressionNode);
-        }
-        else
-        {
-            throw new InvalidOperationException("Node is not expression statement");
-        }
+        statements.Add((Expression)node);
         return true;
     }
 
@@ -261,12 +206,8 @@ public class BodyHandler : Handler
                 return false;
             }
 
-            if (result is Expression expressionNode)
-            {
-                statements.Add(expressionNode);
-                return true;
-            }
-            return false;
+            statements.Add((Expression)result);
+            return true;
         }
         catch (SyntaxErrorException)
         {
@@ -289,12 +230,8 @@ public class BodyHandler : Handler
                 return false;
             }
 
-            if (result is Expression expressionNode)
-            {
-                statements.Add(expressionNode);
-                return true;
-            }
-            return false;
+            statements.Add((Expression)result);
+            return true;
         }
         catch (SyntaxErrorException)
         {

@@ -75,21 +75,13 @@ public class VarDefinitionHandler : Handler
     {
         ParseNode? parseNode = delegateToHandler(dataTypeHandler);
         if (parseNode == null) return null;
-        if (parseNode is TypeNode typeNode)
-        {
-            return typeNode;
-        }
-        else throw new InvalidOperationException($"Expected type node. received: {parseNode}");
+        return (TypeNode)parseNode;
     }
 
     private Capabilities? getCapabilities()
     {
         ParseNode? parseNode = delegateToHandler(capabilityHandler);
         if (parseNode == null) return null;
-        if (parseNode is Capabilities capabilities)
-        {
-            return capabilities;
-        }
-        else throw new InvalidOperationException($"Expected capabilities node. received: {parseNode}");
+        return (Capabilities)parseNode;
     }
 }
