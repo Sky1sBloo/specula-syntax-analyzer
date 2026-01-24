@@ -4,35 +4,41 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class SyntaxAnalyzerRoot
 {
-    private List<ParseNode> root;
-
     public readonly ErrorsHandler ErrorHandler;
+    private BodyHandler bodyHandler;
 
     private int i = 0;
 
     public SyntaxAnalyzerRoot()
     {
         ErrorHandler = new();
-        root = new();
+        bodyHandler = new BodyHandler(ErrorHandler);
     }
 
-    public List<ParseNode> ReadTokens(List<Token> tokens)
+    public ParseNode? ReadTokens(List<Token> tokens)
     {
-        while (i < tokens.Count)
-        {
-            ParseNode? node = tokens[i].Type switch
+        // Wrap tokens with { } to use BodyHandler
+        List<Token> wrappedTokens =
+        [
+            new Token
             {
-                Token.Types.K_LET => delegateToHandler(new DeclarationHandler(ErrorHandler), tokens),
-                Token.Types.D_CBRAC_OP => delegateToHandler(new BodyHandler(ErrorHandler), tokens),
-                _ => throw new SyntaxErrorException(["Start Symbol"], tokens[i])
-            };
-            if (node != null)
+                Type = Token.Types.D_CBRAC_OP,
+                Value = "{",
+                Line = 0,
+                CharStart = 0,
+                CharEnd = 0
+            },
+            .. tokens,
+            new Token
             {
-                root.Add(node);
-            }
-            i++;
-        }
-        return root;
+                Type = Token.Types.D_CBRAC_CLO,
+                Value = "}",
+                Line = tokens.Count > 0 ? tokens[^1].Line : 0,
+                CharStart = 0,
+                CharEnd = 0
+            },
+        ];
+        return delegateToHandler(bodyHandler, wrappedTokens);
     }
 
     private ParseNode? delegateToHandler(Handler handler, List<Token> token)

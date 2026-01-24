@@ -7,9 +7,28 @@ foreach (string iFile in files)
 {
     LexerOutput output = LexerFileReader.ParseFile(iFile);
     SyntaxAnalyzerRoot analyzer = new();
-    List<ParseNode> nodes = analyzer.ReadTokens(output.Tokens);
-    foreach (var node in nodes)
+    ParseNode? node = analyzer.ReadTokens(output.Tokens);
+    if (node != null) {
+        if (node is BodyNode bodyNode)
+        {
+            Console.WriteLine("Success!");
+            Console.WriteLine($"Body contains {bodyNode.statements.Count} statements");
+            foreach (var stmt in bodyNode.statements)
+            {
+                Console.WriteLine(stmt);
+            }
+        }
+        else
+        {
+            Console.WriteLine("Root node is not a BodyNode");
+        }
+    } else
     {
-        Console.WriteLine(node);
+        Console.WriteLine("No parse tree generated");
+    }
+
+    foreach (var error in analyzer.ErrorHandler.ErrorList)
+    {
+        Console.WriteLine(error);
     }
 }

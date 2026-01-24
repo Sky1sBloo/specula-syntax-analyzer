@@ -1,6 +1,6 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public interface Expression : ParseNode;
+public interface Expression : Statement;
 
 
 public record AddExpression(Expression lhs, Expression rhs) : Expression;

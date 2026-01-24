@@ -46,10 +46,24 @@ public class BodyHandler : Handler
                     handleDeclarationStmt();
                     break;
                 case Token.Types.IDENT:
-                    handleVarAssignStmt();
+                    if (!handleVarAssignStmt())
+                    {
+                        handleExpressionStmt();
+                    }
                     break;
                 case Token.Types.K_IF:
                     handleIfStatement();
+                    break;
+                case Token.Types.K_FOR:
+                    handleForLoop();
+                    break;
+                default:
+                    if (!tryHandleExpressionStmt())
+                    {
+                        throw new SyntaxErrorException(
+                            ["statement", "expression", "declaration"],
+                            CurrentToken);
+                    }
                     break;
             }
             /// todo
@@ -83,12 +97,12 @@ public class BodyHandler : Handler
         }
     }
 
-    private void handleVarAssignStmt()
+    private bool handleVarAssignStmt()
     {
         ParseNode? node = delegateToHandler(new VarAssignHandler(errorHandler));
         if (node == null)
         {
-            return;
+            return false;
         }
         if (node is Statement statementNode)
         {
@@ -98,6 +112,7 @@ public class BodyHandler : Handler
         {
             throw new InvalidOperationException("Node is not expression for var assign");
         }
+        return true;
     }
 
     private void handleIfStatement()
@@ -115,5 +130,59 @@ public class BodyHandler : Handler
         {
             throw new InvalidOperationException("Node is not if statement");
         }
+    }
+
+    private void handleForLoop()
+    {
+        ParseNode? node = delegateToHandler(new ForLoopHandler(errorHandler));
+        if (node == null)
+        {
+            return;
+        }
+        if (node is Statement statementNode)
+        {
+            statements.Add(statementNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Node is not for loop");
+        }
+    }
+
+    private bool handleExpressionStmt()
+    {
+        ParseNode? node = delegateToHandler(new ExpressionHandler(errorHandler));
+        if (node == null)
+        {
+            return false;
+        }
+        if (node is Expression expressionNode)
+        {
+            statements.Add(expressionNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Node is not expression statement");
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to parse an expression statement without recording errors
+    /// Returns true if successful, false otherwise
+    /// </summary>
+    private bool tryHandleExpressionStmt()
+    {
+        ParseNode? node = delegateToHandlerSilently(new ExpressionHandler(errorHandler));
+        if (node == null)
+        {
+            return false;
+        }
+        if (node is Expression expressionNode)
+        {
+            statements.Add(expressionNode);
+            return true;
+        }
+        return false;
     }
 }
