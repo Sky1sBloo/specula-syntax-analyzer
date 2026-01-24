@@ -4,23 +4,23 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class DeclarationHandler : Handler
 {
-    private readonly DataTypeHandler dataTypeHandler;
+    private readonly VarDefinitionHandler varDefinitionHandler;
     private readonly ExpressionHandler expressionHandler;
 
     private string identifier = "";
-    private TypeNode? dataType = null;
+    private TypeDefinitionNode? typeDefinition = null;
     private Expression? value = null;
 
     public DeclarationHandler(ErrorsHandler errors) : base(errors)
     {
-        dataTypeHandler = new(errors);
+        varDefinitionHandler = new(errors);
         expressionHandler = new(errors);
     }
 
     public void Reset()
     {
         identifier = "";
-        dataType = null;
+        typeDefinition = null;
         value = null;
     }
 
@@ -50,8 +50,7 @@ public class DeclarationHandler : Handler
 
     private ParseNode? sawColonState()
     {
-        dataType = getType();
-        incrementIndex();
+        typeDefinition = getTypeDefinition();
 
         switch (CurrentToken.Type)
         {
@@ -60,7 +59,7 @@ public class DeclarationHandler : Handler
                 return sawEqualsState();
             case Token.Types.D_SEMICOLON:
                 {
-                    if (dataType == null) throw new SyntaxErrorException(["Definition of datatype"], CurrentToken);
+                    if (typeDefinition == null) throw new SyntaxErrorException(["Definition of datatype"], CurrentToken);
                     value = new LiteralValue(new TypeNode(DataTypes.NULL), "null");
                     return ConstructNode();
                 }
@@ -79,9 +78,11 @@ public class DeclarationHandler : Handler
             throw new SyntaxErrorException([";"], CurrentToken);
         }
 
-        if (dataType == null)
+        if (typeDefinition == null)
         {
-            dataType = InferTypeFromExpression(value);
+            TypeNode inferredType = InferTypeFromExpression(value);
+            Capabilities defaultCapabilities = generateDefaultCapabilities();
+            typeDefinition = new TypeDefinitionNode(inferredType.type, defaultCapabilities);
         }
 
         return ConstructNode();
@@ -104,24 +105,24 @@ public class DeclarationHandler : Handler
 
     private DeclarationStatementNode ConstructNode()
     {
-        if (dataType == null || value == null)
+        if (typeDefinition == null || value == null)
         {
             throw new InvalidOperationException("Tried to construct node of null datatype or value");
         }
-        DeclarationStatementNode statementNode = new(identifier, dataType, value);
+        DeclarationStatementNode statementNode = new(identifier, typeDefinition, value);
         Reset();
         return statementNode;
     }
 
-    private TypeNode? getType()
+    private TypeDefinitionNode? getTypeDefinition()
     {
-        ParseNode? parseNode = delegateToHandler(dataTypeHandler);
+        ParseNode? parseNode = delegateToHandler(varDefinitionHandler);
         if (parseNode == null) return null;
-        if (parseNode is TypeNode typeNode)
+        if (parseNode is TypeDefinitionNode typeDefNode)
         {
-            return typeNode;
+            return typeDefNode;
         }
-        else throw new InvalidOperationException($"Expected type node. received: {parseNode}");
+        else throw new InvalidOperationException($"Expected type definition node. received: {parseNode}");
     }
 
     private Expression? getVariableValue()
@@ -134,5 +135,14 @@ public class DeclarationHandler : Handler
             return expression;
         }
         else throw new InvalidOperationException($"Expected expression. received : {parseNode}");
+    }
+
+    private Capabilities generateDefaultCapabilities()
+    {
+        return new Capabilities(new PrintableList<Capability>()
+        {
+            new Capability(CapabilityTypes.OWN, new PrintableList<string>()),
+            new Capability(CapabilityTypes.CONST, new PrintableList<string>())
+        });
     }
 }

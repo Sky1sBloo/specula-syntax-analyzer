@@ -13,5 +13,5 @@ public enum DataTypes
     IDENTIFIER,
     UNKNOWN
 }
-public record TypeNode(DataTypes type) : ParseNode;
+public record TypeNode(DataTypes type) : VarDefinition;
 
