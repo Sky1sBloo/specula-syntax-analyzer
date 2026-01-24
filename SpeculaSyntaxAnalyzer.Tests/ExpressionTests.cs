@@ -91,6 +91,22 @@ public class ExpressionStatementTests
     }
 
     [Test]
+    public void FunctionCall()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Expression/FunctionCall/FunctionCallNoParam.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void FunctionCallWithParam()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Expression/FunctionCall/FunctionCallWithParam.json");
+        HandlerOutput node = expressionHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+    }
+    
+    [Test]
     public void UnaryPreIncrementDecrement()
     {
         // ++x
