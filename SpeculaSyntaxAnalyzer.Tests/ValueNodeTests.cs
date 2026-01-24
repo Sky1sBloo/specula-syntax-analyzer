@@ -135,7 +135,7 @@ public class ValueNodeTests
             HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
         });
 
-        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(2));
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(1));
     }
 
     [Test]
