@@ -7,7 +7,7 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 /// </summary>
 public class BodyHandler : Handler
 {
-    private List<Statement> statements = new();
+    private PrintableList<Statement> statements = new();
     private readonly IdentifierStartHandler identifierStartHandler;
     private readonly ExpressionHandler expressionHandler;
     public BodyHandler(ErrorsHandler err) : base(err)
@@ -19,7 +19,7 @@ public class BodyHandler : Handler
     protected override ParseNode? verifyTokens()
     {
         // reset statements for each new body parse to avoid leaking previous state
-        statements = new();
+        statements = new PrintableList<Statement>();
         if (CurrentToken.Type != Token.Types.D_CBRAC_OP)
         {
             throw new SyntaxErrorException(["{"], CurrentToken);
