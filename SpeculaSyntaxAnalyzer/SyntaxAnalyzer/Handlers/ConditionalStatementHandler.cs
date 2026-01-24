@@ -24,9 +24,10 @@ public class ConditionalStatementHandler : Handler
         }
         incrementIndex();
         IfStatementNode ifStatement = ParseIfStatement();
+        incrementIndex(); // move past the closing brace of the if statement body
         PrintableList<ElseIfStatementNode> elseIfStatements = new();
         ElseStatement? elseStatement = null;
-        while (true)
+        while (HasMoreTokens)
         {
             if (CurrentToken.Type == Token.Types.K_ELSE)
             {
@@ -35,10 +36,12 @@ public class ConditionalStatementHandler : Handler
                 {
                     incrementIndex();
                     elseIfStatements.Add(parseElseIfStatement());
+                    incrementIndex(); // move past the closing brace of the elseif body
                 }
                 else
                 {
                     elseStatement = parseElseStatement();
+                    break;
                 }
             }
             else
