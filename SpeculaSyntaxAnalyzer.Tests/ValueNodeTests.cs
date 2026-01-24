@@ -184,6 +184,35 @@ public class ValueNodeTests
     }
 
     [Test]
+    public void StructInitFunctionCallValue()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Value/StructInitFunctionCall.json");
+        HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<StructInitialization>());
+        
+        var structInit = (StructInitialization)node.node!;
+        Assert.That(structInit.identifier, Is.EqualTo("ident"));
+        Assert.That(structInit.keys.Count, Is.EqualTo(2));
+
+        Assert.That(structInit.keys[0].key, Is.EqualTo("key"));
+        Assert.That(structInit.keys[0].value, Is.TypeOf<FunctionCallValue>());
+        var funcValue = (FunctionCallValue)structInit.keys[0].value;
+        Assert.That(funcValue.identifier, Is.EqualTo("test"));
+        Assert.That(funcValue.funcParams.Count, Is.EqualTo(2));
+        Assert.That(funcValue.funcParams[0], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)funcValue.funcParams[0]).value, Is.EqualTo("3"));
+        Assert.That(funcValue.funcParams[1], Is.TypeOf<IdentifierValue>());
+        Assert.That(((IdentifierValue)funcValue.funcParams[1]).value, Is.EqualTo("x"));
+
+        Assert.That(structInit.keys[1].key, Is.EqualTo("pair"));
+        Assert.That(structInit.keys[1].value, Is.TypeOf<LiteralValue>());
+        var pairValue = (LiteralValue)structInit.keys[1].value;
+        Assert.That(pairValue.type.type, Is.EqualTo(DataTypes.DOUBLE));
+        Assert.That(pairValue.value, Is.EqualTo("5.5"));
+    }
+
+    [Test]
     public void StructInitUndefinedKey()
     {
         var output = LexerFileReader.ParseFile("Samples/Value/Invalid/StructInitUndefinedKey.json");
