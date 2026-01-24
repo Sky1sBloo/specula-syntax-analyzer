@@ -42,10 +42,12 @@ public class ValueHandler : Handler
             // Check if we're at the end of tokens before accessing CurrentToken
             if (HasMoreTokens)
             {
-                // Handle function calls
-                if (CurrentToken.Type == Token.Types.D_PAR_OP)
+                switch (CurrentToken.Type)
                 {
-                    return handleFunctionCall(identifier);
+                    case Token.Types.D_PAR_OP:
+                        return handleFunctionCall(identifier);
+                    case Token.Types.D_CBRAC_OP:
+                        return handleStructInitialization(identifier);
                 }
             }
             return new IdentifierValue(identifier);
@@ -106,5 +108,68 @@ public class ValueHandler : Handler
 
         incrementIndex();
         return new FunctionCallValue(identifier, parameters);
+    }
+
+    private StructInitialization handleStructInitialization(string identifier)
+    {
+        incrementIndex();
+        var keys = new PrintableList<StructKey>();
+        // For empty struct initialization
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_CLO)
+        {
+            incrementIndex();
+            return new StructInitialization(identifier, keys);
+        }
+
+        while (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
+        {
+            if (CurrentToken.Type != Token.Types.IDENT)
+            {
+                throw new SyntaxErrorException(["identifier"], CurrentToken);
+            }
+            string key = CurrentToken.Value;
+            incrementIndex();
+
+            if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_COLON)
+            {
+                throw new SyntaxErrorException([":"], CurrentToken);
+            }
+            incrementIndex();
+
+            ExpressionHandler exprHandler = new ExpressionHandler(errorHandler);
+            ParseNode? valueExpr = delegateToHandler(exprHandler);
+            if (valueExpr is Expression expr)
+            {
+                keys.Add(new StructKey(key, expr));
+            }
+            else
+            {
+                throw new SyntaxErrorException(["expression"], CurrentToken);
+            }
+
+            // for comma between key-value pairs or closing brace
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
+            {
+                incrementIndex();
+            }
+            else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
+            {
+                throw new SyntaxErrorException([",", "}"], CurrentToken);
+            }
+        }
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_CBRAC_CLO)
+        {
+            Token missing = new()
+            {
+                Type = Token.Types.UNKNOWN,
+                Line = getIndex(),
+                CharStart = 0,
+                CharEnd = 0
+            };
+            throw new SyntaxErrorException(["}"], missing);
+        }
+
+        incrementIndex();
+        return new StructInitialization(identifier, keys);
     }
 }
