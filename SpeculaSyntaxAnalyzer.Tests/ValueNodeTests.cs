@@ -194,4 +194,16 @@ public class ValueNodeTests
 
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(2));
     }
+
+    [Test]
+    public void StructInitTrailingComma()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Value/Invalid/StructInitTrailingComma.json");
+        Assert.Throws<SyntaxErrorException>(() => 
+        {
+            HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
+        });
+
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(1));
+    }
 }

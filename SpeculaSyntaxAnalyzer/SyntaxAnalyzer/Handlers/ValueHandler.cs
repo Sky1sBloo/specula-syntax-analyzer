@@ -163,10 +163,26 @@ public class ValueHandler : Handler
                 throw new SyntaxErrorException(["expression"], CurrentToken);
             }
 
-            // for comma between key-value pairs or closing brace
+            // for comma between key-value pairs or closing brace; disallow trailing comma
             if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
             {
                 incrementIndex();
+
+                if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_CBRAC_CLO)
+                {
+                    Token missing = new()
+                    {
+                        Type = Token.Types.UNKNOWN,
+                        Line = getIndex(),
+                        CharStart = 0,
+                        CharEnd = 0
+                    };
+                    var ex = new SyntaxErrorException(["identifier"], missing);
+                    errorHandler.AddError(ex);
+                    throw ex;
+                }
+
+                continue;
             }
             else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
             {
