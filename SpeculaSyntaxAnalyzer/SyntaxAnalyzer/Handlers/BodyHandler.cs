@@ -8,10 +8,12 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class BodyHandler : Handler
 {
     private List<Statement> statements = new();
+    private readonly IdentifierStartHandler identifierStartHandler;
     private readonly ExpressionHandler expressionHandler;
     public BodyHandler(ErrorsHandler err) : base(err)
     {
         expressionHandler = new(err);
+        identifierStartHandler = new(err);
     }
 
     protected override ParseNode? verifyTokens()
@@ -48,10 +50,7 @@ public class BodyHandler : Handler
                     handleDeclarationStmt();
                     break;
                 case Token.Types.IDENT:
-                    if (!handleVarAssignStmt())
-                    {
-                        handleExpressionStmt();
-                    }
+                    handleIdentifierStart();
                     break;
                 case Token.Types.K_IF:
                     handleIfStatement();
@@ -115,6 +114,23 @@ public class BodyHandler : Handler
             throw new InvalidOperationException("Node is not expression for var assign");
         }
         return true;
+    }
+
+    private void handleIdentifierStart()
+    {
+        ParseNode? node = tryDelegateToHandler(identifierStartHandler);
+        if (node == null)
+        {
+            throw new SyntaxErrorException(["assignment", "expression"], CurrentToken);
+        }
+        if (node is Statement statementNode)
+        {
+            statements.Add(statementNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Identifier start did not produce a statement");
+        }
     }
 
     private void handleIfStatement()
