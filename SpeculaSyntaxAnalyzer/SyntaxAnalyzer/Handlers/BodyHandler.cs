@@ -81,6 +81,12 @@ public class BodyHandler : Handler
                 case Token.Types.K_FOR:
                     handleForLoop();
                     break;
+                case Token.Types.K_DO:
+                    handleDoWhileLoop();
+                    break;
+                case Token.Types.K_WHILE:
+                    handleWhileLoop();
+                    break;
                 default:
                     if (!tryHandleExpressionStmt())
                     {
@@ -145,6 +151,26 @@ public class BodyHandler : Handler
                 throw new SyntaxErrorException(errorHandler.ErrorList[errorHandler.ErrorList.Count - 1]);
             }
             throw new SyntaxErrorException(["assignment", "expression"], CurrentToken);
+        }
+        statements.Add((Statement)node);
+    }
+
+    private void handleWhileLoop()
+    {
+        ParseNode? node = delegateToHandler(new WhileLoopHandler(errorHandler));
+        if (node == null)
+        {
+            return;
+        }
+        statements.Add((Statement)node);
+    }
+
+    private void handleDoWhileLoop()
+    {
+        ParseNode? node = delegateToHandler(new DoWhileLoopHandler(errorHandler));
+        if (node == null)
+        {
+            return;
         }
         statements.Add((Statement)node);
     }
