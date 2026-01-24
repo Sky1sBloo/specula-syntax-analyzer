@@ -89,13 +89,8 @@ public class BodyHandler : Handler
                     }
                     break;
             }
-            /// todo
-            /// var ass
-            /// if
-            /// for
             /// while
             /// do
-            /// call func
             /// spawn thread
 
             // Advance only if we are not sitting on a closing brace; the loop will break on it.
