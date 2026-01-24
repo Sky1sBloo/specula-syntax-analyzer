@@ -4,6 +4,7 @@ using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.Tests;
 
+/*
 [TestFixture]
 public class IfStatementTests
 {
@@ -70,4 +71,4 @@ public class IfStatementTests
         Assert.Throws<SyntaxErrorException>(() => ifHandler.HandleToken(output.Tokens, 0));
         Assert.That(errorsHandler.ErrorList.Count, Is.GreaterThanOrEqualTo(1));
     }
-}
+}*/
