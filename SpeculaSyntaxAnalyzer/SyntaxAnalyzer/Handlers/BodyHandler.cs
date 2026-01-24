@@ -8,8 +8,10 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class BodyHandler : Handler
 {
     private List<Statement> statements = new();
+    private readonly ExpressionHandler expressionHandler;
     public BodyHandler(ErrorsHandler err) : base(err)
     {
+        expressionHandler = new(err);
     }
 
     protected override ParseNode? verifyTokens()
@@ -99,7 +101,7 @@ public class BodyHandler : Handler
 
     private bool handleVarAssignStmt()
     {
-        ParseNode? node = delegateToHandlerSilently(new VarAssignHandler(errorHandler));
+        ParseNode? node = tryDelegateToHandler(new VarAssignHandler(errorHandler));
         if (node == null)
         {
             return false;
@@ -173,12 +175,13 @@ public class BodyHandler : Handler
     /// </summary>
     private bool tryHandleExpressionStmt()
     {
-        ParseNode? node = delegateToHandlerSilently(new ExpressionHandler(errorHandler));
-        if (node == null)
+        ParseNode? result = tryDelegateToHandler(expressionHandler);
+        if (result == null)
         {
             return false;
         }
-        if (node is Expression expressionNode)
+
+        if (result is Expression expressionNode)
         {
             statements.Add(expressionNode);
             return true;
