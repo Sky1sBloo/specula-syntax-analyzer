@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
@@ -15,6 +16,7 @@ public class IdentifierStartHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
+        string identifier  = "";
         // assignment statement
         ParseNode? node = delegateToHandler(varAssignHandler);
         if (node != null)
@@ -22,5 +24,10 @@ public class IdentifierStartHandler : Handler
             return node;
         } 
         return null;
+    }
+
+    protected ParseNode? handleAssignment(string identifier)
+    {
+        return delegateToHandler(varAssignHandler);
     }
 }

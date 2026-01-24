@@ -17,7 +17,7 @@ public abstract class Handler
     {
         get
         {
-            if (i >= tokens.Count)
+            if (i < 0 || i >= tokens.Count)
             {
                 throw new InvalidOperationException($"Attempted to access token at index {i}, but only {tokens.Count} tokens available");
             }
@@ -67,7 +67,7 @@ public abstract class Handler
         catch (SyntaxErrorException ex)
         {
             errorHandler.AddError(ex);
-            while (CurrentToken.Type != Token.Types.D_SEMICOLON)
+            while (HasMoreTokens && CurrentToken.Type != Token.Types.D_SEMICOLON)
             {
                 incrementIndex();
             }
@@ -76,22 +76,20 @@ public abstract class Handler
     }
 
     /// <summary>
-    /// Delegates to a handler silently (without recording errors)
-    /// Returns null if parsing fails and restores the original index
+    /// Tries to delegate to another handler
     /// </summary>
-    protected ParseNode? delegateToHandlerSilently(Handler other)
+    /// <returns>True if delegation was successful, otherwise false</returns>
+    protected ParseNode? tryDelegateToHandler(Handler other)
     {
         int originalIndex = i;
         errorHandler.SuppressErrors = true;
+        HandlerOutput silentOutput;
         try
         {
-            HandlerOutput output = other.HandleToken(tokens, i);
-            i = output.endIndex;
-            return output.node;
+            silentOutput = other.HandleToken(tokens, originalIndex);
         }
         catch (SyntaxErrorException)
         {
-            // Restore index on failure
             i = originalIndex;
             return null;
         }
@@ -99,6 +97,12 @@ public abstract class Handler
         {
             errorHandler.SuppressErrors = false;
         }
+
+        // to allow for errors be saved 
+        i = originalIndex;
+        HandlerOutput output = other.HandleToken(tokens, i);
+        i = output.endIndex;
+        return output.node;
     }
 
     protected int getIndex() { return i; }
