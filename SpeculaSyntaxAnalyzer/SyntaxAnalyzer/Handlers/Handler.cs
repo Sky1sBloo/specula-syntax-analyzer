@@ -102,6 +102,14 @@ public abstract class Handler
         i = originalIndex;
         HandlerOutput output = other.HandleToken(tokens, i);
         i = output.endIndex;
+
+        // rewind so callers can attempt alternatives
+        if (output.node == null)
+        {
+            i = originalIndex;
+            return null;
+        }
+
         return output.node;
     }
 
