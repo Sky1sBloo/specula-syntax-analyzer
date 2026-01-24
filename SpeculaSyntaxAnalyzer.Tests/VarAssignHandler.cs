@@ -113,6 +113,6 @@ public class VarAssignTests
         };
         
         // Should throw an exception since there's no expression after the equals
-        Assert.Throws<ArgumentOutOfRangeException>(() => varAssignHandler.HandleToken(tokens, 0));
+        Assert.Throws<InvalidOperationException>(() => varAssignHandler.HandleToken(tokens, 0));
     }
 }
