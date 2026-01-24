@@ -15,11 +15,17 @@ public class FuncDefHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
+        bool isAsync = false;
         if (CurrentToken.Type != Token.Types.K_FN)
         {
             throw new SyntaxErrorException(["fn"], CurrentToken);
         }
         incrementIndex();
+        if (CurrentToken.Type == Token.Types.K_ASYNC)
+        {
+            isAsync = true;
+            incrementIndex();
+        }
         if (CurrentToken.Type != Token.Types.IDENT)
         {
             throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
@@ -42,7 +48,7 @@ public class FuncDefHandler : Handler
         BodyNode? body = parseFunctionBody();
         if (body == null)
             return null;
-        return new FuncDefNode(funcName, parameters, returnType, body);
+        return new FuncDefNode(funcName, isAsync, parameters, returnType, body);
     }
 
     private PrintableList<FuncParam> parseParameters()
