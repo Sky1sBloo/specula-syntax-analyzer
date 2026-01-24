@@ -57,7 +57,6 @@ public class FuncDefHandler : Handler
 
         while (CurrentToken.Type != Token.Types.D_PAR_CLO)
         {
-            Console.WriteLine(CurrentToken.Value);
             if (CurrentToken.Type != Token.Types.IDENT)
             {
                 throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);

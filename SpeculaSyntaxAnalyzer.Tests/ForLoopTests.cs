@@ -61,7 +61,7 @@ public class ForLoopTests
         Assert.That(result.node, Is.InstanceOf<ForLoop>());
         var forLoop = (ForLoop)result.node!;
         Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());
-        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignPlusEqNode>());
     }
 
     [Test]
@@ -79,7 +79,7 @@ public class ForLoopTests
         Assert.That(result.node, Is.InstanceOf<ForLoop>());
         var forLoop = (ForLoop)result.node!;
         Assert.That(forLoop.init, Is.InstanceOf<DeclarationStatementNode>());
-        Assert.That(forLoop.assignment, Is.InstanceOf<AssignmentStatementNode>());
+        Assert.That(forLoop.assignment, Is.InstanceOf<AssignPlusEqNode>());
     }
 
     [Test]

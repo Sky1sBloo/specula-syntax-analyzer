@@ -24,42 +24,55 @@ public class VarAssignTests
         var output = LexerFileReader.ParseFile("Samples/VarAssign/SimpleAssignment.json");
         HandlerOutput node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignmentStatementNode>());
+        var assign = (AssignmentStatementNode)node.node!;
+        Assert.That(assign.Identifier, Is.EqualTo("x"));
+        Assert.That(assign.value, Is.TypeOf<LiteralValue>());
 
         // x += 3
         Setup(); 
         output = LexerFileReader.ParseFile("Samples/VarAssign/AddAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignPlusEqNode>());
+        var addAssign = (AssignPlusEqNode)node.node!;
+        Assert.That(addAssign.Identifier, Is.EqualTo("x"));
 
         // y -= 2
         Setup(); 
         output = LexerFileReader.ParseFile("Samples/VarAssign/SubtractAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignMinusEqNode>());
+        var subAssign = (AssignMinusEqNode)node.node!;
+        Assert.That(subAssign.Identifier, Is.EqualTo("y"));
 
         // z *= 4
         Setup(); 
         output = LexerFileReader.ParseFile("Samples/VarAssign/MultiplyAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignMulEqNode>());
+        var mulAssign = (AssignMulEqNode)node.node!;
+        Assert.That(mulAssign.Identifier, Is.EqualTo("z"));
 
         // w /= 2
         Setup(); 
         output = LexerFileReader.ParseFile("Samples/VarAssign/DivideAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignDivEqNode>());
+        var divAssign = (AssignDivEqNode)node.node!;
+        Assert.That(divAssign.Identifier, Is.EqualTo("w"));
 
         // m %= 3
         Setup(); 
         output = LexerFileReader.ParseFile("Samples/VarAssign/ModuloAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.InstanceOf<Expression>());
+        Assert.That(node.node, Is.TypeOf<AssignModEqNode>());
+        var modAssign = (AssignModEqNode)node.node!;
+        Assert.That(modAssign.Identifier, Is.EqualTo("m"));
     }
 
     [Test]
@@ -69,8 +82,11 @@ public class VarAssignTests
         var output = LexerFileReader.ParseFile("Samples/VarAssign/ExpressionAssignment.json");
         HandlerOutput node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.TypeOf<AddExpression>());
-        var addExpr = (AddExpression)node.node!;
+        Assert.That(node.node, Is.TypeOf<AssignmentStatementNode>());
+        var assignNode = (AssignmentStatementNode)node.node!;
+        Assert.That(assignNode.Identifier, Is.EqualTo("x"));
+        Assert.That(assignNode.value, Is.TypeOf<AddExpression>());
+        var addExpr = (AddExpression)assignNode.value;
         Assert.That(addExpr.lhs, Is.TypeOf<LiteralValue>());
         Assert.That(addExpr.rhs, Is.TypeOf<LiteralValue>());
     }
@@ -82,8 +98,11 @@ public class VarAssignTests
         var output = LexerFileReader.ParseFile("Samples/VarAssign/CompoundExpressionAssignment.json");
         HandlerOutput node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.TypeOf<MultExpression>());
-        var multExpr = (MultExpression)node.node!;
+        Assert.That(node.node, Is.TypeOf<AssignPlusEqNode>());
+        var assignNode = (AssignPlusEqNode)node.node!;
+        Assert.That(assignNode.Identifier, Is.EqualTo("x"));
+        Assert.That(assignNode.value, Is.TypeOf<MultExpression>());
+        var multExpr = (MultExpression)assignNode.value;
         Assert.That(multExpr.lhs, Is.TypeOf<LiteralValue>());
         Assert.That(multExpr.rhs, Is.TypeOf<LiteralValue>());
     }
