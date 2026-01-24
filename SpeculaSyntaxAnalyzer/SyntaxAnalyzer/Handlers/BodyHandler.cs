@@ -50,7 +50,23 @@ public class BodyHandler : Handler
                     handleDeclarationStmt();
                     break;
                 case Token.Types.IDENT:
-                    handleIdentifierStart();
+                    int errorCountBefore = errorHandler.ErrorList.Count;
+                    if (!tryHandleIdentifierStart())
+                    {
+                        // Clear errors from failed identifier start attempt
+                        while (errorHandler.ErrorList.Count > errorCountBefore)
+                        {
+                            errorHandler.ErrorList.RemoveAt(errorHandler.ErrorList.Count - 1);
+                        }
+                        
+                        // Try expression with error recording to get actual error
+                        if (!tryHandleExpressionStmtRecordingErrors())
+                        {
+                            throw new SyntaxErrorException(
+                                ["assignment", "expression"],
+                                CurrentToken);
+                        }
+                    }
                     break;
                 case Token.Types.K_IF:
                     handleIfStatement();
@@ -121,11 +137,34 @@ public class BodyHandler : Handler
         ParseNode? node = tryDelegateToHandler(identifierStartHandler);
         if (node == null)
         {
+            // If errors were recorded, re-throw the last one; otherwise throw generic error
+            if (errorHandler.ErrorList.Count > 0)
+            {
+                throw new SyntaxErrorException(errorHandler.ErrorList[errorHandler.ErrorList.Count - 1]);
+            }
             throw new SyntaxErrorException(["assignment", "expression"], CurrentToken);
         }
         if (node is Statement statementNode)
         {
             statements.Add(statementNode);
+        }
+        else
+        {
+            throw new InvalidOperationException("Identifier start did not produce a statement");
+        }
+    }
+
+    private bool tryHandleIdentifierStart()
+    {
+        ParseNode? node = tryDelegateToHandler(identifierStartHandler);
+        if (node == null)
+        {
+            return false;
+        }
+        if (node is Statement statementNode)
+        {
+            statements.Add(statementNode);
+            return true;
         }
         else
         {
@@ -186,22 +225,58 @@ public class BodyHandler : Handler
     }
 
     /// <summary>
+    /// Tries to parse an expression statement, recording all errors
+    /// Returns true if successful, false otherwise (errors will be recorded)
+    /// </summary>
+    private bool tryHandleExpressionStmtRecordingErrors()
+    {
+        int errorsBefore = errorHandler.ErrorList.Count;
+        try
+        {
+            ParseNode? result = delegateToHandler(new ExpressionHandler(errorHandler));
+            if (result == null)
+            {
+                return false;
+            }
+
+            if (result is Expression expressionNode)
+            {
+                statements.Add(expressionNode);
+                return true;
+            }
+            return false;
+        }
+        catch (SyntaxErrorException)
+        {
+            // Expression parsing failed, errors should be recorded
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Tries to parse an expression statement without recording errors
     /// Returns true if successful, false otherwise
     /// </summary>
     private bool tryHandleExpressionStmt()
     {
-        ParseNode? result = tryDelegateToHandler(expressionHandler);
-        if (result == null)
+        try
+        {
+            ParseNode? result = tryDelegateToHandler(expressionHandler);
+            if (result == null)
+            {
+                return false;
+            }
+
+            if (result is Expression expressionNode)
+            {
+                statements.Add(expressionNode);
+                return true;
+            }
+            return false;
+        }
+        catch (SyntaxErrorException)
         {
             return false;
         }
-
-        if (result is Expression expressionNode)
-        {
-            statements.Add(expressionNode);
-            return true;
-        }
-        return false;
     }
 }
