@@ -41,6 +41,7 @@ public class BodyHandler : Handler
 
             if (CurrentToken.Type == Token.Types.D_CBRAC_CLO)
             {
+                incrementIndex(); 
                 break;
             }
 
