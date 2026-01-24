@@ -83,10 +83,26 @@ public class ValueHandler : Handler
                 throw new SyntaxErrorException(["expression"], CurrentToken);
             }
 
-            // Handle comma between parameters or closing paren
+            // Handle comma between parameters or closing paren; disallow trailing comma
             if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
             {
                 incrementIndex();
+
+                if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_PAR_CLO)
+                {
+                    Token missing = new()
+                    {
+                        Type = Token.Types.UNKNOWN,
+                        Line = getIndex(),
+                        CharStart = 0,
+                        CharEnd = 0
+                    };
+                    var ex = new SyntaxErrorException(["expression"], missing);
+                    errorHandler.AddError(ex);
+                    throw ex;
+                }
+
+                continue;
             }
             else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
             {
