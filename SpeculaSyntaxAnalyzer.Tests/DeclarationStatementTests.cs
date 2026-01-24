@@ -19,8 +19,12 @@ public class DeclarationStatementTests
     public void SingleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclaration.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(1));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
@@ -28,8 +32,12 @@ public class DeclarationStatementTests
     public void SingleDeclarationWithValue()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/SingleDeclarationWithValue.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(1));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
@@ -37,8 +45,12 @@ public class DeclarationStatementTests
     public void DeclarationInferType()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/DeclarationInferType.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(1));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
@@ -46,8 +58,12 @@ public class DeclarationStatementTests
     public void MultipleDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/MultipleDeclaration.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(3));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(3));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
 
@@ -55,9 +71,13 @@ public class DeclarationStatementTests
     public void ExpressionValues()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Expressions.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.Count, Is.EqualTo(7));
+        Assert.That(node, Is.Not.Null);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(7));
+        }
     }
  
 
@@ -65,9 +85,12 @@ public class DeclarationStatementTests
     public void NoIdentifier()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoIdentifier.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
 
-        Assert.That(node.Count, Is.EqualTo(0));
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(0));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
 
@@ -75,8 +98,11 @@ public class DeclarationStatementTests
     public void NoType()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/NoType.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(0));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(0));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(1));
     }
 
@@ -84,8 +110,11 @@ public class DeclarationStatementTests
     public void InvalidOperatorsInDeclaration()
     {
         var output = LexerFileReader.ParseFile("Samples/Declaration/Invalid/InvalidOperators.json");
-        List<ParseNode> node = analyzer.ReadTokens(output.Tokens);
-        Assert.That(node.Count, Is.EqualTo(0));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        if (node is BodyNode bodyNode)
+        {
+            Assert.That(bodyNode.statements.Count, Is.EqualTo(0));
+        }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(7));
     }
 }
