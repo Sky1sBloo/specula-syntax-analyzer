@@ -99,7 +99,7 @@ public class BodyHandler : Handler
 
     private bool handleVarAssignStmt()
     {
-        ParseNode? node = delegateToHandler(new VarAssignHandler(errorHandler));
+        ParseNode? node = delegateToHandlerSilently(new VarAssignHandler(errorHandler));
         if (node == null)
         {
             return false;
