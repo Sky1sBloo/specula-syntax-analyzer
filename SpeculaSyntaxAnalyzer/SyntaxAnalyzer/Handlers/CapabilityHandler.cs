@@ -6,6 +6,15 @@ public class CapabilityHandler : Handler
 {
     public CapabilityHandler(ErrorsHandler errors) : base(errors) { }
 
+    public static Capabilities GenerateDefaultCapabilities()
+    {
+        return new Capabilities(new PrintableList<Capability>()
+        {
+            new Capability(CapabilityTypes.OWN, new PrintableList<string>()),
+            new Capability(CapabilityTypes.CONST, new PrintableList<string>())
+        });
+    }
+
     protected override ParseNode? verifyTokens()
     {
         if (CurrentToken.Type != Token.Types.D_BRAC_OP)
