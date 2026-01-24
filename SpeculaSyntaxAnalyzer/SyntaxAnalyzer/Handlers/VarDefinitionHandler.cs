@@ -9,21 +9,27 @@ public class VarDefinitionHandler : Handler
 {
     private readonly DataTypeHandler dataTypeHandler;
     private readonly CapabilityHandler capabilityHandler;
+    private bool callerHandleInitSymbol;
 
-    public VarDefinitionHandler(ErrorsHandler errors) : base(errors)
+    /// <param name="handleInitSymbol">If true, ignores default init symbol (usually for custom calls like -> instead of :)</param>
+    public VarDefinitionHandler(ErrorsHandler errors, bool callerHandleInitSymbol = false) : base(errors)
     {
+        this.callerHandleInitSymbol = callerHandleInitSymbol;
         dataTypeHandler = new(errors);
         capabilityHandler = new(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.D_COLON)
+        if (!callerHandleInitSymbol)
         {
-            throw new SyntaxErrorException([":"], CurrentToken);
+            if (CurrentToken.Type != Token.Types.D_COLON)
+            {
+                throw new SyntaxErrorException([":"], CurrentToken);
+            }
+            incrementIndex();
         }
-        incrementIndex();
-        
+
         TypeNode? dataType;
         switch (CurrentToken.Type)
         {
@@ -42,7 +48,7 @@ public class VarDefinitionHandler : Handler
                     }
                     else
                     {
-                        Capabilities defaultCapabilities = generateDefaultCapabilities();
+                        Capabilities defaultCapabilities = CapabilityHandler.GenerateDefaultCapabilities();
                         return new TypeDefinitionNode(dataType.type, defaultCapabilities);
                     }
                 }
@@ -68,12 +74,4 @@ public class VarDefinitionHandler : Handler
         else throw new InvalidOperationException($"Expected capabilities node. received: {parseNode}");
     }
 
-    private Capabilities generateDefaultCapabilities()
-    {
-        return new Capabilities(new PrintableList<Capability>()
-        {
-            new Capability(CapabilityTypes.OWN, new PrintableList<string>()),
-            new Capability(CapabilityTypes.CONST, new PrintableList<string>())
-        });
-    }
 }
