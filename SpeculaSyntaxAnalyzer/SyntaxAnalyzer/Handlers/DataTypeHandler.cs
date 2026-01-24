@@ -8,16 +8,15 @@ public class DataTypeHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.D_COLON)
-        {
-            throw new SyntaxErrorException([":"], CurrentToken);
-        }
-        incrementIndex();
         switch (CurrentToken.Type)
         {
             case Token.Types.K_TYPE:
             case Token.Types.IDENT:
-                return new TypeNode(TokenTypeToDataType(CurrentToken));
+                {
+                    TypeNode typeNode = new TypeNode(TokenTypeToDataType(CurrentToken));
+                    incrementIndex();
+                    return typeNode;
+                }
             default:
                 throw new SyntaxErrorException(["TYPE", "IDENTIFIER"], CurrentToken);
         }
@@ -34,15 +33,21 @@ public class DataTypeHandler : Handler
                 "double" => DataTypes.DOUBLE,
                 "bool" => DataTypes.BOOL,
                 "char" => DataTypes.CHAR,
+                "string" => DataTypes.STRING,
                 "void" => DataTypes.VOID,
                 _ => DataTypes.UNKNOWN
             };
         }
-
-        if (token.Type == Token.Types.IDENT)
+        else if (token.Type == Token.Types.IDENT)
         {
-            return DataTypes.IDENTIFIER;
+            // Permit well-known type names that may arrive as identifiers
+            return token.Value.ToLower() switch
+            {
+                "string" => DataTypes.STRING,
+                _ => DataTypes.IDENTIFIER
+            };
         }
+
         throw new ArgumentException("Token is not a valid data type");
     }
 

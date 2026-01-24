@@ -43,7 +43,7 @@ public class FuncDefHandler : Handler
         TypeDefinitionNode? returnType = getReturnType();
         if (returnType == null)
         {
-            returnType = new TypeDefinitionNode(DataTypes.VOID, CapabilityHandler.GenerateDefaultCapabilities());
+            returnType = new TypeDefinitionNode(new TypeNode(DataTypes.VOID), CapabilityHandler.GenerateDefaultCapabilities());
         }
         BodyNode? body = parseFunctionBody();
         if (body == null)
@@ -57,6 +57,7 @@ public class FuncDefHandler : Handler
 
         while (CurrentToken.Type != Token.Types.D_PAR_CLO)
         {
+            Console.WriteLine(CurrentToken.Value);
             if (CurrentToken.Type != Token.Types.IDENT)
             {
                 throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
@@ -74,8 +75,7 @@ public class FuncDefHandler : Handler
             if (paramType != null)
             {
                 parameters.Add(new FuncParam(paramName, paramType));
-            }
-
+            } 
 
             if (CurrentToken.Type == Token.Types.COMMA)
             {
@@ -83,7 +83,7 @@ public class FuncDefHandler : Handler
             }
             else if (CurrentToken.Type != Token.Types.D_PAR_CLO)
             {
-                throw new SyntaxErrorException([",", ")"], CurrentToken);
+                throw new SyntaxErrorException(["','", "')'"], CurrentToken);
             }
         }
 
