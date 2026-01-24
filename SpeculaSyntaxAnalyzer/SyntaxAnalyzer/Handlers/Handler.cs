@@ -13,7 +13,17 @@ public abstract class Handler
     protected readonly ErrorsHandler errorHandler;
     private List<Token> tokens = new();
 
-    protected Token CurrentToken => tokens.ElementAt(i);
+    protected Token CurrentToken
+    {
+        get
+        {
+            if (i >= tokens.Count)
+            {
+                throw new InvalidOperationException($"Attempted to access token at index {i}, but only {tokens.Count} tokens available");
+            }
+            return tokens.ElementAt(i);
+        }
+    }
     protected bool HasMoreTokens => i < tokens.Count;
 
     public Handler(ErrorsHandler errorHandler)
@@ -63,6 +73,32 @@ public abstract class Handler
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// Delegates to a handler silently (without recording errors)
+    /// Returns null if parsing fails and restores the original index
+    /// </summary>
+    protected ParseNode? delegateToHandlerSilently(Handler other)
+    {
+        int originalIndex = i;
+        errorHandler.SuppressErrors = true;
+        try
+        {
+            HandlerOutput output = other.HandleToken(tokens, i);
+            i = output.endIndex;
+            return output.node;
+        }
+        catch (SyntaxErrorException)
+        {
+            // Restore index on failure
+            i = originalIndex;
+            return null;
+        }
+        finally
+        {
+            errorHandler.SuppressErrors = false;
+        }
     }
 
     protected int getIndex() { return i; }
