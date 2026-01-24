@@ -24,12 +24,7 @@ public class IdentifierStartHandler : Handler
         }
 
         ParseNode? exprNode = tryDelegateToHandler(expressionHandler);
-        if (exprNode is Expression)
-        {
-            return exprNode;
-        }
-
-        return null;
+        return exprNode;
     }
 
     protected ParseNode? handleAssignment(string identifier)

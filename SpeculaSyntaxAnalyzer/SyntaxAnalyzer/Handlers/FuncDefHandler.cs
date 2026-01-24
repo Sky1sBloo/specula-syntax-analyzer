@@ -109,14 +109,7 @@ public class FuncDefHandler : Handler
         {
             return null;
         }
-        if (varDefNode is TypeDefinitionNode definition)
-        {
-            return definition;
-        }
-        else
-        {
-            throw new InvalidOperationException("TypeDefinitionNodeHandler did not return a TypeDefinitionNode node.");
-        }
+        return (TypeDefinitionNode)varDefNode;
     }
 
     private BodyNode? parseFunctionBody()
@@ -126,13 +119,6 @@ public class FuncDefHandler : Handler
         {
             return null;
         }
-        if (bodyNode is BodyNode body)
-        {
-            return body;
-        }
-        else
-        {
-            throw new InvalidOperationException("BodyHandler did not return a BodyNode for function body.");
-        }
+        return (BodyNode)bodyNode;
     }
 }

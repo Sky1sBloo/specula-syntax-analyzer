@@ -118,11 +118,7 @@ public class DeclarationHandler : Handler
     {
         ParseNode? parseNode = delegateToHandler(varDefinitionHandler);
         if (parseNode == null) return null;
-        if (parseNode is TypeDefinitionNode typeDefNode)
-        {
-            return typeDefNode;
-        }
-        else throw new InvalidOperationException($"Expected type definition node. received: {parseNode}");
+        return (TypeDefinitionNode)parseNode;
     }
 
     private Expression? getVariableValue()
@@ -130,11 +126,7 @@ public class DeclarationHandler : Handler
         ParseNode? parseNode = delegateToHandler(expressionHandler);
 
         if (parseNode == null) return null;
-        if (parseNode is Expression expression)
-        {
-            return expression;
-        }
-        else throw new InvalidOperationException($"Expected expression. received : {parseNode}");
+        return (Expression)parseNode;
     }
 
     private Capabilities generateDefaultCapabilities()
