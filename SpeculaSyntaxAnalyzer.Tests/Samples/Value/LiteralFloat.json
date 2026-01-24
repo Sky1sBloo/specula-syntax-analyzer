@@ -10,7 +10,7 @@
             "char_start": 0,
             "line": 1,
             "type": "L_FLOAT",
-            "value": "3.14"
+            "value": "3.14f"
         }
     ]
 }
