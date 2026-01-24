@@ -42,12 +42,10 @@ public class ValueHandler : Handler
             // Check if we're at the end of tokens before accessing CurrentToken
             if (HasMoreTokens)
             {
-                //todo: handle functions
-                switch (CurrentToken.Type)
+                // Handle function calls
+                if (CurrentToken.Type == Token.Types.D_PAR_OP)
                 {
-                    case Token.Types.D_PAR_OP:
-                    case Token.Types.D_CBRAC_OP:
-                        break;
+                    return handleFunctionCall(identifier);
                 }
             }
             return new IdentifierValue(identifier);
@@ -55,5 +53,58 @@ public class ValueHandler : Handler
         {
             throw new SyntaxErrorException(["Value Type"], CurrentToken);
         }
+    }
+
+    private FunctionCallValue handleFunctionCall(string identifier)
+    {
+        incrementIndex();
+        var parameters = new PrintableList<Expression>();
+
+        // For empty param list
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_CLO)
+        {
+            incrementIndex();
+            return new FunctionCallValue(identifier, parameters);
+        }
+
+        while (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            ExpressionHandler exprHandler = new ExpressionHandler(errorHandler);
+            ParseNode? paramExpr = delegateToHandler(exprHandler);
+            
+            if (paramExpr is Expression expr)
+            {
+                parameters.Add(expr);
+            }
+            else
+            {
+                throw new SyntaxErrorException(["expression"], CurrentToken);
+            }
+
+            // Handle comma between parameters or closing paren
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
+            {
+                incrementIndex();
+            }
+            else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+            {
+                throw new SyntaxErrorException([",", ")"], CurrentToken);
+            }
+        }
+
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            Token missing = new()
+            {
+                Type = Token.Types.UNKNOWN,
+                Line = getIndex(),
+                CharStart = 0,
+                CharEnd = 0
+            };
+            throw new SyntaxErrorException([")"], missing);
+        }
+
+        incrementIndex();
+        return new FunctionCallValue(identifier, parameters);
     }
 }
