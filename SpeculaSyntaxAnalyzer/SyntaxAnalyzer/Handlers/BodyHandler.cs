@@ -58,9 +58,12 @@ public class BodyHandler : Handler
                         {
                             errorHandler.ErrorList.RemoveAt(errorHandler.ErrorList.Count - 1);
                         }
-                        
+
+                        int errorsBeforeExpression = errorHandler.ErrorList.Count;
+
                         // Try expression with error recording to get actual error
-                        if (!tryHandleExpressionStmtRecordingErrors())
+                        if (!tryHandleExpressionStmtRecordingErrors() &&
+                            errorHandler.ErrorList.Count == errorsBeforeExpression)
                         {
                             throw new SyntaxErrorException(
                                 ["assignment", "expression"],
