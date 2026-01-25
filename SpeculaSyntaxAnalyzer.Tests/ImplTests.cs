@@ -25,18 +25,18 @@ public class ImplTests
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
         var root = node as RootNode;
         Assert.That(root, Is.Not.Null);
-        Assert.That(root!.statements.Count, Is.EqualTo(1));
-        var implDef = root!.statements[0] as ImplDefNode;
+        Assert.That(root!.Statements.Count, Is.EqualTo(1));
+        var implDef = root!.Statements[0] as ImplDefNode;
         Assert.That(implDef, Is.Not.Null);
-        Assert.That(implDef!.interfaceName, Is.EqualTo("I"));
-        Assert.That(implDef!.structName, Is.EqualTo("S"));
-        Assert.That(implDef!.methods.Count, Is.EqualTo(1));
-        var func = implDef!.methods[0] as FuncDefNode;
+        Assert.That(implDef!.InterfaceName, Is.EqualTo("I"));
+        Assert.That(implDef!.StructName, Is.EqualTo("S"));
+        Assert.That(implDef!.Methods.Count, Is.EqualTo(1));
+        var func = implDef!.Methods[0] as FuncDefNode;
         Assert.That(func, Is.Not.Null);
         Assert.That(func!.Identifier, Is.EqualTo("ping"));
         Assert.That(func!.FunctionNode.Parameters.Count, Is.EqualTo(0));
         Assert.That(func!.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.VOID));
-        Assert.That(func!.FunctionNode.Body.statements.Count, Is.EqualTo(0));
+        Assert.That(func!.FunctionNode.Body.Statements.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -48,12 +48,12 @@ public class ImplTests
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
         var root = node as RootNode;
         Assert.That(root, Is.Not.Null);
-        var implDef = root!.statements[0] as ImplDefNode;
+        var implDef = root!.Statements[0] as ImplDefNode;
         Assert.That(implDef, Is.Not.Null);
-        Assert.That(implDef!.interfaceName, Is.EqualTo("Math"));
-        Assert.That(implDef!.structName, Is.EqualTo("S"));
-        Assert.That(implDef!.methods.Count, Is.EqualTo(1));
-        var func = implDef!.methods[0] as FuncDefNode;
+        Assert.That(implDef!.InterfaceName, Is.EqualTo("Math"));
+        Assert.That(implDef!.StructName, Is.EqualTo("S"));
+        Assert.That(implDef!.Methods.Count, Is.EqualTo(1));
+        var func = implDef!.Methods[0] as FuncDefNode;
         Assert.That(func, Is.Not.Null);
         Assert.That(func!.Identifier, Is.EqualTo("add"));
         Assert.That(func!.FunctionNode.Parameters.Count, Is.EqualTo(2));
@@ -70,11 +70,11 @@ public class ImplTests
         Assert.That(node, Is.Not.Null);
         var root = node as RootNode;
         Assert.That(root, Is.Not.Null);
-        var implDef = root!.statements[0] as ImplDefNode;
+        var implDef = root!.Statements[0] as ImplDefNode;
         Assert.That(implDef, Is.Not.Null);
-        Assert.That(implDef!.interfaceName, Is.EqualTo("Math"));
-        Assert.That(implDef!.structName, Is.EqualTo("S"));
-        Assert.That(implDef!.methods.Count, Is.EqualTo(3));
+        Assert.That(implDef!.InterfaceName, Is.EqualTo("Math"));
+        Assert.That(implDef!.StructName, Is.EqualTo("S"));
+        Assert.That(implDef!.Methods.Count, Is.EqualTo(3));
     }
 
     // Invalid samples

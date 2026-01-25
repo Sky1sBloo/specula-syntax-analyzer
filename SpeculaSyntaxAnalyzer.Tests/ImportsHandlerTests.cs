@@ -23,8 +23,8 @@ public class ImportsHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var importNode = rootNode.statements[0];
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var importNode = rootNode.Statements[0];
             Assert.That(importNode, Is.Not.Null);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
@@ -38,8 +38,8 @@ public class ImportsHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var importNode = rootNode.statements[0];
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var importNode = rootNode.Statements[0];
             Assert.That(importNode, Is.Not.Null);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
@@ -53,8 +53,8 @@ public class ImportsHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var importNode = rootNode.statements[0];
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var importNode = rootNode.Statements[0];
             Assert.That(importNode, Is.Not.Null);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));

@@ -25,9 +25,9 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(0));
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(0));
-        Assert.That(conditionalNode.elseStatement, Is.Null);
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(0));
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(0));
+        Assert.That(conditionalNode.ElseStatement, Is.Null);
     }
 
     [Test]
@@ -38,10 +38,10 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.ifStatement.Body.statements[0], Is.InstanceOf<DeclarationStatementNode>());
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(0));
-        Assert.That(conditionalNode.elseStatement, Is.Null);
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.IfStatement.Body.Statements[0], Is.InstanceOf<DeclarationStatementNode>());
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(0));
+        Assert.That(conditionalNode.ElseStatement, Is.Null);
     }
 
     [Test]
@@ -52,10 +52,10 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(0));
-        Assert.That(conditionalNode.elseStatement, Is.Not.Null);
-        Assert.That(conditionalNode.elseStatement!.body.statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(0));
+        Assert.That(conditionalNode.ElseStatement, Is.Not.Null);
+        Assert.That(conditionalNode.ElseStatement!.Body.Statements.Count, Is.EqualTo(1));
     }
 
     [Test]
@@ -66,10 +66,10 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement[0].Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseStatement, Is.Null);
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement[0].Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseStatement, Is.Null);
     }
 
     [Test]
@@ -80,11 +80,11 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement[0].Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseStatement, Is.Not.Null);
-        Assert.That(conditionalNode.elseStatement!.body.statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement[0].Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseStatement, Is.Not.Null);
+        Assert.That(conditionalNode.ElseStatement!.Body.Statements.Count, Is.EqualTo(1));
     }
 
     [Test]
@@ -95,13 +95,13 @@ public class ConditionalStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.TypeOf<ConditionalStatement>());
         var conditionalNode = (ConditionalStatement)result.node!;
-        Assert.That(conditionalNode.ifStatement.Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement.Count, Is.EqualTo(3));
-        Assert.That(conditionalNode.elseIfStatement[0].Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement[1].Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseIfStatement[2].Body.statements.Count, Is.EqualTo(1));
-        Assert.That(conditionalNode.elseStatement, Is.Not.Null);
-        Assert.That(conditionalNode.elseStatement!.body.statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.IfStatement.Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement.Count, Is.EqualTo(3));
+        Assert.That(conditionalNode.ElseIfStatement[0].Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement[1].Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseIfStatement[2].Body.Statements.Count, Is.EqualTo(1));
+        Assert.That(conditionalNode.ElseStatement, Is.Not.Null);
+        Assert.That(conditionalNode.ElseStatement!.Body.Statements.Count, Is.EqualTo(1));
     }
 
     [Test]

@@ -82,7 +82,7 @@ public class DeclarationHandler : Handler
     {
         if (expr is LiteralValue literal)
         {
-            return literal.type;
+            return literal.Type;
         }
 
         if (expr is IdentifierValue)

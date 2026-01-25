@@ -14,6 +14,6 @@ public enum CapabilityTypes
     INFER,
     NETWORK
 }
-public record Capabilities(PrintableList<Capability> capabilityList) : ParseNode;
+public record Capabilities(PrintableList<Capability> CapabilityList) : ParseNode;
 
-public record Capability(CapabilityTypes type, PrintableList<string> configuration) : ParseNode;
+public record Capability(CapabilityTypes Type, PrintableList<string> Configuration) : ParseNode;
