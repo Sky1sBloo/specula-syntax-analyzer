@@ -43,6 +43,7 @@ public class DataTypeHandler : Handler
             // Permit well-known type names that may arrive as identifiers
             return token.Value.ToLower() switch
             {
+                "str" => DataTypes.STRING,
                 "string" => DataTypes.STRING,
                 _ => DataTypes.IDENTIFIER
             };
