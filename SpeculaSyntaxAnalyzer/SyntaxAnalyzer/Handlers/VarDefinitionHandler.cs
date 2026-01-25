@@ -9,26 +9,20 @@ public class VarDefinitionHandler : Handler
 {
     private readonly DataTypeHandler dataTypeHandler;
     private readonly CapabilityHandler capabilityHandler;
-    private bool callerHandleInitSymbol;
 
-    /// <param name="handleInitSymbol">If true, ignores default init symbol (usually for custom calls like -> instead of :)</param>
-    public VarDefinitionHandler(ErrorsHandler errors, bool callerHandleInitSymbol = false) : base(errors)
+    public VarDefinitionHandler(ErrorsHandler errors) : base(errors)
     {
-        this.callerHandleInitSymbol = callerHandleInitSymbol;
         dataTypeHandler = new(errors);
         capabilityHandler = new(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        if (!callerHandleInitSymbol)
+        if (CurrentToken.Type != Token.Types.D_COLON)
         {
-            if (CurrentToken.Type != Token.Types.D_COLON)
-            {
-                throw new SyntaxErrorException([":"], CurrentToken);
-            }
-            incrementIndex();
+            throw new SyntaxErrorException([":"], CurrentToken);
         }
+        incrementIndex();
 
         TypeNode? dataType = getType();
         if (dataType == null) return null;

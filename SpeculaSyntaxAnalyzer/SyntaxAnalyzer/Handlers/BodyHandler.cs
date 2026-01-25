@@ -50,12 +50,6 @@ public class BodyHandler : Handler
             {
                 statements.Add((Statement)stmt);
             }
-
-            // Advance only if we are not sitting on a closing brace; the loop will break on it.
-            if (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
-            {
-                incrementIndex();
-            }
         }
         return new BodyNode(statements);
     }
