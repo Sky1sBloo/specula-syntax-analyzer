@@ -267,8 +267,13 @@ public class ExpressionHandler : Handler
 
             default:
                 // Parse a value (literal, identifier, or function call)
-                return (Expression?)delegateToHandler(valueHandler) 
-                    ?? throw new SyntaxErrorException(["Value"], CurrentToken);
+                Expression? result = (Expression?)delegateToHandler(valueHandler);
+                if (result == null)
+                {
+                    // Error already recorded by delegateToHandler, return a placeholder
+                    return new LiteralValue(new TypeNode(DataTypes.UNKNOWN), "");
+                }
+                return result;
         }
     }
 }

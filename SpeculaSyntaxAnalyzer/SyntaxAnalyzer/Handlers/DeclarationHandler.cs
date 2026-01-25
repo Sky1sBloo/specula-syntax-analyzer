@@ -66,7 +66,12 @@ public class DeclarationHandler : Handler
         value = getVariableValue();
         if (value == null) return null;
 
-        assertTokenType(Token.Types.D_SEMICOLON);
+        // Only assert semicolon if we have more tokens
+        // (error recovery may have consumed it already)
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_SEMICOLON)
+        {
+            return null;
+        }
 
         if (typeDefinition == null)
         {
