@@ -66,9 +66,15 @@ public class SyntaxAnalyzerRoot
                     ParseNode? node = delegateToHandler(structHandler);
                     return (RootStatement?)node;
                 }
+            case Token.Types.K_INTERFACE:
+                {
+                    InterfaceHandler interfaceHandler = new InterfaceHandler(ErrorHandler);
+                    ParseNode? node = delegateToHandler(interfaceHandler);
+                    return (RootStatement?)node;
+                }
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let", "import", "[", "struct"],
+                    ["fn", "thread", "let", "import", "[", "struct", "interface"],
                     currentToken);
         }
     }
