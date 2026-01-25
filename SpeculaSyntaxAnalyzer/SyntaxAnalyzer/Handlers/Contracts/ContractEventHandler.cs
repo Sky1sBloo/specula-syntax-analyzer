@@ -31,11 +31,6 @@ public class ContractEventHandler : Handler
         expectTokenType(Token.Types.K_AUTO_RESET);
         expectTokenType(Token.Types.K_AFTER);
         
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected state identifier after 'after' keyword");
-        }
-        
         var statesList = new PrintableList<StateNode>();
         assertTokenType(Token.Types.IDENT);
         statesList.Add(new StateNode(CurrentToken.Value));
@@ -44,19 +39,11 @@ public class ContractEventHandler : Handler
         while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_OR)
         {
             incrementIndex();
-            if (!HasMoreTokens)
-            {
-                throw new SyntaxErrorException("Expected state identifier after '|'");
-            }
             assertTokenType(Token.Types.IDENT);
             statesList.Add(new StateNode(CurrentToken.Value));
             incrementIndex();
         }
         
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected ';' at end of auto-reset statement");
-        }
         expectTokenType(Token.Types.D_SEMICOLON);
         return new ContractAutoResetEventNode(statesList);
     }
@@ -66,11 +53,6 @@ public class ContractEventHandler : Handler
         expectTokenType(Token.Types.K_AUTO_MOVE);
         expectTokenType(Token.Types.K_AFTER);
         
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected state identifier after 'after' keyword");
-        }
-        
         var statesList = new PrintableList<StateNode>();
         assertTokenType(Token.Types.IDENT);
         statesList.Add(new StateNode(CurrentToken.Value));
@@ -79,33 +61,15 @@ public class ContractEventHandler : Handler
         while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_OR)
         {
             incrementIndex();
-            if (!HasMoreTokens)
-            {
-                throw new SyntaxErrorException("Expected state identifier after '|'");
-            }
             assertTokenType(Token.Types.IDENT);
             statesList.Add(new StateNode(CurrentToken.Value));
             incrementIndex();
         }
         
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected 'to' keyword in auto-move statement");
-        }
         expectTokenType(Token.Types.K_TO);
-        
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected target state identifier after 'to'");
-        }
         assertTokenType(Token.Types.IDENT);
         string targetState = CurrentToken.Value;
         incrementIndex();
-        
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected ';' at end of auto-move statement");
-        }
         expectTokenType(Token.Types.D_SEMICOLON);
         return new ContractAutoMoveEventNode(statesList, new StateNode(targetState));
     }
@@ -113,19 +77,9 @@ public class ContractEventHandler : Handler
     private ContractFailEventNode parseFailEvent()
     {
         expectTokenType(Token.Types.K_FAIL);
-        
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected identifier after 'fail'");
-        }
         assertTokenType(Token.Types.IDENT);
         string identifier = CurrentToken.Value;
         incrementIndex();
-        
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected ';' or '{' after fail identifier");
-        }
         
         if (CurrentToken.Type == Token.Types.D_SEMICOLON)
         {
@@ -134,11 +88,6 @@ public class ContractEventHandler : Handler
         }
         expectTokenType(Token.Types.D_CBRAC_OP);
         var parameters = parseParameters();
-        
-        if (!HasMoreTokens)
-        {
-            throw new SyntaxErrorException("Expected ';' at end of fail statement");
-        }
         expectTokenType(Token.Types.D_SEMICOLON);
         return new ContractFailEventNode(identifier, parameters);
     }

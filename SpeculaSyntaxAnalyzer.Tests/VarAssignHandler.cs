@@ -132,6 +132,6 @@ public class VarAssignTests
         };
 
         // Should throw an exception since there's no expression after the equals
-        Assert.Throws<InvalidOperationException>(() => varAssignHandler.HandleToken(tokens, 0));
+        Assert.Throws<SyntaxErrorException>(() => varAssignHandler.HandleToken(tokens, 0));
     }
 }
