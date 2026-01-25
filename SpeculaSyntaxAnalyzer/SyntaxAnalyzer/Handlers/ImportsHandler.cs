@@ -11,7 +11,7 @@ public class ImportsHandler : Handler
     protected override ParseNode? verifyTokens()
     {
         var imports = new PrintableList<ImportModuleNode>();
-        while (CurrentToken.Type == Token.Types.K_IMPORT)
+        while (HasMoreTokens && CurrentToken.Type == Token.Types.K_IMPORT)
         {
             incrementIndex();
             switch (CurrentToken.Type)
@@ -34,7 +34,7 @@ public class ImportsHandler : Handler
                     throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
             }
         }
-        throw new NotImplementedException();
+        return new ImportNodes(imports);
     }
 
     private ImportAliasNode? handleImportAlias()
