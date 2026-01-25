@@ -6,10 +6,8 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class InterfaceHandler : Handler
 {
-    private readonly VarDefinitionHandler varDefHandler;
     public InterfaceHandler(ErrorsHandler errors) : base(errors)
     {
-        varDefHandler = new VarDefinitionHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -20,7 +18,7 @@ public class InterfaceHandler : Handler
         incrementIndex();
         expectTokenType(Token.Types.D_CBRAC_OP);
         PrintableList<InterfaceFuncNode> methods = new();
-        while (CurrentToken.Type != Token.Types.D_CBRAC_CLO)
+        while (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
         {
             expectTokenType(Token.Types.K_FN);
             assertTokenType(Token.Types.IDENT);
@@ -29,7 +27,7 @@ public class InterfaceHandler : Handler
 
             expectTokenType(Token.Types.D_PAR_OP);
             PrintableList<ParamNode> parameters = new();
-            while (CurrentToken.Type != Token.Types.D_PAR_CLO)
+            while (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
             {
                 assertTokenType(Token.Types.IDENT);
                 string paramName = CurrentToken.Value;
@@ -43,13 +41,23 @@ public class InterfaceHandler : Handler
                 }
                 else
                 {
-                    VarDefinitionHandler nocolonHandler = new VarDefinitionHandler(errorHandler, consumeColon: false);
-                    TypeDefinitionNode? paramType = (TypeDefinitionNode?)delegateToHandler(nocolonHandler);
+                    DataTypeHandler dataTypeHandler = new DataTypeHandler(errorHandler);
+                    TypeNode? paramType = (TypeNode?)delegateToHandler(dataTypeHandler);
                     if (paramType == null)
                     {
                         throw new SyntaxErrorException(["TYPE"], CurrentToken);
                     }
-                    parameters.Add(new FuncParam(paramName, paramType));
+                    Capabilities? capabilities = null;
+                    if (CurrentToken.Type == Token.Types.D_BRAC_OP)
+                    {
+                        CapabilityHandler capabilityHandler = new CapabilityHandler(errorHandler);
+                        capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
+                    }
+                    if (capabilities == null)
+                    {
+                        capabilities = CapabilityHandler.GenerateDefaultCapabilities();
+                    }
+                    parameters.Add(new FuncParam(paramName, new TypeDefinitionNode(paramType, capabilities)));
                 }
 
                 if (CurrentToken.Type == Token.Types.COMMA)
@@ -58,28 +66,55 @@ public class InterfaceHandler : Handler
                 }
             }
             expectTokenType(Token.Types.D_PAR_CLO);
+            
             if (CurrentToken.Type != Token.Types.D_COLON)
             {
-                methods.Add(new InterfaceFuncReturnNode(funcName, parameters, new TypeDefinitionNode(new TypeNode(DataTypes.VOID), CapabilityHandler.GenerateDefaultCapabilities())));
-            }
-
-            if (CurrentToken.Type == Token.Types.K_SELF)
-            {
-                incrementIndex();
+                // No return type specified, default to void
                 expectTokenType(Token.Types.D_SEMICOLON);
-                methods.Add(new InterfaceFuncReturnSelfNode(funcName, parameters));
+                methods.Add(new InterfaceFuncReturnNode(funcName, parameters, new TypeDefinitionNode(new TypeNode(DataTypes.VOID), CapabilityHandler.GenerateDefaultCapabilities())));
             }
             else
             {
-                TypeDefinitionNode returnType = (TypeDefinitionNode?)delegateToHandler(varDefHandler)
-                    ?? throw new SyntaxErrorException(["TYPE"], CurrentToken);
+                // Consume colon and check for self or regular type
+                incrementIndex();
+                if (CurrentToken.Type == Token.Types.K_SELF)
+                {
+                    incrementIndex();
+                    expectTokenType(Token.Types.D_SEMICOLON);
+                    methods.Add(new InterfaceFuncReturnSelfNode(funcName, parameters));
+                }
+                else
+                {
+                    DataTypeHandler dataTypeHandler = new DataTypeHandler(errorHandler);
+                    TypeNode? returnType = (TypeNode?)delegateToHandler(dataTypeHandler);
+                    if (returnType == null)
+                    {
+                        return null;
+                    }
+                    Capabilities? capabilities = null;
+                    if (CurrentToken.Type == Token.Types.D_BRAC_OP)
+                    {
+                        CapabilityHandler capabilityHandler = new CapabilityHandler(errorHandler);
+                        capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
+                    }
+                    if (capabilities == null)
+                    {
+                        capabilities = CapabilityHandler.GenerateDefaultCapabilities();
+                    }
 
-                expectTokenType(Token.Types.D_SEMICOLON);
-                methods.Add(new InterfaceFuncReturnNode(funcName, parameters, returnType));
+                    if (!HasMoreTokens)
+                    {
+                        throw new SyntaxErrorException([";"], new Token { Type = Token.Types.UNKNOWN, Line = 0, CharStart = 0, CharEnd = 0 });
+                    }
+                    expectTokenType(Token.Types.D_SEMICOLON);
+                    methods.Add(new InterfaceFuncReturnNode(funcName, parameters, new TypeDefinitionNode(returnType, capabilities)));
+                }
             }
 
         }
-        incrementIndex();
+        if (!HasMoreTokens)
+            throw new SyntaxErrorException(["}" ], new Token { Type = Token.Types.UNKNOWN });
+        expectTokenType(Token.Types.D_CBRAC_CLO);
         return new InterfaceDefNode(interfaceName, methods);
     }
 }
