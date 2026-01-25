@@ -1,3 +1,4 @@
+using System.Reflection;
 using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
@@ -7,6 +8,7 @@ public class SyntaxAnalyzerRoot
     public readonly ErrorsHandler ErrorHandler;
     private readonly FuncDefHandler funcDefHandler;
     private readonly DeclarationHandler declarationHandler;
+    private readonly ImportsHandler importsHandler;
     
     private PrintableList<RootStatement> statements = new();
     private List<Token> tokens = [];
@@ -17,6 +19,7 @@ public class SyntaxAnalyzerRoot
         ErrorHandler = new();
         funcDefHandler = new FuncDefHandler(ErrorHandler);
         declarationHandler = new DeclarationHandler(ErrorHandler);
+        importsHandler = new ImportsHandler(ErrorHandler);
     }
 
     public ParseNode? ReadTokens(List<Token> tokens)
@@ -51,9 +54,11 @@ public class SyntaxAnalyzerRoot
                 return handleFuncDef();
             case Token.Types.K_LET:
                 return handleDeclaration();
+            case Token.Types.K_IMPORT:
+                return handleImport();
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let"],
+                    ["fn", "thread", "let", "import"],
                     currentToken);
         }
     }
@@ -95,5 +100,10 @@ public class SyntaxAnalyzerRoot
             }
         }
         return null;
+    }
+
+    private RootStatement? handleImport()
+    {
+        return (RootStatement?)delegateToHandler(importsHandler);
     }
 }
