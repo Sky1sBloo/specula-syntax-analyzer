@@ -18,6 +18,7 @@ public class ContractMessageEventHandler : Handler
         expectTokenType(Token.Types.AT_SYMBOL);
         assertTokenType(Token.Types.IDENT);
         string initialState = CurrentToken.Value;
+        incrementIndex();
         expectTokenType(Token.Types.OP_RIGHT_OP);
         assertTokenType(Token.Types.IDENT);
         string targetState = CurrentToken.Value;
