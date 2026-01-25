@@ -86,8 +86,8 @@
             "char_end": 30,
             "char_start": 29,
             "line": 1,
-            "type": "OP_RIGHT_OP",
-            "value": "->"
+            "type": "D_COLON",
+            "value": ":"
         },
         {
             "char_end": 35,
