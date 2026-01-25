@@ -7,12 +7,16 @@ public class ExportHandler : Handler
     private readonly FuncDefHandler funcDefHandler;
     private readonly DeclarationHandler declarationHandler;
     private readonly StructHandler structHandler;
+    private readonly InterfaceHandler interfaceHandler;
+    private readonly ImplHandler implHandler;
 
     public ExportHandler(ErrorsHandler errors) : base(errors)
     {
         funcDefHandler = new FuncDefHandler(errors);
         declarationHandler = new DeclarationHandler(errors);
         structHandler = new StructHandler(errors);
+        interfaceHandler = new InterfaceHandler(errors);
+        implHandler = new ImplHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -81,6 +85,16 @@ public class ExportHandler : Handler
             case Token.Types.K_STRUCT:
                 {
                     ParseNode? node = delegateToHandler(structHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_INTERFACE:
+                {
+                    ParseNode? node = delegateToHandler(interfaceHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_IMPL:
+                {
+                    ParseNode? node = delegateToHandler(implHandler);
                     return (RootStatement?)node;
                 }
             default:
