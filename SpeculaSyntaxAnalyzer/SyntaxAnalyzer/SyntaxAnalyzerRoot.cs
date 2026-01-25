@@ -60,9 +60,27 @@ public class SyntaxAnalyzerRoot
                 return handleImport();
             case Token.Types.D_BRAC_OP:
                 return handleExport();
+            case Token.Types.K_STRUCT:
+                {
+                    StructHandler structHandler = new StructHandler(ErrorHandler);
+                    ParseNode? node = delegateToHandler(structHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_INTERFACE:
+                {
+                    InterfaceHandler interfaceHandler = new InterfaceHandler(ErrorHandler);
+                    ParseNode? node = delegateToHandler(interfaceHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_IMPL:
+                {
+                    ImplHandler implHandler = new ImplHandler(ErrorHandler);
+                    ParseNode? node = delegateToHandler(implHandler);
+                    return (RootStatement?)node;
+                }
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let", "import", "["],
+                    ["fn", "thread", "let", "import", "[", "struct", "interface", "impl"],
                     currentToken);
         }
     }

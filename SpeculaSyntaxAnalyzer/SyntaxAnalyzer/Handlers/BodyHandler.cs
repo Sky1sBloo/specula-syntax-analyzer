@@ -19,11 +19,7 @@ public class BodyHandler : Handler
     {
         // reset statements for each new body parse to avoid leaking previous state
         statements = new PrintableList<Statement>();
-        if (CurrentToken.Type != Token.Types.D_CBRAC_OP)
-        {
-            throw new SyntaxErrorException(["{"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_CBRAC_OP);
         while (true)
         {
             if (!HasMoreTokens)
@@ -49,12 +45,6 @@ public class BodyHandler : Handler
             if (stmt != null)
             {
                 statements.Add((Statement)stmt);
-            }
-
-            // Advance only if we are not sitting on a closing brace; the loop will break on it.
-            if (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
-            {
-                incrementIndex();
             }
         }
         return new BodyNode(statements);

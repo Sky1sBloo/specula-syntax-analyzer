@@ -6,58 +6,58 @@
     },
     "tokens": [
         {
-            "char_end": 3,
+            "char_end": 7,
             "char_start": 1,
             "line": 1,
-            "type": "K_FN",
-            "value": "fn"
+            "type": "K_STRUCT",
+            "value": "struct"
         },
         {
-            "char_end": 12,
-            "char_start": 4,
+            "char_end": 11,
+            "char_start": 8,
             "line": 1,
             "type": "IDENT",
-            "value": "getValue"
+            "value": "Bad"
         },
         {
             "char_end": 12,
             "char_start": 12,
             "line": 1,
-            "type": "D_PAR_OP",
-            "value": "("
-        },
-        {
-            "char_end": 13,
-            "char_start": 13,
-            "line": 1,
-            "type": "D_PAR_CLO",
-            "value": ")"
+            "type": "D_CBRAC_OP",
+            "value": "{"
         },
         {
             "char_end": 16,
-            "char_start": 15,
+            "char_start": 14,
+            "line": 1,
+            "type": "IDENT",
+            "value": "id"
+        },
+        {
+            "char_end": 16,
+            "char_start": 16,
             "line": 1,
             "type": "D_COLON",
             "value": ":"
         },
         {
-            "char_end": 24,
+            "char_end": 21,
             "char_start": 18,
             "line": 1,
-            "type": "IDENT",
-            "value": "string"
+            "type": "K_TYPE",
+            "value": "int"
         },
         {
-            "char_end": 25,
-            "char_start": 25,
+            "char_end": 21,
+            "char_start": 21,
             "line": 1,
-            "type": "D_CBRAC_OP",
-            "value": "{"
+            "type": "D_SEMICOLON",
+            "value": ";"
         },
         {
-            "char_end": 1,
-            "char_start": 1,
-            "line": 2,
+            "char_end": 23,
+            "char_start": 23,
+            "line": 1,
             "type": "D_CBRAC_CLO",
             "value": "}"
         }

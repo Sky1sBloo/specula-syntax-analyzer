@@ -20,12 +20,20 @@ public class StatementHandler : Handler
         switch (CurrentToken.Type)
         {
             case Token.Types.K_LET:
-                return handleDeclarationStmt();
+                {
+                    ParseNode? declStmt = handleDeclarationStmt();
+                    if (declStmt != null)
+                    {
+                        requireSemicolon();
+                    }
+                    return declStmt;
+                }
             case Token.Types.IDENT:
                 int errorCountBefore = errorHandler.ErrorList.Count;
                 ParseNode? identResult = tryHandleIdentifierStartWithResult();
                 if (identResult != null)
                 {
+                    requireSemicolon();
                     return identResult;
                 }
                 
@@ -41,6 +49,7 @@ public class StatementHandler : Handler
                 ParseNode? exprResult = tryHandleExpressionStmtRecordingErrors();
                 if (exprResult != null)
                 {
+                    requireSemicolon();
                     return exprResult;
                 }
                 
@@ -63,12 +72,22 @@ public class StatementHandler : Handler
                 ParseNode? stmtResult = tryHandleExpressionStmt();
                 if (stmtResult != null)
                 {
+                    requireSemicolon();
                     return stmtResult;
                 }
                 throw new SyntaxErrorException(
                     ["statement", "expression", "declaration"],
                     CurrentToken);
         }
+    }
+
+    private void requireSemicolon()
+    {
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_SEMICOLON)
+        {
+            throw new SyntaxErrorException([";"], CurrentToken);
+        }
+        incrementIndex();
     }
 
     private ParseNode? handleDeclarationStmt()

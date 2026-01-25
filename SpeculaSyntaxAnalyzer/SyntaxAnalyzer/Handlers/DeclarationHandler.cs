@@ -26,15 +26,8 @@ public class DeclarationHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.K_LET)
-        {
-            throw new SyntaxErrorException(["let"], CurrentToken);
-        }
-        incrementIndex();
-        if (CurrentToken.Type != Token.Types.IDENT)
-        {
-            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-        }
+        expectTokenType(Token.Types.K_LET);
+        assertTokenType(Token.Types.IDENT);
         identifier = CurrentToken.Value;
         incrementIndex();
         switch (CurrentToken.Type)
@@ -73,10 +66,7 @@ public class DeclarationHandler : Handler
         value = getVariableValue();
         if (value == null) return null;
 
-        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
-        {
-            throw new SyntaxErrorException([";"], CurrentToken);
-        }
+        assertTokenType(Token.Types.D_SEMICOLON);
 
         if (typeDefinition == null)
         {

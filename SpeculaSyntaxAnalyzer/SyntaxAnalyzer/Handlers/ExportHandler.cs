@@ -6,11 +6,17 @@ public class ExportHandler : Handler
 {
     private readonly FuncDefHandler funcDefHandler;
     private readonly DeclarationHandler declarationHandler;
-    
+    private readonly StructHandler structHandler;
+    private readonly InterfaceHandler interfaceHandler;
+    private readonly ImplHandler implHandler;
+
     public ExportHandler(ErrorsHandler errors) : base(errors)
     {
         funcDefHandler = new FuncDefHandler(errors);
         declarationHandler = new DeclarationHandler(errors);
+        structHandler = new StructHandler(errors);
+        interfaceHandler = new InterfaceHandler(errors);
+        implHandler = new ImplHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -20,7 +26,7 @@ public class ExportHandler : Handler
             throw new SyntaxErrorException(["["], CurrentToken);
         }
         incrementIndex();
-        
+
         bool isDefault = false;
         switch (CurrentToken.Type)
         {
@@ -34,17 +40,17 @@ public class ExportHandler : Handler
             default:
                 throw new SyntaxErrorException(["export", "export default"], CurrentToken);
         }
-        
+
         if (CurrentToken.Type != Token.Types.D_BRAC_CLO)
         {
             throw new SyntaxErrorException(["]"], CurrentToken);
         }
         incrementIndex();
-        
+
         // Parse the root statement that is being exported
         RootStatement? stmt = parseExportedRootStatement();
         if (stmt == null) return null;
-        
+
         if (isDefault)
         {
             return new ExportDefaultNode(stmt);
@@ -76,9 +82,24 @@ public class ExportHandler : Handler
                     incrementIndex();
                 }
                 return decl;
+            case Token.Types.K_STRUCT:
+                {
+                    ParseNode? node = delegateToHandler(structHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_INTERFACE:
+                {
+                    ParseNode? node = delegateToHandler(interfaceHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_IMPL:
+                {
+                    ParseNode? node = delegateToHandler(implHandler);
+                    return (RootStatement?)node;
+                }
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let"],
+                    ["fn", "thread", "let", "struct"],
                     currentToken);
         }
     }
