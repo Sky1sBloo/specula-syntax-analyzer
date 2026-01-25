@@ -20,7 +20,7 @@ public class ContractStateTransitionsTests
     [Test]
     public void SimpleDirectionalTransition()
     {
-        var output = LexerFileReader.ParseFile("Samples/Contract/SimpleDirectional.json");
+        var output = LexerFileReader.ParseFile("Samples/Contract/States/SimpleDirectional.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<StateTransitionsNode>());
@@ -37,7 +37,7 @@ public class ContractStateTransitionsTests
     [Test]
     public void BidirectionalTransition()
     {
-        var output = LexerFileReader.ParseFile("Samples/Contract/Chain.json");
+        var output = LexerFileReader.ParseFile("Samples/Contract/States/Chain.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<StateTransitionsNode>());
@@ -55,7 +55,7 @@ public class ContractStateTransitionsTests
     [Test]
     public void ChainedTransitions()
     {
-        var output = LexerFileReader.ParseFile("Samples/Contract/Chain.json");
+        var output = LexerFileReader.ParseFile("Samples/Contract/States/Chain.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<StateTransitionsNode>());
@@ -83,23 +83,21 @@ public class ContractStateTransitionsTests
     [Test]
     public void MultipleStateDeclarations()
     {
-        var output = LexerFileReader.ParseFile("Samples/Contract/Multiple.json");
+        var output = LexerFileReader.ParseFile("Samples/Contract/States/Multiple.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<StateTransitionsNode>());
         
         var transitions = (StateTransitionsNode)node.node!;
-        // Should have all transitions from all state declarations
         Assert.That(transitions.Transitions.Count, Is.GreaterThanOrEqualTo(3));
     }
 
     [Test]
     public void NoTransitions()
     {
-        var output = LexerFileReader.ParseFile("Samples/Contract/NoTransition.json");
+        var output = LexerFileReader.ParseFile("Samples/Contract/States/NoTransition.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
-        // NoTransition.json has just "state CommandSent;" with no transitions
-        // This might return null or a StateTransitionsNode with empty list depending on implementation
-        // Adjust based on your desired behavior
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.Null);
     }
 }
