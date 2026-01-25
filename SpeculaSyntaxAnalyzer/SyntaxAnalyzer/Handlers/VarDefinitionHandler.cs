@@ -9,16 +9,21 @@ public class VarDefinitionHandler : Handler
 {
     private readonly DataTypeHandler dataTypeHandler;
     private readonly CapabilityHandler capabilityHandler;
+    private readonly bool consumeColon;
 
-    public VarDefinitionHandler(ErrorsHandler errors) : base(errors)
+    public VarDefinitionHandler(ErrorsHandler errors, bool consumeColon = true) : base(errors)
     {
         dataTypeHandler = new(errors);
         capabilityHandler = new(errors);
+        this.consumeColon = consumeColon;
     }
 
     protected override ParseNode? verifyTokens()
     {
-        expectTokenType(Token.Types.D_COLON);
+        if (consumeColon)
+            expectTokenType(Token.Types.D_COLON);
+        else
+            assertTokenType(Token.Types.D_COLON);
 
         TypeNode? dataType = getType();
         if (dataType == null) return null;
