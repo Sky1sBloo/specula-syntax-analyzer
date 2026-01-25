@@ -60,4 +60,5 @@ public class StructHandler: Handler
     {
         ParseNode? typeNode = delegateToHandler(typeHandler);
         return typeNode as TypeDefinitionNode;
+    }
 }
