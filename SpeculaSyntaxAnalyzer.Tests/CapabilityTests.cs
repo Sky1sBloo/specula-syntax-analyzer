@@ -26,9 +26,9 @@ public class CapabilityTests
         Assert.That(node.node, Is.TypeOf<Capabilities>());
         
         var capabilities = (Capabilities)node.node!;
-        Assert.That(capabilities.capabilityList.Count, Is.EqualTo(1));
-        Assert.That(capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
-        Assert.That(capabilities.capabilityList[0].configuration.Count, Is.EqualTo(0));
+        Assert.That(capabilities.CapabilityList.Count, Is.EqualTo(1));
+        Assert.That(capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(capabilities.CapabilityList[0].Configuration.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -40,11 +40,11 @@ public class CapabilityTests
         Assert.That(node.node, Is.TypeOf<Capabilities>());
         
         var capabilities = (Capabilities)node.node!;
-        Assert.That(capabilities.capabilityList.Count, Is.EqualTo(2));
-        Assert.That(capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
-        Assert.That(capabilities.capabilityList[0].configuration.Count, Is.EqualTo(0));
-        Assert.That(capabilities.capabilityList[1].type, Is.EqualTo(CapabilityTypes.MUT));
-        Assert.That(capabilities.capabilityList[1].configuration.Count, Is.EqualTo(0));
+        Assert.That(capabilities.CapabilityList.Count, Is.EqualTo(2));
+        Assert.That(capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(capabilities.CapabilityList[0].Configuration.Count, Is.EqualTo(0));
+        Assert.That(capabilities.CapabilityList[1].Type, Is.EqualTo(CapabilityTypes.MUT));
+        Assert.That(capabilities.CapabilityList[1].Configuration.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -56,18 +56,18 @@ public class CapabilityTests
         Assert.That(node.node, Is.TypeOf<Capabilities>());
         
         var capabilities = (Capabilities)node.node!;
-        Assert.That(capabilities.capabilityList.Count, Is.EqualTo(3));
+        Assert.That(capabilities.CapabilityList.Count, Is.EqualTo(3));
         
-        Assert.That(capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
-        Assert.That(capabilities.capabilityList[0].configuration.Count, Is.EqualTo(0));
+        Assert.That(capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(capabilities.CapabilityList[0].Configuration.Count, Is.EqualTo(0));
         
-        Assert.That(capabilities.capabilityList[1].type, Is.EqualTo(CapabilityTypes.NETWORK));
-        Assert.That(capabilities.capabilityList[1].configuration.Count, Is.EqualTo(1));
-        Assert.That(capabilities.capabilityList[1].configuration[0], Is.EqualTo("json"));
+        Assert.That(capabilities.CapabilityList[1].Type, Is.EqualTo(CapabilityTypes.NETWORK));
+        Assert.That(capabilities.CapabilityList[1].Configuration.Count, Is.EqualTo(1));
+        Assert.That(capabilities.CapabilityList[1].Configuration[0], Is.EqualTo("json"));
         
-        Assert.That(capabilities.capabilityList[2].type, Is.EqualTo(CapabilityTypes.SHARED));
-        Assert.That(capabilities.capabilityList[2].configuration.Count, Is.EqualTo(1));
-        Assert.That(capabilities.capabilityList[2].configuration[0], Is.EqualTo("this"));
+        Assert.That(capabilities.CapabilityList[2].Type, Is.EqualTo(CapabilityTypes.SHARED));
+        Assert.That(capabilities.CapabilityList[2].Configuration.Count, Is.EqualTo(1));
+        Assert.That(capabilities.CapabilityList[2].Configuration[0], Is.EqualTo("this"));
     }
 
     [Test]

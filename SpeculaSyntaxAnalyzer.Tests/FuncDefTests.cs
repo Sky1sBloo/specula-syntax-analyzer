@@ -23,13 +23,13 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("greet"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.VOID));
-            Assert.That(funcDef.isAsync, Is.False);
+            Assert.That(funcDef.IsAsync, Is.False);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -42,16 +42,16 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("compute"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
             Assert.That(funcDef.FunctionNode.Parameters[0].Identifier, Is.EqualTo("x"));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.STRING));
-            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.capabilityList.Any(c => c.type == CapabilityTypes.THR_LOCAL), Is.True);
-            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.capabilityList.Any(c => c.type == CapabilityTypes.MUT), Is.True);
-            Assert.That(funcDef.isAsync, Is.False);
+            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.CapabilityList.Any(c => c.Type == CapabilityTypes.THR_LOCAL), Is.True);
+            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.CapabilityList.Any(c => c.Type == CapabilityTypes.MUT), Is.True);
+            Assert.That(funcDef.IsAsync, Is.False);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -64,14 +64,14 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("process"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
             Assert.That(funcDef.FunctionNode.Parameters[0].Identifier, Is.EqualTo("data"));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.VOID));
-            Assert.That(funcDef.isAsync, Is.False);
+            Assert.That(funcDef.IsAsync, Is.False);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -84,13 +84,13 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("getValue"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.STRING));
-            Assert.That(funcDef.isAsync, Is.False);
+            Assert.That(funcDef.IsAsync, Is.False);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -103,15 +103,15 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("multiply"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(2));
             Assert.That(funcDef.FunctionNode.Parameters[0].Identifier, Is.EqualTo("a"));
             Assert.That(funcDef.FunctionNode.Parameters[1].Identifier, Is.EqualTo("b"));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.INT));
-            Assert.That(funcDef.isAsync, Is.False);
+            Assert.That(funcDef.IsAsync, Is.False);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -124,15 +124,15 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("fetchData"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
             Assert.That(funcDef.FunctionNode.Parameters[0].Identifier, Is.EqualTo("url"));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.STRING));
-            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.capabilityList.Any(c => c.type == CapabilityTypes.THR_LOCAL), Is.True);
-            Assert.That(funcDef.isAsync, Is.True);
+            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.CapabilityList.Any(c => c.Type == CapabilityTypes.THR_LOCAL), Is.True);
+            Assert.That(funcDef.IsAsync, Is.True);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -145,17 +145,17 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("transform"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(2));
             Assert.That(funcDef.FunctionNode.Parameters[0].Identifier, Is.EqualTo("input"));
             Assert.That(funcDef.FunctionNode.Parameters[1].Identifier, Is.EqualTo("config"));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.INT));
-            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.capabilityList.Any(c => c.type == CapabilityTypes.THR_LOCAL), Is.True);
-            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.capabilityList.Any(c => c.type == CapabilityTypes.MUT), Is.True);
-            Assert.That(funcDef.isAsync, Is.True);
+            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.CapabilityList.Any(c => c.Type == CapabilityTypes.THR_LOCAL), Is.True);
+            Assert.That(funcDef.FunctionNode.ReturnType.Capabilities.CapabilityList.Any(c => c.Type == CapabilityTypes.MUT), Is.True);
+            Assert.That(funcDef.IsAsync, Is.True);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -168,13 +168,13 @@ public class FuncDefTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var funcDef = rootNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.Statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("compute"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
             Assert.That(funcDef.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.VOID));
-            Assert.That(funcDef.isAsync, Is.True);
+            Assert.That(funcDef.IsAsync, Is.True);
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }

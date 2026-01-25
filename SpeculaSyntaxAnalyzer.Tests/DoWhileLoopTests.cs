@@ -27,7 +27,7 @@ public class DoWhileLoopTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.InstanceOf<DoWhileLoop>());
         var doWhileLoop = (DoWhileLoop)result.node!;
-        Assert.That(doWhileLoop.Body.statements.Count, Is.EqualTo(0));
+        Assert.That(doWhileLoop.Body.Statements.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class DoWhileLoopTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.InstanceOf<DoWhileLoop>());
         var doWhileLoop = (DoWhileLoop)result.node!;
-        Assert.That(doWhileLoop.Body.statements.Count, Is.GreaterThan(0));
+        Assert.That(doWhileLoop.Body.Statements.Count, Is.GreaterThan(0));
     }
 
     [Test]
@@ -48,9 +48,9 @@ public class DoWhileLoopTests
         HandlerOutput result = doWhileHandler.HandleToken(output.Tokens, 0);
         Assert.That(result.node, Is.InstanceOf<DoWhileLoop>());
         var doWhileLoop = (DoWhileLoop)result.node!;
-        Assert.That(doWhileLoop.Body.statements.Count, Is.GreaterThan(0));
+        Assert.That(doWhileLoop.Body.Statements.Count, Is.GreaterThan(0));
         // Check that there's a nested do-while loop inside
-        Assert.That(doWhileLoop.Body.statements[0], Is.InstanceOf<DoWhileLoop>());
+        Assert.That(doWhileLoop.Body.Statements[0], Is.InstanceOf<DoWhileLoop>());
     }
 
     #endregion

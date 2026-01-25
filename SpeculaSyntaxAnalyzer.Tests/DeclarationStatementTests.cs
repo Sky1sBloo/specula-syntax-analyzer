@@ -23,7 +23,7 @@ public class DeclarationStatementTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -36,7 +36,7 @@ public class DeclarationStatementTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -49,7 +49,7 @@ public class DeclarationStatementTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -62,7 +62,7 @@ public class DeclarationStatementTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(3));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(3));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
     }
@@ -76,7 +76,7 @@ public class DeclarationStatementTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(7));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(7));
         }
     }
  
@@ -89,7 +89,7 @@ public class DeclarationStatementTests
 
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(0));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(0));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(2));
     }
@@ -101,7 +101,7 @@ public class DeclarationStatementTests
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(0));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(0));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(1));
     }
@@ -113,7 +113,7 @@ public class DeclarationStatementTests
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(0));
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(0));
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(7));
     }

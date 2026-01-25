@@ -11,8 +11,8 @@ foreach (string iFile in files)
     if (node != null) {
         if (node is RootNode bodyNode)
         {
-            Console.WriteLine($"Body contains {bodyNode.statements.Count} statements");
-            foreach (var stmt in bodyNode.statements)
+            Console.WriteLine($"Body contains {bodyNode.Statements.Count} statements");
+            foreach (var stmt in bodyNode.Statements)
             {
                 Console.WriteLine(stmt);
             }

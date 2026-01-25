@@ -26,8 +26,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.INT));
-        Assert.That(literalValue.value, Is.EqualTo("42"));
+        Assert.That(literalValue.Type.DataType, Is.EqualTo(DataTypes.INT));
+        Assert.That(literalValue.Value, Is.EqualTo("42"));
     }
 
     [Test]
@@ -39,8 +39,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.STRING));
-        Assert.That(literalValue.value, Is.EqualTo("\"hello\""));
+        Assert.That(literalValue.Type.DataType, Is.EqualTo(DataTypes.STRING));
+        Assert.That(literalValue.Value, Is.EqualTo("\"hello\""));
     }
 
     [Test]
@@ -52,8 +52,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.BOOL));
-        Assert.That(literalValue.value, Is.EqualTo("true"));
+        Assert.That(literalValue.Type.DataType, Is.EqualTo(DataTypes.BOOL));
+        Assert.That(literalValue.Value, Is.EqualTo("true"));
     }
 
     [Test]
@@ -65,8 +65,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<LiteralValue>());
         
         var literalValue = (LiteralValue)node.node!;
-        Assert.That(literalValue.type.DataType, Is.EqualTo(DataTypes.FLOAT));
-        Assert.That(literalValue.value, Is.EqualTo("3.14f"));
+        Assert.That(literalValue.Type.DataType, Is.EqualTo(DataTypes.FLOAT));
+        Assert.That(literalValue.Value, Is.EqualTo("3.14f"));
     }
 
     [Test]
@@ -78,7 +78,7 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<IdentifierValue>());
         
         var identifierValue = (IdentifierValue)node.node!;
-        Assert.That(identifierValue.value, Is.EqualTo("myVar"));
+        Assert.That(identifierValue.Value, Is.EqualTo("myVar"));
     }
 
     [Test]
@@ -90,8 +90,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<FunctionCallValue>());
         
         var funcCall = (FunctionCallValue)node.node!;
-        Assert.That(funcCall.identifier, Is.EqualTo("print"));
-        Assert.That(funcCall.funcParams.Count, Is.EqualTo(0));
+        Assert.That(funcCall.Identifier, Is.EqualTo("print"));
+        Assert.That(funcCall.Parameters.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -103,12 +103,12 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<FunctionCallValue>());
         
         var funcCall = (FunctionCallValue)node.node!;
-        Assert.That(funcCall.identifier, Is.EqualTo("print"));
-        Assert.That(funcCall.funcParams.Count, Is.EqualTo(1));
-        Assert.That(funcCall.funcParams[0], Is.TypeOf<LiteralValue>());
+        Assert.That(funcCall.Identifier, Is.EqualTo("print"));
+        Assert.That(funcCall.Parameters.Count, Is.EqualTo(1));
+        Assert.That(funcCall.Parameters[0], Is.TypeOf<LiteralValue>());
         
-        var literalParam = (LiteralValue)funcCall.funcParams[0];
-        Assert.That(literalParam.value, Is.EqualTo("42"));
+        var literalParam = (LiteralValue)funcCall.Parameters[0];
+        Assert.That(literalParam.Value, Is.EqualTo("42"));
     }
 
     [Test]
@@ -120,10 +120,10 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<FunctionCallValue>());
         
         var funcCall = (FunctionCallValue)node.node!;
-        Assert.That(funcCall.identifier, Is.EqualTo("print"));
-        Assert.That(funcCall.funcParams.Count, Is.EqualTo(2));
-        Assert.That(funcCall.funcParams[0], Is.TypeOf<LiteralValue>());
-        Assert.That(funcCall.funcParams[1], Is.TypeOf<LiteralValue>());
+        Assert.That(funcCall.Identifier, Is.EqualTo("print"));
+        Assert.That(funcCall.Parameters.Count, Is.EqualTo(2));
+        Assert.That(funcCall.Parameters[0], Is.TypeOf<LiteralValue>());
+        Assert.That(funcCall.Parameters[1], Is.TypeOf<LiteralValue>());
     }
 
     [Test]
@@ -147,8 +147,8 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<StructInitialization>());
         
         var structInit = (StructInitialization)node.node!;
-        Assert.That(structInit.identifier, Is.EqualTo("structTest"));
-        Assert.That(structInit.keys.Count, Is.EqualTo(0));
+        Assert.That(structInit.Identifier, Is.EqualTo("structTest"));
+        Assert.That(structInit.Keys.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -160,10 +160,10 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<StructInitialization>());
         
         var structInit = (StructInitialization)node.node!;
-        Assert.That(structInit.identifier, Is.EqualTo("structTest"));
-        Assert.That(structInit.keys.Count, Is.EqualTo(1));
-        Assert.That(structInit.keys[0].key, Is.EqualTo("x"));
-        Assert.That(structInit.keys[0].value, Is.TypeOf<LiteralValue>());
+        Assert.That(structInit.Identifier, Is.EqualTo("structTest"));
+        Assert.That(structInit.Keys.Count, Is.EqualTo(1));
+        Assert.That(structInit.Keys[0].Key, Is.EqualTo("x"));
+        Assert.That(structInit.Keys[0].Value, Is.TypeOf<LiteralValue>());
     }
 
     [Test]
@@ -175,12 +175,12 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<StructInitialization>());
         
         var structInit = (StructInitialization)node.node!;
-        Assert.That(structInit.identifier, Is.EqualTo("structTest"));
-        Assert.That(structInit.keys.Count, Is.EqualTo(2));
-        Assert.That(structInit.keys[0].key, Is.EqualTo("value"));
-        Assert.That(structInit.keys[0].value, Is.TypeOf<IdentifierValue>());
-        Assert.That(structInit.keys[1].key, Is.EqualTo("param2"));
-        Assert.That(structInit.keys[1].value, Is.TypeOf<LiteralValue>());
+        Assert.That(structInit.Identifier, Is.EqualTo("structTest"));
+        Assert.That(structInit.Keys.Count, Is.EqualTo(2));
+        Assert.That(structInit.Keys[0].Key, Is.EqualTo("value"));
+        Assert.That(structInit.Keys[0].Value, Is.TypeOf<IdentifierValue>());
+        Assert.That(structInit.Keys[1].Key, Is.EqualTo("param2"));
+        Assert.That(structInit.Keys[1].Value, Is.TypeOf<LiteralValue>());
     }
 
     [Test]
@@ -192,24 +192,24 @@ public class ValueNodeTests
         Assert.That(node.node, Is.TypeOf<StructInitialization>());
         
         var structInit = (StructInitialization)node.node!;
-        Assert.That(structInit.identifier, Is.EqualTo("ident"));
-        Assert.That(structInit.keys.Count, Is.EqualTo(2));
+        Assert.That(structInit.Identifier, Is.EqualTo("ident"));
+        Assert.That(structInit.Keys.Count, Is.EqualTo(2));
 
-        Assert.That(structInit.keys[0].key, Is.EqualTo("key"));
-        Assert.That(structInit.keys[0].value, Is.TypeOf<FunctionCallValue>());
-        var funcValue = (FunctionCallValue)structInit.keys[0].value;
-        Assert.That(funcValue.identifier, Is.EqualTo("test"));
-        Assert.That(funcValue.funcParams.Count, Is.EqualTo(2));
-        Assert.That(funcValue.funcParams[0], Is.TypeOf<LiteralValue>());
-        Assert.That(((LiteralValue)funcValue.funcParams[0]).value, Is.EqualTo("3"));
-        Assert.That(funcValue.funcParams[1], Is.TypeOf<IdentifierValue>());
-        Assert.That(((IdentifierValue)funcValue.funcParams[1]).value, Is.EqualTo("x"));
+        Assert.That(structInit.Keys[0].Key, Is.EqualTo("key"));
+        Assert.That(structInit.Keys[0].Value, Is.TypeOf<FunctionCallValue>());
+        var funcValue = (FunctionCallValue)structInit.Keys[0].Value;
+        Assert.That(funcValue.Identifier, Is.EqualTo("test"));
+        Assert.That(funcValue.Parameters.Count, Is.EqualTo(2));
+        Assert.That(funcValue.Parameters[0], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)funcValue.Parameters[0]).Value, Is.EqualTo("3"));
+        Assert.That(funcValue.Parameters[1], Is.TypeOf<IdentifierValue>());
+        Assert.That(((IdentifierValue)funcValue.Parameters[1]).Value, Is.EqualTo("x"));
 
-        Assert.That(structInit.keys[1].key, Is.EqualTo("pair"));
-        Assert.That(structInit.keys[1].value, Is.TypeOf<LiteralValue>());
-        var pairValue = (LiteralValue)structInit.keys[1].value;
-        Assert.That(pairValue.type.DataType, Is.EqualTo(DataTypes.DOUBLE));
-        Assert.That(pairValue.value, Is.EqualTo("5.5"));
+        Assert.That(structInit.Keys[1].Key, Is.EqualTo("pair"));
+        Assert.That(structInit.Keys[1].Value, Is.TypeOf<LiteralValue>());
+        var pairValue = (LiteralValue)structInit.Keys[1].Value;
+        Assert.That(pairValue.Type.DataType, Is.EqualTo(DataTypes.DOUBLE));
+        Assert.That(pairValue.Value, Is.EqualTo("5.5"));
     }
 
     [Test]

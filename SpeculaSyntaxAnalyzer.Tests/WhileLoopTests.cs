@@ -27,7 +27,7 @@ public class WhileLoopTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.InstanceOf<WhileLoop>());
         var whileLoop = (WhileLoop)result.node!;
-        Assert.That(whileLoop.Body.statements.Count, Is.EqualTo(0));
+        Assert.That(whileLoop.Body.Statements.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -38,7 +38,7 @@ public class WhileLoopTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(result.node, Is.InstanceOf<WhileLoop>());
         var whileLoop = (WhileLoop)result.node!;
-        Assert.That(whileLoop.Body.statements.Count, Is.GreaterThan(0));
+        Assert.That(whileLoop.Body.Statements.Count, Is.GreaterThan(0));
     }
 
     [Test]
@@ -48,9 +48,9 @@ public class WhileLoopTests
         HandlerOutput result = whileHandler.HandleToken(output.Tokens, 0);
         Assert.That(result.node, Is.InstanceOf<WhileLoop>());
         var whileLoop = (WhileLoop)result.node!;
-        Assert.That(whileLoop.Body.statements.Count, Is.GreaterThan(0));
+        Assert.That(whileLoop.Body.Statements.Count, Is.GreaterThan(0));
         // Check that there's a nested while loop inside
-        Assert.That(whileLoop.Body.statements[0], Is.InstanceOf<WhileLoop>());
+        Assert.That(whileLoop.Body.Statements[0], Is.InstanceOf<WhileLoop>());
     }
 
     #endregion

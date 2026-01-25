@@ -24,23 +24,23 @@ public class StructHandlerTests
         Assert.That(node, Is.Not.Null);
         Assert.That(node, Is.TypeOf<RootNode>());
         var rootNode = (RootNode)node!;
-        Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-        var structNode = rootNode.statements[0] as StructDefNode;
+        Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+        var structNode = rootNode.Statements[0] as StructDefNode;
         Assert.That(structNode, Is.Not.Null);
-        Assert.That(structNode!.structName, Is.EqualTo("User"));
-        Assert.That(structNode.fields.Count, Is.EqualTo(2));
+        Assert.That(structNode!.StructName, Is.EqualTo("User"));
+        Assert.That(structNode.Fields.Count, Is.EqualTo(2));
 
-        Assert.That(structNode.fields[0].identifier, Is.EqualTo("id"));
-        Assert.That(structNode.fields[0].typeDef.DataType.DataType, Is.EqualTo(DataTypes.INT));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList.Count, Is.EqualTo(2));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList[1].type, Is.EqualTo(CapabilityTypes.CONST));
+        Assert.That(structNode.Fields[0].Identifier, Is.EqualTo("id"));
+        Assert.That(structNode.Fields[0].Definition.DataType.DataType, Is.EqualTo(DataTypes.INT));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList.Count, Is.EqualTo(2));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList[1].Type, Is.EqualTo(CapabilityTypes.CONST));
 
-        Assert.That(structNode.fields[1].identifier, Is.EqualTo("name"));
-        Assert.That(structNode.fields[1].typeDef.DataType.DataType, Is.EqualTo(DataTypes.STRING));
-        Assert.That(structNode.fields[1].typeDef.Capabilities.capabilityList.Count, Is.EqualTo(2));
-        Assert.That(structNode.fields[1].typeDef.Capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
-        Assert.That(structNode.fields[1].typeDef.Capabilities.capabilityList[1].type, Is.EqualTo(CapabilityTypes.CONST));
+        Assert.That(structNode.Fields[1].Identifier, Is.EqualTo("name"));
+        Assert.That(structNode.Fields[1].Definition.DataType.DataType, Is.EqualTo(DataTypes.STRING));
+        Assert.That(structNode.Fields[1].Definition.Capabilities.CapabilityList.Count, Is.EqualTo(2));
+        Assert.That(structNode.Fields[1].Definition.Capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(structNode.Fields[1].Definition.Capabilities.CapabilityList[1].Type, Is.EqualTo(CapabilityTypes.CONST));
     }
 
     [Test]
@@ -51,21 +51,21 @@ public class StructHandlerTests
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node, Is.Not.Null);
         var rootNode = (RootNode)node!;
-        Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-        var structNode = rootNode.statements[0] as StructDefNode;
+        Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+        var structNode = rootNode.Statements[0] as StructDefNode;
         Assert.That(structNode, Is.Not.Null);
-        Assert.That(structNode!.structName, Is.EqualTo("Flags"));
-        Assert.That(structNode.fields.Count, Is.EqualTo(2));
+        Assert.That(structNode!.StructName, Is.EqualTo("Flags"));
+        Assert.That(structNode.Fields.Count, Is.EqualTo(2));
 
-        Assert.That(structNode.fields[0].identifier, Is.EqualTo("active"));
-        Assert.That(structNode.fields[0].typeDef.DataType.DataType, Is.EqualTo(DataTypes.BOOL));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList.Count, Is.EqualTo(1));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.OWN));
+        Assert.That(structNode.Fields[0].Identifier, Is.EqualTo("active"));
+        Assert.That(structNode.Fields[0].Definition.DataType.DataType, Is.EqualTo(DataTypes.BOOL));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList.Count, Is.EqualTo(1));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.OWN));
 
-        Assert.That(structNode.fields[1].identifier, Is.EqualTo("mode"));
-        Assert.That(structNode.fields[1].typeDef.DataType.DataType, Is.EqualTo(DataTypes.STRING));
-        Assert.That(structNode.fields[1].typeDef.Capabilities.capabilityList.Count, Is.EqualTo(1));
-        Assert.That(structNode.fields[1].typeDef.Capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.CONST));
+        Assert.That(structNode.Fields[1].Identifier, Is.EqualTo("mode"));
+        Assert.That(structNode.Fields[1].Definition.DataType.DataType, Is.EqualTo(DataTypes.STRING));
+        Assert.That(structNode.Fields[1].Definition.Capabilities.CapabilityList.Count, Is.EqualTo(1));
+        Assert.That(structNode.Fields[1].Definition.Capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.CONST));
     }
 
     [Test]
@@ -76,16 +76,16 @@ public class StructHandlerTests
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node, Is.Not.Null);
         var rootNode = (RootNode)node!;
-        Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-        var structNode = rootNode.statements[0] as StructDefNode;
+        Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+        var structNode = rootNode.Statements[0] as StructDefNode;
         Assert.That(structNode, Is.Not.Null);
-        Assert.That(structNode!.structName, Is.EqualTo("Nested"));
-        Assert.That(structNode.fields.Count, Is.EqualTo(1));
+        Assert.That(structNode!.StructName, Is.EqualTo("Nested"));
+        Assert.That(structNode.Fields.Count, Is.EqualTo(1));
 
-        Assert.That(structNode.fields[0].identifier, Is.EqualTo("inner"));
-        Assert.That(structNode.fields[0].typeDef.DataType.DataType, Is.EqualTo(DataTypes.IDENTIFIER));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList.Count, Is.EqualTo(1));
-        Assert.That(structNode.fields[0].typeDef.Capabilities.capabilityList[0].type, Is.EqualTo(CapabilityTypes.SHARED));
+        Assert.That(structNode.Fields[0].Identifier, Is.EqualTo("inner"));
+        Assert.That(structNode.Fields[0].Definition.DataType.DataType, Is.EqualTo(DataTypes.IDENTIFIER));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList.Count, Is.EqualTo(1));
+        Assert.That(structNode.Fields[0].Definition.Capabilities.CapabilityList[0].Type, Is.EqualTo(CapabilityTypes.SHARED));
     }
 
     [Test]
