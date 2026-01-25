@@ -20,6 +20,9 @@ public class BodyHandler : Handler
         // reset statements for each new body parse to avoid leaking previous state
         statements = new PrintableList<Statement>();
         expectTokenType(Token.Types.D_CBRAC_OP);
+        
+        int initialErrorCount = errorHandler.ErrorList.Count;
+        
         while (true)
         {
             if (!HasMoreTokens)
@@ -47,6 +50,12 @@ public class BodyHandler : Handler
                 statements.Add((Statement)stmt);
             }
         }
+        
+        if (errorHandler.ErrorList.Count > initialErrorCount)
+        {
+            return null;
+        }
+        
         return new BodyNode(statements);
     }
 }
