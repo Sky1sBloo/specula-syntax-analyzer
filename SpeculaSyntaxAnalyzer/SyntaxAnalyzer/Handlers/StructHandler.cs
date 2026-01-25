@@ -5,16 +5,18 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class StructHandler: Handler
 {
-    private readonly VarDefinitionHandler typeHandler;
+    private readonly DataTypeHandler dataTypeHandler;
+    private readonly CapabilityHandler capabilityHandler;
+    
     public StructHandler(ErrorsHandler errors) : base(errors)
     {
-        typeHandler = new VarDefinitionHandler(errors);
+        dataTypeHandler = new DataTypeHandler(errors);
+        capabilityHandler = new CapabilityHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        assertTokenType(Token.Types.K_STRUCT);
-        incrementIndex();
+        expectTokenType(Token.Types.K_STRUCT);
         assertTokenType(Token.Types.IDENT);
         string structName = CurrentToken.Value;
         incrementIndex();
@@ -22,27 +24,38 @@ public class StructHandler: Handler
         PrintableList<StructField> fields = new();
         while (CurrentToken.Type != Token.Types.D_CBRAC_CLO)
         {
+            expectTokenType(Token.Types.K_LET);
             assertTokenType(Token.Types.IDENT);
             string fieldName = CurrentToken.Value;
             incrementIndex();
-            expectTokenType(Token.Types.D_COLON);
-            TypeDefinitionNode? fieldType = parseTypeDefinition();
-            if (fieldType == null)
+            assertTokenType(Token.Types.D_COLON);
+            incrementIndex();
+            
+            // Parse type directly
+            TypeNode? dataType = (TypeNode?)delegateToHandler(dataTypeHandler);
+            if (dataType == null)
             {
-                throw new SyntaxErrorException(["TYPE_DEFINITION"], CurrentToken);
+                throw new SyntaxErrorException(["TYPE"], CurrentToken);
             }
+            
+            // Parse optional capabilities
+            Capabilities? capabilities = null;
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_BRAC_OP)
+            {
+                capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
+            }
+            
+            if (capabilities == null)
+            {
+                capabilities = CapabilityHandler.GenerateDefaultCapabilities();
+            }
+            
+            TypeDefinitionNode fieldType = new TypeDefinitionNode(dataType, capabilities);
+            expectTokenType(Token.Types.D_SEMICOLON);
             fields.Add(new StructField(fieldName, fieldType));
-            if (CurrentToken.Type == Token.Types.COMMA)
-            {
-                incrementIndex();
-            }
         }
-        throw new NotImplementedException();
-    }
 
-    private TypeDefinitionNode? parseTypeDefinition()
-    {
-        ParseNode? typeNode = delegateToHandler(typeHandler);
-        return typeNode as TypeDefinitionNode;
+        incrementIndex();
+        return new StructDefNode(structName, fields);
     }
 }
