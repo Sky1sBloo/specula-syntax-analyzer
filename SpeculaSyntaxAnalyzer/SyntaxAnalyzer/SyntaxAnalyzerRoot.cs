@@ -10,6 +10,10 @@ public class SyntaxAnalyzerRoot
     private readonly DeclarationHandler declarationHandler;
     private readonly ImportsHandler importsHandler;
     private readonly ExportHandler exportHandler;
+    private readonly StructHandler structHandler;
+    private readonly InterfaceHandler interfaceHandler;
+    private readonly ImplHandler implHandler;
+    private readonly ContractHandler contractHandler;
     
     private PrintableList<RootStatement> statements = new();
     private List<Token> tokens = [];
@@ -22,6 +26,10 @@ public class SyntaxAnalyzerRoot
         declarationHandler = new DeclarationHandler(ErrorHandler);
         importsHandler = new ImportsHandler(ErrorHandler);
         exportHandler = new ExportHandler(ErrorHandler);
+        structHandler = new StructHandler(ErrorHandler);
+        interfaceHandler = new InterfaceHandler(ErrorHandler);
+        implHandler = new ImplHandler(ErrorHandler);
+        contractHandler = new ContractHandler(ErrorHandler);
     }
 
     public ParseNode? ReadTokens(List<Token> tokens)
@@ -61,23 +69,13 @@ public class SyntaxAnalyzerRoot
             case Token.Types.D_BRAC_OP:
                 return handleExport();
             case Token.Types.K_STRUCT:
-                {
-                    StructHandler structHandler = new StructHandler(ErrorHandler);
-                    ParseNode? node = delegateToHandler(structHandler);
-                    return (RootStatement?)node;
-                }
+                return handleStruct();
             case Token.Types.K_INTERFACE:
-                {
-                    InterfaceHandler interfaceHandler = new InterfaceHandler(ErrorHandler);
-                    ParseNode? node = delegateToHandler(interfaceHandler);
-                    return (RootStatement?)node;
-                }
+                return handleInterface();
             case Token.Types.K_IMPL:
-                {
-                    ImplHandler implHandler = new ImplHandler(ErrorHandler);
-                    ParseNode? node = delegateToHandler(implHandler);
-                    return (RootStatement?)node;
-                }
+                return handleImpl();
+            case Token.Types.K_CONTRACT:
+                return handleContract();
             default:
                 throw new SyntaxErrorException(
                     ["fn", "thread", "let", "import", "[", "struct", "interface", "impl"],
@@ -108,6 +106,26 @@ public class SyntaxAnalyzerRoot
     private RootStatement? handleExport()
     {
         return (RootStatement?)delegateToHandler(exportHandler);
+    }
+
+    private StructDefNode? handleStruct()
+    {
+        return (StructDefNode?)delegateToHandler(structHandler);
+    }
+
+    private InterfaceDefNode? handleInterface()
+    {
+        return (InterfaceDefNode?)delegateToHandler(interfaceHandler);
+    }
+
+    private ImplDefNode? handleImpl()
+    {
+        return (ImplDefNode?)delegateToHandler(implHandler);
+    }
+
+    private ContractNode? handleContract()
+    {
+        return (ContractNode?)delegateToHandler(contractHandler);
     }
 
     private ParseNode? delegateToHandler(Handler handler)
