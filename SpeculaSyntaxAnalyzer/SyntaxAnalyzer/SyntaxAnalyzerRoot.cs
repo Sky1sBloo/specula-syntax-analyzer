@@ -9,6 +9,7 @@ public class SyntaxAnalyzerRoot
     private readonly FuncDefHandler funcDefHandler;
     private readonly DeclarationHandler declarationHandler;
     private readonly ImportsHandler importsHandler;
+    private readonly ExportHandler exportHandler;
     
     private PrintableList<RootStatement> statements = new();
     private List<Token> tokens = [];
@@ -20,6 +21,7 @@ public class SyntaxAnalyzerRoot
         funcDefHandler = new FuncDefHandler(ErrorHandler);
         declarationHandler = new DeclarationHandler(ErrorHandler);
         importsHandler = new ImportsHandler(ErrorHandler);
+        exportHandler = new ExportHandler(ErrorHandler);
     }
 
     public ParseNode? ReadTokens(List<Token> tokens)
@@ -56,9 +58,11 @@ public class SyntaxAnalyzerRoot
                 return handleDeclaration();
             case Token.Types.K_IMPORT:
                 return handleImport();
+            case Token.Types.D_BRAC_OP:
+                return handleExport();
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let", "import"],
+                    ["fn", "thread", "let", "import", "["],
                     currentToken);
         }
     }
@@ -77,6 +81,15 @@ public class SyntaxAnalyzerRoot
             i++;
         }
         return stmt;
+    }
+
+    private RootStatement? handleImport()
+    {
+        return (RootStatement?)delegateToHandler(importsHandler);
+    }
+    private RootStatement? handleExport()
+    {
+        return (RootStatement?)delegateToHandler(exportHandler);
     }
 
     private ParseNode? delegateToHandler(Handler handler)
@@ -102,8 +115,4 @@ public class SyntaxAnalyzerRoot
         return null;
     }
 
-    private RootStatement? handleImport()
-    {
-        return (RootStatement?)delegateToHandler(importsHandler);
-    }
 }
