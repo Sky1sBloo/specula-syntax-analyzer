@@ -14,13 +14,7 @@ public class FuncShapeHandler: Handler
 
     protected override ParseNode? verifyTokens()
     {
-
-
-        if (CurrentToken.Type != Token.Types.D_PAR_OP)
-        {
-            throw new SyntaxErrorException(["("], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_OP);
         PrintableList<FuncParam> parameters = parseParameters();
 
         TypeDefinitionNode? returnType = getReturnType();
@@ -40,18 +34,11 @@ public class FuncShapeHandler: Handler
 
         while (CurrentToken.Type != Token.Types.D_PAR_CLO)
         {
-            if (CurrentToken.Type != Token.Types.IDENT)
-            {
-                throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-            }
+            assertTokenType(Token.Types.IDENT);
             string paramName = CurrentToken.Value;
             incrementIndex();
 
-            if (CurrentToken.Type != Token.Types.D_COLON)
-            {
-                throw new SyntaxErrorException([":"], CurrentToken);
-            }
-            incrementIndex();
+            expectTokenType(Token.Types.D_COLON);
 
             // Parse the type and its optional capabilities (without the leading colon)
             TypeDefinitionNode? paramType = parseParameterType();

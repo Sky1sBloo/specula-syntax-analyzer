@@ -14,49 +14,29 @@ public class DoWhileLoopHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.K_DO)
-        {
-            throw new SyntaxErrorException(["do"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.K_DO);
         BodyNode? body = handleBody();
         if (body == null)
         {
             return null;
         }
-        if (CurrentToken.Type != Token.Types.K_WHILE)
-        {
-            throw new SyntaxErrorException(["while"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.K_WHILE);
 
         Expression? condition = handleCondition();
         if (condition == null)
         {
             return null;
         }
-        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
-        {
-            throw new SyntaxErrorException([";"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_SEMICOLON);
 
         return new DoWhileLoop(body, condition);
     }
 
     private Expression? handleCondition()
     {
-        if (CurrentToken.Type != Token.Types.D_PAR_OP)
-        {
-            throw new SyntaxErrorException(["("], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_OP);
         Expression? condition = (Expression?)delegateToHandler(expressionHandler);
-        if (CurrentToken.Type != Token.Types.D_PAR_CLO)
-        {
-            throw new SyntaxErrorException([")"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_CLO);
         return condition;
     }
 

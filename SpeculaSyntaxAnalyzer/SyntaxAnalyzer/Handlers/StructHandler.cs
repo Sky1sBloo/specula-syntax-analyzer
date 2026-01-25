@@ -11,38 +11,21 @@ public class StructHandler: Handler
         typeHandler = new VarDefinitionHandler(errors);
     }
 
-    protected ParseNode? verifyTokens()
+    protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.K_STRUCT)
-        {
-            throw new SyntaxErrorException(["struct"], CurrentToken);
-        }
+        assertTokenType(Token.Types.K_STRUCT);
         incrementIndex();
-        if (CurrentToken.Type != Token.Types.IDENT)
-        {
-            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-        }
+        assertTokenType(Token.Types.IDENT);
         string structName = CurrentToken.Value;
         incrementIndex();
-        if (CurrentToken.Type != Token.Types.D_CBRAC_OP)
-        {
-            throw new SyntaxErrorException(["{"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_CBRAC_OP);
         PrintableList<StructField> fields = new();
         while (CurrentToken.Type != Token.Types.D_CBRAC_CLO)
         {
-            if (CurrentToken.Type != Token.Types.IDENT)
-            {
-                throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-            }
+            assertTokenType(Token.Types.IDENT);
             string fieldName = CurrentToken.Value;
             incrementIndex();
-            if (CurrentToken.Type != Token.Types.D_COLON)
-            {
-                throw new SyntaxErrorException([":"], CurrentToken);
-            }
-            incrementIndex();
+            expectTokenType(Token.Types.D_COLON);
             TypeDefinitionNode? fieldType = parseTypeDefinition();
             if (fieldType == null)
             {
@@ -54,6 +37,7 @@ public class StructHandler: Handler
                 incrementIndex();
             }
         }
+        throw new NotImplementedException();
     }
 
     private TypeDefinitionNode? parseTypeDefinition()
