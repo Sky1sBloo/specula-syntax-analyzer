@@ -5,13 +5,10 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class StructHandler: Handler
 {
-    private readonly DataTypeHandler dataTypeHandler;
-    private readonly CapabilityHandler capabilityHandler;
-    
+    private readonly VarDefinitionHandler varDefHandler;
     public StructHandler(ErrorsHandler errors) : base(errors)
     {
-        dataTypeHandler = new DataTypeHandler(errors);
-        capabilityHandler = new CapabilityHandler(errors);
+        varDefHandler = new VarDefinitionHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -28,29 +25,13 @@ public class StructHandler: Handler
             assertTokenType(Token.Types.IDENT);
             string fieldName = CurrentToken.Value;
             incrementIndex();
-            assertTokenType(Token.Types.D_COLON);
-            incrementIndex();
             
-            // Parse type directly
-            TypeNode? dataType = (TypeNode?)delegateToHandler(dataTypeHandler);
-            if (dataType == null)
+            TypeDefinitionNode? fieldType = (TypeDefinitionNode?)delegateToHandler(varDefHandler);
+            if (fieldType == null)
             {
                 throw new SyntaxErrorException(["TYPE"], CurrentToken);
             }
             
-            // Parse optional capabilities
-            Capabilities? capabilities = null;
-            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_BRAC_OP)
-            {
-                capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
-            }
-            
-            if (capabilities == null)
-            {
-                capabilities = CapabilityHandler.GenerateDefaultCapabilities();
-            }
-            
-            TypeDefinitionNode fieldType = new TypeDefinitionNode(dataType, capabilities);
             expectTokenType(Token.Types.D_SEMICOLON);
             fields.Add(new StructField(fieldName, fieldType));
         }
