@@ -1,3 +1,3 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public record RootNode(PrintableList<RootStatement> statements) : ParseNode;
+public record RootNode(PrintableList<RootStatement> Statements) : ParseNode;

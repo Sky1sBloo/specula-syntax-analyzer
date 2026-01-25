@@ -27,10 +27,10 @@ public class VarAssignTests
         Assert.That(node.node, Is.TypeOf<AssignmentStatementNode>());
         var assign = (AssignmentStatementNode)node.node!;
         Assert.That(assign.Identifier, Is.EqualTo("x"));
-        Assert.That(assign.value, Is.TypeOf<LiteralValue>());
+        Assert.That(assign.Value, Is.TypeOf<LiteralValue>());
 
         // x += 3
-        Setup(); 
+        Setup();
         output = LexerFileReader.ParseFile("Samples/VarAssign/AddAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
@@ -39,7 +39,7 @@ public class VarAssignTests
         Assert.That(addAssign.Identifier, Is.EqualTo("x"));
 
         // y -= 2
-        Setup(); 
+        Setup();
         output = LexerFileReader.ParseFile("Samples/VarAssign/SubtractAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
@@ -48,7 +48,7 @@ public class VarAssignTests
         Assert.That(subAssign.Identifier, Is.EqualTo("y"));
 
         // z *= 4
-        Setup(); 
+        Setup();
         output = LexerFileReader.ParseFile("Samples/VarAssign/MultiplyAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
@@ -57,7 +57,7 @@ public class VarAssignTests
         Assert.That(mulAssign.Identifier, Is.EqualTo("z"));
 
         // w /= 2
-        Setup(); 
+        Setup();
         output = LexerFileReader.ParseFile("Samples/VarAssign/DivideAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
@@ -66,7 +66,7 @@ public class VarAssignTests
         Assert.That(divAssign.Identifier, Is.EqualTo("w"));
 
         // m %= 3
-        Setup(); 
+        Setup();
         output = LexerFileReader.ParseFile("Samples/VarAssign/ModuloAssignment.json");
         node = varAssignHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
@@ -85,10 +85,10 @@ public class VarAssignTests
         Assert.That(node.node, Is.TypeOf<AssignmentStatementNode>());
         var assignNode = (AssignmentStatementNode)node.node!;
         Assert.That(assignNode.Identifier, Is.EqualTo("x"));
-        Assert.That(assignNode.value, Is.TypeOf<AddExpression>());
-        var addExpr = (AddExpression)assignNode.value;
-        Assert.That(addExpr.lhs, Is.TypeOf<LiteralValue>());
-        Assert.That(addExpr.rhs, Is.TypeOf<LiteralValue>());
+        Assert.That(assignNode.Value, Is.TypeOf<AddExpression>());
+        var addExpr = (AddExpression)assignNode.Value;
+        Assert.That(addExpr.Lhs, Is.TypeOf<LiteralValue>());
+        Assert.That(addExpr.Rhs, Is.TypeOf<LiteralValue>());
     }
 
     [Test]
@@ -101,10 +101,10 @@ public class VarAssignTests
         Assert.That(node.node, Is.TypeOf<AssignPlusEqNode>());
         var assignNode = (AssignPlusEqNode)node.node!;
         Assert.That(assignNode.Identifier, Is.EqualTo("x"));
-        Assert.That(assignNode.value, Is.TypeOf<MultExpression>());
-        var multExpr = (MultExpression)assignNode.value;
-        Assert.That(multExpr.lhs, Is.TypeOf<LiteralValue>());
-        Assert.That(multExpr.rhs, Is.TypeOf<LiteralValue>());
+        Assert.That(assignNode.Value, Is.TypeOf<MultExpression>());
+        var multExpr = (MultExpression)assignNode.Value;
+        Assert.That(multExpr.Lhs, Is.TypeOf<LiteralValue>());
+        Assert.That(multExpr.Rhs, Is.TypeOf<LiteralValue>());
     }
 
     [Test]
@@ -113,24 +113,24 @@ public class VarAssignTests
         // Missing identifier should throw error
         var tokens = new List<Token>
         {
-            new() { Type = Token.Types.OP_EQUALS, Value = "=", Line = 1, CharStart = 1, CharEnd = 2 },
-            new() { Type = Token.Types.L_INT, Value = "5", Line = 1, CharStart = 3, CharEnd = 4 }
+            new() { Type = Token.Types.OP_EQUALS,Value = "=", Line = 1, CharStart = 1, CharEnd = 2 },
+            new() { Type = Token.Types.L_INT,Value = "5", Line = 1, CharStart = 3, CharEnd = 4 }
         };
-        
+
         Assert.Throws<SyntaxErrorException>(() => varAssignHandler.HandleToken(tokens, 0));
     }
 
     [Test]
-    public void InvalidAssignmentNoRHS()
+    public void InvalidAssignmentNoRhs()
     {
         // Assignment without right-hand side should fail
         var tokens = new List<Token>
         {
-            new() { Type = Token.Types.IDENT, Value = "x", Line = 1, CharStart = 1, CharEnd = 2 },
-            new() { Type = Token.Types.OP_EQUALS, Value = "=", Line = 1, CharStart = 3, CharEnd = 4 }
+            new() { Type = Token.Types.IDENT,Value = "x", Line = 1, CharStart = 1, CharEnd = 2 },
+            new() { Type = Token.Types.OP_EQUALS,Value = "=", Line = 1, CharStart = 3, CharEnd = 4 }
             // Missing expression after equals
         };
-        
+
         // Should throw an exception since there's no expression after the equals
         Assert.Throws<InvalidOperationException>(() => varAssignHandler.HandleToken(tokens, 0));
     }

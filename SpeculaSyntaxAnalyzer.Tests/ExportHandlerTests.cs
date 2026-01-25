@@ -23,12 +23,12 @@ public class ExportHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var exportNode = rootNode.statements[0] as ExportNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var exportNode = rootNode.Statements[0] as ExportNode;
             Assert.That(exportNode, Is.Not.Null);
             if (exportNode is not null)
             {
-                var funcDef = exportNode.statement as FuncDefNode;
+                var funcDef = exportNode.Statement as FuncDefNode;
                 Assert.That(funcDef, Is.Not.Null);
                 Assert.That(funcDef?.Identifier, Is.EqualTo("toExport"));
             }
@@ -44,12 +44,12 @@ public class ExportHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var exportNode = rootNode.statements[0] as ExportDefaultNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var exportNode = rootNode.Statements[0] as ExportDefaultNode;
             Assert.That(exportNode, Is.Not.Null);
             if (exportNode is not null)
             {
-                var funcDef = exportNode.statement as FuncDefNode;
+                var funcDef = exportNode.Statement as FuncDefNode;
                 Assert.That(funcDef, Is.Not.Null);
                 Assert.That(funcDef?.Identifier, Is.EqualTo("defaultFunc"));
             }
@@ -65,12 +65,12 @@ public class ExportHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var exportNode = rootNode.statements[0] as ExportNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var exportNode = rootNode.Statements[0] as ExportNode;
             Assert.That(exportNode, Is.Not.Null);
             if (exportNode is not null)
             {
-                var varDef = exportNode.statement as DeclarationStatementNode;
+                var varDef = exportNode.Statement as DeclarationStatementNode;
                 Assert.That(varDef, Is.Not.Null);
                 Assert.That(varDef?.Identifier, Is.EqualTo("myVar"));
             }
@@ -86,12 +86,12 @@ public class ExportHandlerTests
         Assert.That(node, Is.Not.Null);
         if (node is RootNode rootNode)
         {
-            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
-            var exportNode = rootNode.statements[0] as ExportDefaultNode;
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var exportNode = rootNode.Statements[0] as ExportDefaultNode;
             Assert.That(exportNode, Is.Not.Null);
             if (exportNode is not null)
             {
-                var varDef = exportNode.statement as DeclarationStatementNode;
+                var varDef = exportNode.Statement as DeclarationStatementNode;
                 Assert.That(varDef, Is.Not.Null);
                 Assert.That(varDef?.Identifier, Is.EqualTo("defaultVar"));
             }

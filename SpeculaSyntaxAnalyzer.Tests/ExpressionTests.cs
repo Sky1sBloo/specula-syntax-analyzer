@@ -53,7 +53,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<AddExpression>());
         var addExpr = (AddExpression)node.node!;
-        Assert.That(addExpr.rhs, Is.TypeOf<MultExpression>());
+        Assert.That(addExpr.Rhs, Is.TypeOf<MultExpression>());
 
         // (2 + 3) * 4 = Mult(Add(2, 3), 4)
         output = LexerFileReader.ParseFile("Samples/Expression/PrecedenceExpressions/ParenthesisOverride.json");
@@ -61,7 +61,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<MultExpression>());
         var multExpr = (MultExpression)node.node!;
-        Assert.That(multExpr.lhs, Is.TypeOf<AddExpression>());
+        Assert.That(multExpr.Lhs, Is.TypeOf<AddExpression>());
 
         // 10 - 2 * 3 = 10 - (2 * 3) = Sub(10, Mult(2, 3))
         output = LexerFileReader.ParseFile("Samples/Expression/PrecedenceExpressions/SubMultPrecedence.json");
@@ -69,7 +69,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<SubExpression>());
         var subExpr = (SubExpression)node.node!;
-        Assert.That(subExpr.rhs, Is.TypeOf<MultExpression>());
+        Assert.That(subExpr.Rhs, Is.TypeOf<MultExpression>());
     }
 
     [Test]
@@ -87,7 +87,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<AddExpression>());
         var addExpr = (AddExpression)node.node!;
-        Assert.That(addExpr.lhs, Is.TypeOf<MultExpression>());
+        Assert.That(addExpr.Lhs, Is.TypeOf<MultExpression>());
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<AddExpression>());
         var addExpr = (AddExpression)node.node!;
-        Assert.That(addExpr.lhs, Is.TypeOf<PreIncExpression>());
+        Assert.That(addExpr.Lhs, Is.TypeOf<PreIncExpression>());
 
         // x++ * 2
         Setup(); // Reset for next assertion
@@ -172,7 +172,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<MultExpression>());
         var multExpr = (MultExpression)node.node!;
-        Assert.That(multExpr.lhs, Is.TypeOf<PostIncExpression>());
+        Assert.That(multExpr.Lhs, Is.TypeOf<PostIncExpression>());
     }
 
     [Test]
@@ -222,7 +222,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<EqCompExpression>());
         var eqExpr = (EqCompExpression)node.node!;
-        Assert.That(eqExpr.lhs, Is.TypeOf<AddExpression>());
+        Assert.That(eqExpr.Lhs, Is.TypeOf<AddExpression>());
 
         // 10 - 2 < 5 should be parsed as (10 - 2) < 5
         Setup(); // Reset for next assertion
@@ -231,7 +231,7 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<LtCompExpression>());
         var ltExpr = (LtCompExpression)node.node!;
-        Assert.That(ltExpr.lhs, Is.TypeOf<SubExpression>());
+        Assert.That(ltExpr.Lhs, Is.TypeOf<SubExpression>());
 
         // 3 * 4 > 10 should be parsed as (3 * 4) > 10
         Setup(); // Reset for next assertion
@@ -240,6 +240,6 @@ public class ExpressionStatementTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<GtCompExpression>());
         var gtExpr = (GtCompExpression)node.node!;
-        Assert.That(gtExpr.lhs, Is.TypeOf<MultExpression>());
+        Assert.That(gtExpr.Lhs, Is.TypeOf<MultExpression>());
     }
 }
