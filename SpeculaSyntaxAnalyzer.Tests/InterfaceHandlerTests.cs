@@ -54,21 +54,39 @@ public class InterfaceHandlerTests
     public void InterfaceWithSelfParameter()
     {
         var output = LexerFileReader.ParseFile("Samples/Interface/SelfParam.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        var result = analyzer.ReadTokens(output.Tokens) as RootNode;
+        
+        Assert.That(result.statements, Has.Count.EqualTo(1));
+        var interfaceDef = result.statements[0] as InterfaceDefNode;
+        Assert.That(interfaceDef, Is.Not.Null);
+        Assert.That(interfaceDef.interfaceName, Is.EqualTo("SelfParam"));
+        Assert.That(interfaceDef.methods, Has.Count.EqualTo(1));
     }
 
     [Test]
     public void InterfaceWithMixedSelfAndRegularMethods()
     {
         var output = LexerFileReader.ParseFile("Samples/Interface/MixedSelf.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        var result = analyzer.ReadTokens(output.Tokens) as RootNode;
+        
+        Assert.That(result.statements, Has.Count.EqualTo(1));
+        var interfaceDef = result.statements[0] as InterfaceDefNode;
+        Assert.That(interfaceDef, Is.Not.Null);
+        Assert.That(interfaceDef.interfaceName, Is.EqualTo("MultiMixed"));
+        Assert.That(interfaceDef.methods, Has.Count.EqualTo(2));
     }
 
     [Test]
     public void InterfaceWithMultipleMethods()
     {
         var output = LexerFileReader.ParseFile("Samples/Interface/MultiFunction.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        var result = analyzer.ReadTokens(output.Tokens) as RootNode;
+        
+        Assert.That(result.statements, Has.Count.EqualTo(1));
+        var interfaceDef = result.statements[0] as InterfaceDefNode;
+        Assert.That(interfaceDef, Is.Not.Null);
+        Assert.That(interfaceDef.interfaceName, Is.EqualTo("Multi"));
+        Assert.That(interfaceDef.methods, Has.Count.EqualTo(2));
     }
 
     [Test]
