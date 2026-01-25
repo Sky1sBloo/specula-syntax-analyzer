@@ -52,7 +52,11 @@ public class SyntaxAnalyzerRoot
         catch (SyntaxErrorException ex)
         {
             ErrorHandler.AddError(ex);
-            while (token[i].Type != Token.Types.D_SEMICOLON)
+            while (i < token.Count && token[i].Type != Token.Types.D_SEMICOLON)
+            {
+                i++;
+            }
+            if (i < token.Count && token[i].Type == Token.Types.D_SEMICOLON)
             {
                 i++;
             }
