@@ -210,6 +210,10 @@ public abstract class Handler
             {
                 incrementIndex();
             }
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_SEMICOLON)
+            {
+                incrementIndex();
+            }
         }
         return null;
     }
