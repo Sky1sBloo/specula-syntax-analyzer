@@ -51,6 +51,7 @@ public class BodyHandler : Handler
                     handleDeclarationStmt();
                     break;
                 case Token.Types.K_FN:
+                case Token.Types.K_THREAD:
                     handleFuncDef();
                     break;
                 case Token.Types.IDENT:
