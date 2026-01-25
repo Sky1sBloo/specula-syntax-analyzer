@@ -1,26 +1,34 @@
-using System.Runtime.CompilerServices;
+using System.Reflection.Metadata;
 using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class FuncDefHandler : Handler
 {
-    private readonly VarDefinitionHandler varDefinitionHandler;
-    private readonly BodyHandler bodyHandler;
+    private readonly FuncShapeHandler funcShapeHandler;
     public FuncDefHandler(ErrorsHandler errors) : base(errors)
     {
-        varDefinitionHandler = new(errors, true);
-        bodyHandler = new(errors);
+        funcShapeHandler = new(errors);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        bool isAsync = false;
-        if (CurrentToken.Type != Token.Types.K_FN)
+        switch (CurrentToken.Type)
         {
-            throw new SyntaxErrorException(["fn"], CurrentToken);
+            case Token.Types.K_FN:
+                return handleFunctionDefinition();
+            case Token.Types.K_THREAD:
+                return handleThreadDefinition();
+            default:
+                throw new SyntaxErrorException(["fn", "thread"], CurrentToken);
         }
+    }
+
+    private FuncDefNode? handleFunctionDefinition()
+    {
         incrementIndex();
+        bool isAsync = false;
+
         if (CurrentToken.Type == Token.Types.K_ASYNC)
         {
             isAsync = true;
@@ -32,93 +40,25 @@ public class FuncDefHandler : Handler
         }
         string funcName = CurrentToken.Value;
         incrementIndex();
+        FuncShapeNode? funcShape = (FuncShapeNode?)delegateToHandler(funcShapeHandler);
+        if (funcShape == null) return null;
 
-        if (CurrentToken.Type != Token.Types.D_PAR_OP)
-        {
-            throw new SyntaxErrorException(["("], CurrentToken);
-        }
+        return new FuncDefNode(funcName, isAsync, funcShape);
+    }
+
+    private ThreadDefNode? handleThreadDefinition()
+    {
         incrementIndex();
-        PrintableList<FuncParam> parameters = parseParameters();
-
-        TypeDefinitionNode? returnType = getReturnType();
-        if (returnType == null)
+        if (CurrentToken.Type != Token.Types.IDENT)
         {
-            returnType = new TypeDefinitionNode(new TypeNode(DataTypes.VOID), CapabilityHandler.GenerateDefaultCapabilities());
+            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
         }
-        BodyNode? body = parseFunctionBody();
-        if (body == null)
-            return null;
-        return new FuncDefNode(funcName, isAsync, parameters, returnType, body);
-    }
-
-    private PrintableList<FuncParam> parseParameters()
-    {
-        var parameters = new PrintableList<FuncParam>();
-
-        while (CurrentToken.Type != Token.Types.D_PAR_CLO)
-        {
-            if (CurrentToken.Type != Token.Types.IDENT)
-            {
-                throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-            }
-            string paramName = CurrentToken.Value;
-            incrementIndex();
-
-            if (CurrentToken.Type != Token.Types.D_COLON)
-            {
-                throw new SyntaxErrorException([":"], CurrentToken);
-            }
-            incrementIndex();
-
-            TypeDefinitionNode? paramType = parseTypeDefinitionNode();
-            if (paramType != null)
-            {
-                parameters.Add(new FuncParam(paramName, paramType));
-            } 
-
-            if (CurrentToken.Type == Token.Types.COMMA)
-            {
-                incrementIndex();
-            }
-            else if (CurrentToken.Type != Token.Types.D_PAR_CLO)
-            {
-                throw new SyntaxErrorException(["','", "')'"], CurrentToken);
-            }
-        }
-
+        string funcName = CurrentToken.Value;
         incrementIndex();
+        FuncShapeNode? funcShape = (FuncShapeNode?)delegateToHandler(funcShapeHandler);
+        if (funcShape == null) return null;
 
-        return parameters;
+        return new ThreadDefNode(funcName, funcShape);
     }
 
-    private TypeDefinitionNode? getReturnType()
-    {
-        if (CurrentToken.Type != Token.Types.OP_RIGHT_OP)
-        {
-            return null;
-        }
-        incrementIndex();
-
-        return parseTypeDefinitionNode();
-    }
-
-    private TypeDefinitionNode? parseTypeDefinitionNode()
-    {
-        ParseNode? varDefNode = delegateToHandler(varDefinitionHandler);
-        if (varDefNode == null)
-        {
-            return null;
-        }
-        return (TypeDefinitionNode)varDefNode;
-    }
-
-    private BodyNode? parseFunctionBody()
-    {
-        ParseNode? bodyNode = delegateToHandler(bodyHandler);
-        if (bodyNode == null)
-        {
-            return null;
-        }
-        return (BodyNode)bodyNode;
-    }
 }
