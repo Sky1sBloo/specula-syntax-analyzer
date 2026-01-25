@@ -11,9 +11,11 @@ public class ContractStateTransitionsHandler : Handler
     protected override ParseNode? verifyTokens()
     {
         var allTransitions = new PrintableList<StateTransition>();
+        bool sawStateDeclaration = false;
 
         while (HasMoreTokens && CurrentToken.Type == Token.Types.K_STATE)
         {
+            sawStateDeclaration = true;
             expectTokenType(Token.Types.K_STATE);
             assertTokenType(Token.Types.IDENT);
             string currentStateName = CurrentToken.Value;
@@ -51,11 +53,13 @@ public class ContractStateTransitionsHandler : Handler
             }
 
             expectTokenType(Token.Types.D_SEMICOLON);
-            incrementIndex();
         }
 
-        return allTransitions.Count > 0 
-            ? new StateTransitionsNode(allTransitions)
-            : null;
+        if (!sawStateDeclaration)
+        {
+            return null;
+        }
+
+        return new StateTransitionsNode(allTransitions);
     }
 }

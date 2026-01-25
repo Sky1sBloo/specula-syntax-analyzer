@@ -15,6 +15,7 @@ public class InitStateHandler: Handler
         assertTokenType(Token.Types.IDENT);
         string stateName = CurrentToken.Value;
         incrementIndex();
+        expectTokenType(Token.Types.D_SEMICOLON);
 
         return new InitStateNode(new StateNode(stateName));
     }

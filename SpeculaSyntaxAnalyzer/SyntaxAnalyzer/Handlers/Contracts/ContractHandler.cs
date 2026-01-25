@@ -8,14 +8,14 @@ public class ContractHandler : Handler
     private readonly InitStateHandler initStateHandler;
     private readonly ContractRoleHandler contractRoleHandler;
     private readonly ContractStateTransitionsHandler contractStateTransitionsHandler;
-    private readonly ContractMessageEventHandler contractMessageEventHandler;
+    private readonly ContractMessageEventsDirectionHandler contractMessageEventHandler;
     private readonly ContractEventHandler contractEventHandler;
     public ContractHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
     {
         initStateHandler = new InitStateHandler(errorsHandler);
         contractRoleHandler = new ContractRoleHandler(errorsHandler);
         contractStateTransitionsHandler = new ContractStateTransitionsHandler(errorsHandler);
-        contractMessageEventHandler = new ContractMessageEventHandler(errorsHandler);
+        contractMessageEventHandler = new ContractMessageEventsDirectionHandler(errorsHandler);
         contractEventHandler = new ContractEventHandler(errorsHandler);
     }
 
@@ -25,6 +25,8 @@ public class ContractHandler : Handler
         assertTokenType(Token.Types.IDENT);
         string contractName = CurrentToken.Value;
         incrementIndex();
+        // Consume opening contract brace so child handlers start at the correct token
+        expectTokenType(Token.Types.D_CBRAC_OP);
         InitStateNode? initStateNode = delegateToHandler(initStateHandler) as InitStateNode;
         if (initStateNode == null) return null;
         RolesNode? rolesNode = delegateToHandler(contractRoleHandler) as RolesNode;
@@ -35,6 +37,12 @@ public class ContractHandler : Handler
             var stateTransitionsNode = delegateToHandler(contractStateTransitionsHandler) as StateTransitionsNode;
             if (stateTransitionsNode == null) return null;
             stateTransitionNodes.Add(stateTransitionsNode);
+        }
+        // to catch orphaned message events without a direction header
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.IDENT)
+        {
+            errorHandler.AddError("Message event missing direction header [from -> to]");
+            return null;
         }
         var messageEventsList = new PrintableList<ContractMessageEventsNode>();
 
