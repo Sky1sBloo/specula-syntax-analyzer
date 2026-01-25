@@ -1,7 +1,7 @@
 
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
-public interface ModuleNode : ParseNode;
+public interface ModuleNode : RootStatement;
 
 public record ExportNode(Statement statement) : ModuleNode;
 public record ImportDefaultNode(string moduleName, string alias) : ModuleNode;

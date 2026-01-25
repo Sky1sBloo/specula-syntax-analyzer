@@ -50,10 +50,6 @@ public class BodyHandler : Handler
                 case Token.Types.K_LET:
                     handleDeclarationStmt();
                     break;
-                case Token.Types.K_FN:
-                case Token.Types.K_THREAD:
-                    handleFuncDef();
-                    break;
                 case Token.Types.IDENT:
                     int errorCountBefore = errorHandler.ErrorList.Count;
                     if (!tryHandleIdentifierStart())
