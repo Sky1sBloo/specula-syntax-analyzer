@@ -9,6 +9,7 @@ public class ExportHandler : Handler
     private readonly StructHandler structHandler;
     private readonly InterfaceHandler interfaceHandler;
     private readonly ImplHandler implHandler;
+    private readonly ContractHandler contractHandler;
 
     public ExportHandler(ErrorsHandler errors) : base(errors)
     {
@@ -17,6 +18,7 @@ public class ExportHandler : Handler
         structHandler = new StructHandler(errors);
         interfaceHandler = new InterfaceHandler(errors);
         implHandler = new ImplHandler(errors);
+        contractHandler = new ContractHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -95,6 +97,11 @@ public class ExportHandler : Handler
             case Token.Types.K_IMPL:
                 {
                     ParseNode? node = delegateToHandler(implHandler);
+                    return (RootStatement?)node;
+                }
+            case Token.Types.K_CONTRACT:
+                {
+                    ParseNode? node = delegateToHandler(contractHandler);
                     return (RootStatement?)node;
                 }
             default:
