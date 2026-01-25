@@ -54,6 +54,7 @@ public class FuncDefHandler : Handler
             throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
         }
         string funcName = CurrentToken.Value;
+        Token identToken = CurrentToken;
         incrementIndex();
         FuncShapeNode? funcShape = (FuncShapeNode?)delegateToHandler(funcShapeHandler);
         if (funcShape == null) return null;
@@ -61,7 +62,7 @@ public class FuncDefHandler : Handler
         {
             throw new SyntaxErrorException(
                 ["Thread return type must be VOID"],
-                CurrentToken
+                identToken
             );
         }
 
