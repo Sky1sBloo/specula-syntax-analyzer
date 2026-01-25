@@ -12,6 +12,7 @@ public abstract class Handler
     private int i;
     protected readonly ErrorsHandler errorHandler;
     private List<Token> tokens = new();
+    protected Token? prevToken = null;
 
     protected Token CurrentToken
     {
@@ -19,7 +20,7 @@ public abstract class Handler
         {
             if (i < 0 || i >= tokens.Count)
             {
-                throw new InvalidOperationException($"Attempted to access token at index {i}, but only {tokens.Count} tokens available");
+                throw new SyntaxErrorException(prevToken);
             }
             return tokens.ElementAt(i);
         }
@@ -58,6 +59,11 @@ public abstract class Handler
     /// </summary>
     protected void expectTokenType(Token.Types expectedType)
     {
+        if (!HasMoreTokens)
+        {
+            throw new SyntaxErrorException([TokenTypeToString(expectedType)], prevToken);
+        }
+        
         if (CurrentToken.Type != expectedType)
         {
             throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
@@ -71,6 +77,13 @@ public abstract class Handler
     /// </summary>
     protected void expectTokenType(params Token.Types[] expectedTypes)
     {
+        if (!HasMoreTokens)
+        {
+            var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
+            string expected = string.Join(", ", typeNames);
+            throw new SyntaxErrorException($"Expected token: {expected}, but reached end of file");
+        }
+        
         bool found = false;
         foreach (var type in expectedTypes)
         {
@@ -95,6 +108,11 @@ public abstract class Handler
     /// </summary>
     protected void assertTokenType(Token.Types expectedType)
     {
+        if (!HasMoreTokens)
+        {
+            throw new SyntaxErrorException($"Expected token: {TokenTypeToString(expectedType)}, but reached end of file");
+        }
+        
         if (CurrentToken.Type != expectedType)
         {
             throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
@@ -107,6 +125,13 @@ public abstract class Handler
     /// </summary>
     protected void assertTokenType(params Token.Types[] expectedTypes)
     {
+        if (!HasMoreTokens)
+        {
+            var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
+            string expected = string.Join(", ", typeNames);
+            throw new SyntaxErrorException($"Expected token: {expected}, but reached end of file");
+        }
+        
         bool found = false;
         foreach (var type in expectedTypes)
         {
@@ -232,7 +257,13 @@ public abstract class Handler
     /// <summary>
     /// Increments the given index to the next
     /// </summary>
-    protected void incrementIndex() { i++; }
+    protected void incrementIndex() { 
+        if (HasMoreTokens)
+        {
+            prevToken = CurrentToken;
+        }
+        i++; 
+    }
 
     /// <summary>
     /// Skips to to the specified index 

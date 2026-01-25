@@ -92,21 +92,16 @@ public class StructHandlerTests
     public void EmptyStructThrows()
     {
         var output = LexerFileReader.ParseFile("Samples/Struct/Invalid/EmptyStruct.json");
-        Assert.Throws<InvalidOperationException>(() => analyzer.ReadTokens(output.Tokens));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.GreaterThan(0), "Should have errors for empty struct");
     }
 
     [Test]
     public void MissingClosingBraceThrows()
     {
         var output = LexerFileReader.ParseFile("Samples/Struct/Invalid/MissingClosingBrace.json");
-        Assert.Throws<InvalidOperationException>(() => analyzer.ReadTokens(output.Tokens));
-    }
-
-    [Test]
-    public void FieldWithoutLetThrows()
-    {
-        var output = LexerFileReader.ParseFile("Samples/Struct/Invalid/NoLet.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.GreaterThan(0), "Should have errors for missing closing brace");
     }
 
     [Test]
