@@ -56,7 +56,7 @@ public class InterfaceHandlerTests
         var output = LexerFileReader.ParseFile("Samples/Interface/SelfParam.json");
         var result = analyzer.ReadTokens(output.Tokens) as RootNode;
         
-        Assert.That(result.statements, Has.Count.EqualTo(1));
+        Assert.That(result?.statements, Has.Count.EqualTo(1));
         var interfaceDef = result.statements[0] as InterfaceDefNode;
         Assert.That(interfaceDef, Is.Not.Null);
         Assert.That(interfaceDef.interfaceName, Is.EqualTo("SelfParam"));
@@ -69,7 +69,7 @@ public class InterfaceHandlerTests
         var output = LexerFileReader.ParseFile("Samples/Interface/MixedSelf.json");
         var result = analyzer.ReadTokens(output.Tokens) as RootNode;
         
-        Assert.That(result.statements, Has.Count.EqualTo(1));
+        Assert.That(result?.statements, Has.Count.EqualTo(1));
         var interfaceDef = result.statements[0] as InterfaceDefNode;
         Assert.That(interfaceDef, Is.Not.Null);
         Assert.That(interfaceDef.interfaceName, Is.EqualTo("MultiMixed"));
@@ -82,7 +82,7 @@ public class InterfaceHandlerTests
         var output = LexerFileReader.ParseFile("Samples/Interface/MultiFunction.json");
         var result = analyzer.ReadTokens(output.Tokens) as RootNode;
         
-        Assert.That(result.statements, Has.Count.EqualTo(1));
+        Assert.That(result?.statements, Has.Count.EqualTo(1));
         var interfaceDef = result.statements[0] as InterfaceDefNode;
         Assert.That(interfaceDef, Is.Not.Null);
         Assert.That(interfaceDef.interfaceName, Is.EqualTo("Multi"));
