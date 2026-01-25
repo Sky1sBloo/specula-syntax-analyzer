@@ -2,8 +2,8 @@ namespace SpeculaSyntaxAnalyzer.ParseTree;
 
 public record ContractNode(string Identifier,
     InitStateNode InitialState, 
-    PrintableList<RoleNode> Roles,
+    RolesNode Roles,
     PrintableList<StateTransitionsNode> StateTransitions,
     PrintableList<ContractMessageEventsNode> MessageEvents,
-    PrintableList<ContractEventNodes> Events
+    PrintableList<ContractEventNode> Events
     ) : ParseNode;
