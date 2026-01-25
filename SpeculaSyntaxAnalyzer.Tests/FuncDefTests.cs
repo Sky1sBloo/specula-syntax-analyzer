@@ -21,10 +21,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/BaseFunction.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("greet"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
@@ -40,10 +40,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/FullDefinition.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("compute"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
@@ -62,10 +62,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/ParamNoReturnType.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("process"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
@@ -82,10 +82,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/ReturnTypeOnly.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("getValue"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
@@ -101,10 +101,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/DefaultCapabilities.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("multiply"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(2));
@@ -122,10 +122,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/AsyncFunctionFullDefinition.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("fetchData"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(1));
@@ -143,10 +143,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/AsyncMultiParam.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("transform"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(2));
@@ -166,10 +166,10 @@ public class FuncDefTests
         var output = LexerFileReader.ParseFile("Samples/FuncDef/AsyncNoParamsReturnType.json");
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         Assert.That(node, Is.Not.Null);
-        if (node is BodyNode bodyNode)
+        if (node is RootNode rootNode)
         {
-            Assert.That(bodyNode.statements.Count, Is.EqualTo(1));
-            var funcDef = bodyNode.statements[0] as FuncDefNode;
+            Assert.That(rootNode.statements.Count, Is.EqualTo(1));
+            var funcDef = rootNode.statements[0] as FuncDefNode;
             Assert.That(funcDef, Is.Not.Null);
             Assert.That(funcDef.Identifier, Is.EqualTo("compute"));
             Assert.That(funcDef.FunctionNode.Parameters.Count, Is.EqualTo(0));
