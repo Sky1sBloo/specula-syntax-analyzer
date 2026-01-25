@@ -8,7 +8,7 @@ public class FuncShapeHandler: Handler
     private readonly BodyHandler bodyHandler;
     public FuncShapeHandler(ErrorsHandler errors) : base(errors)
     {
-        varDefinitionHandler = new(errors, true);
+        varDefinitionHandler = new(errors);
         bodyHandler = new(errors);
     }
 
@@ -53,7 +53,8 @@ public class FuncShapeHandler: Handler
             }
             incrementIndex();
 
-            TypeDefinitionNode? paramType = parseTypeDefinitionNode();
+            // Parse the type and its optional capabilities (without the leading colon)
+            TypeDefinitionNode? paramType = parseParameterType();
             if (paramType != null)
             {
                 parameters.Add(new FuncParam(paramName, paramType));
@@ -76,12 +77,10 @@ public class FuncShapeHandler: Handler
 
     private TypeDefinitionNode? getReturnType()
     {
-        if (CurrentToken.Type != Token.Types.OP_RIGHT_OP)
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_COLON)
         {
             return null;
         }
-        incrementIndex();
-
         return parseTypeDefinitionNode();
     }
 
@@ -93,6 +92,35 @@ public class FuncShapeHandler: Handler
             return null;
         }
         return (TypeDefinitionNode)varDefNode;
+    }
+
+    private TypeDefinitionNode? parseParameterType()
+    {
+        // Parse type directly without expecting a leading colon
+        // This is used for function parameters where the colon has already been consumed
+        DataTypeHandler dataTypeHandler = new(errorHandler);
+        TypeNode? dataType = (TypeNode?)delegateToHandler(dataTypeHandler);
+        
+        if (dataType == null)
+        {
+            return null;
+        }
+
+        // Check for capabilities
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_BRAC_OP)
+        {
+            CapabilityHandler capabilityHandler = new(errorHandler);
+            Capabilities? capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
+            if (capabilities == null)
+            {
+                return null;
+            }
+            return new TypeDefinitionNode(dataType, capabilities);
+        }
+
+        // Default capabilities if none specified
+        Capabilities defaultCapabilities = CapabilityHandler.GenerateDefaultCapabilities();
+        return new TypeDefinitionNode(dataType, defaultCapabilities);
     }
 
     private BodyNode? parseFunctionBody()
