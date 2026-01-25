@@ -37,6 +37,14 @@ public class StructHandler: Handler
         }
 
         incrementIndex();
+
+        if (fields.Count == 0)
+        {
+            throw new SyntaxErrorException(
+                ["At least one field in struct definition"],
+                CurrentToken
+            );
+        }
         return new StructDefNode(structName, fields);
     }
 }
