@@ -1,3 +1,4 @@
+using System.Reflection;
 using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
@@ -5,62 +6,113 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class SyntaxAnalyzerRoot
 {
     public readonly ErrorsHandler ErrorHandler;
-    private BodyHandler bodyHandler;
-
+    private readonly FuncDefHandler funcDefHandler;
+    private readonly DeclarationHandler declarationHandler;
+    private readonly ImportsHandler importsHandler;
+    private readonly ExportHandler exportHandler;
+    
+    private PrintableList<RootStatement> statements = new();
+    private List<Token> tokens = [];
     private int i = 0;
 
     public SyntaxAnalyzerRoot()
     {
         ErrorHandler = new();
-        bodyHandler = new BodyHandler(ErrorHandler);
+        funcDefHandler = new FuncDefHandler(ErrorHandler);
+        declarationHandler = new DeclarationHandler(ErrorHandler);
+        importsHandler = new ImportsHandler(ErrorHandler);
+        exportHandler = new ExportHandler(ErrorHandler);
     }
 
     public ParseNode? ReadTokens(List<Token> tokens)
     {
-        // Wrap tokens with { } to use BodyHandler
-        List<Token> wrappedTokens =
-        [
-            new Token
+        this.tokens = tokens;
+        this.i = 0;
+        statements = new PrintableList<RootStatement>();
+
+        while (i < tokens.Count)
+        {
+            RootStatement? stmt = parseRootStatement();
+            if (stmt != null)
             {
-                Type = Token.Types.D_CBRAC_OP,
-                Value = "{",
-                Line = 0,
-                CharStart = 0,
-                CharEnd = 0
-            },
-            .. tokens,
-            new Token
-            {
-                Type = Token.Types.D_CBRAC_CLO,
-                Value = "}",
-                Line = tokens.Count > 0 ? tokens[^1].Line : 0,
-                CharStart = 0,
-                CharEnd = 0
-            },
-        ];
-        return delegateToHandler(bodyHandler, wrappedTokens);
+                statements.Add(stmt);
+            }
+        }
+
+        return new RootNode(statements);
     }
 
-    private ParseNode? delegateToHandler(Handler handler, List<Token> token)
+    private RootStatement? parseRootStatement()
+    {
+        if (i >= tokens.Count)
+            return null;
+
+        Token currentToken = tokens[i];
+
+        switch (currentToken.Type)
+        {
+            case Token.Types.K_FN:
+            case Token.Types.K_THREAD:
+                return handleFuncDef();
+            case Token.Types.K_LET:
+                return handleDeclaration();
+            case Token.Types.K_IMPORT:
+                return handleImport();
+            case Token.Types.D_BRAC_OP:
+                return handleExport();
+            default:
+                throw new SyntaxErrorException(
+                    ["fn", "thread", "let", "import", "["],
+                    currentToken);
+        }
+    }
+
+    private RootStatement? handleFuncDef()
+    {
+        return (RootStatement?)delegateToHandler(funcDefHandler);
+    }
+
+    private RootStatement? handleDeclaration()
+    {
+        RootStatement? stmt = (RootStatement?)delegateToHandler(declarationHandler);
+        // Declaration handler stops at semicolon, consume it
+        if (stmt != null && i < tokens.Count && tokens[i].Type == Token.Types.D_SEMICOLON)
+        {
+            i++;
+        }
+        return stmt;
+    }
+
+    private RootStatement? handleImport()
+    {
+        return (RootStatement?)delegateToHandler(importsHandler);
+    }
+    private RootStatement? handleExport()
+    {
+        return (RootStatement?)delegateToHandler(exportHandler);
+    }
+
+    private ParseNode? delegateToHandler(Handler handler)
     {
         try
         {
-            HandlerOutput output = handler.HandleToken(token, i);
+            HandlerOutput output = handler.HandleToken(tokens, i);
             i = output.endIndex;
             return output.node;
         }
         catch (SyntaxErrorException ex)
         {
             ErrorHandler.AddError(ex);
-            while (i < token.Count && token[i].Type != Token.Types.D_SEMICOLON)
+            while (i < tokens.Count && tokens[i].Type != Token.Types.D_SEMICOLON)
             {
                 i++;
             }
-            if (i < token.Count && token[i].Type == Token.Types.D_SEMICOLON)
+            if (i < tokens.Count && tokens[i].Type == Token.Types.D_SEMICOLON)
             {
                 i++;
             }
         }
         return null;
     }
+
 }

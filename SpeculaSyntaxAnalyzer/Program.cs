@@ -9,7 +9,7 @@ foreach (string iFile in files)
     SyntaxAnalyzerRoot analyzer = new();
     ParseNode? node = analyzer.ReadTokens(output.Tokens);
     if (node != null) {
-        if (node is BodyNode bodyNode)
+        if (node is RootNode bodyNode)
         {
             Console.WriteLine($"Body contains {bodyNode.statements.Count} statements");
             foreach (var stmt in bodyNode.statements)
