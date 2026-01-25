@@ -53,6 +53,120 @@ public abstract class Handler
     protected abstract ParseNode? verifyTokens();
 
     /// <summary>
+    /// Checks if the current token matches the expected type and throws if not.
+    /// Also increments the index past the matched token.
+    /// </summary>
+    protected void expectTokenType(Token.Types expectedType)
+    {
+        if (CurrentToken.Type != expectedType)
+        {
+            throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
+        }
+        incrementIndex();
+    }
+
+    /// <summary>
+    /// Checks if the current token matches one of the expected types and throws if not.
+    /// Also increments the index past the matched token.
+    /// </summary>
+    protected void expectTokenType(params Token.Types[] expectedTypes)
+    {
+        bool found = false;
+        foreach (var type in expectedTypes)
+        {
+            if (CurrentToken.Type == type)
+            {
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found)
+        {
+            var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
+            throw new SyntaxErrorException(typeNames, CurrentToken);
+        }
+        incrementIndex();
+    }
+
+    /// <summary>
+    /// Checks if the current token matches the expected type and throws if not.
+    /// Does NOT increment the index.
+    /// </summary>
+    protected void assertTokenType(Token.Types expectedType)
+    {
+        if (CurrentToken.Type != expectedType)
+        {
+            throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
+        }
+    }
+
+    /// <summary>
+    /// Checks if the current token matches one of the expected types and throws if not.
+    /// Does NOT increment the index.
+    /// </summary>
+    protected void assertTokenType(params Token.Types[] expectedTypes)
+    {
+        bool found = false;
+        foreach (var type in expectedTypes)
+        {
+            if (CurrentToken.Type == type)
+            {
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found)
+        {
+            var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
+            throw new SyntaxErrorException(typeNames, CurrentToken);
+        }
+    }
+
+    private static string TokenTypeToString(Token.Types type)
+    {
+        return type switch
+        {
+            Token.Types.K_FN => "fn",
+            Token.Types.K_ASYNC => "async",
+            Token.Types.K_LET => "let",
+            Token.Types.K_IF => "if",
+            Token.Types.K_ELSE => "else",
+            Token.Types.K_FOR => "for",
+            Token.Types.K_WHILE => "while",
+            Token.Types.K_DO => "do",
+            Token.Types.K_TYPE => "type",
+            Token.Types.K_MOVE => "move",
+            Token.Types.K_SHARE => "share",
+            Token.Types.K_REF => "ref",
+            Token.Types.K_STRUCT => "struct",
+            Token.Types.K_VIEW => "view",
+            Token.Types.K_MUT => "mut",
+            Token.Types.K_CONST => "const",
+            Token.Types.K_OWN => "own",
+            Token.Types.D_PAR_OP => "(",
+            Token.Types.D_PAR_CLO => ")",
+            Token.Types.D_CBRAC_OP => "{",
+            Token.Types.D_CBRAC_CLO => "}",
+            Token.Types.D_BRAC_OP => "[",
+            Token.Types.D_BRAC_CLO => "]",
+            Token.Types.D_COLON => ":",
+            Token.Types.D_SEMICOLON => ";",
+            Token.Types.COMMA => ",",
+            Token.Types.IDENT => "identifier",
+            Token.Types.L_INT => "integer",
+            Token.Types.L_FLOAT => "float",
+            Token.Types.L_DOUBLE => "double",
+            Token.Types.L_BOOL => "boolean",
+            Token.Types.L_CHAR => "character",
+            Token.Types.L_STRING => "string",
+            Token.Types.L_NULL => "null",
+            _ => type.ToString()
+        };
+    }
+
+    /// <summary>
     /// Delegates the current index to to the handler
     /// Automatically moves the index on the end of the handler
     /// </summary>

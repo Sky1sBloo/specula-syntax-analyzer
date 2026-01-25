@@ -14,11 +14,7 @@ public class WhileLoopHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.K_WHILE)
-        {
-            throw new SyntaxErrorException(["while"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.K_WHILE);
         Expression? condition = handleCondition();
         if (condition == null)
         {
@@ -35,17 +31,9 @@ public class WhileLoopHandler : Handler
 
     private Expression? handleCondition()
     {
-        if (CurrentToken.Type != Token.Types.D_PAR_OP)
-        {
-            throw new SyntaxErrorException(["("], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_OP);
         Expression? condition = (Expression?)delegateToHandler(expressionHandler);
-        if (CurrentToken.Type != Token.Types.D_PAR_CLO)
-        {
-            throw new SyntaxErrorException([")"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_CLO);
         return condition;
     }
 

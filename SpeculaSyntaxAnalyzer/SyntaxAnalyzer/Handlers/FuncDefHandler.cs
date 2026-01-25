@@ -34,10 +34,7 @@ public class FuncDefHandler : Handler
             isAsync = true;
             incrementIndex();
         }
-        if (CurrentToken.Type != Token.Types.IDENT)
-        {
-            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-        }
+        assertTokenType(Token.Types.IDENT);
         string funcName = CurrentToken.Value;
         incrementIndex();
         FuncShapeNode? funcShape = (FuncShapeNode?)delegateToHandler(funcShapeHandler);
@@ -49,10 +46,7 @@ public class FuncDefHandler : Handler
     private ThreadDefNode? handleThreadDefinition()
     {
         incrementIndex();
-        if (CurrentToken.Type != Token.Types.IDENT)
-        {
-            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-        }
+        assertTokenType(Token.Types.IDENT);
         string funcName = CurrentToken.Value;
         Token identToken = CurrentToken;
         incrementIndex();

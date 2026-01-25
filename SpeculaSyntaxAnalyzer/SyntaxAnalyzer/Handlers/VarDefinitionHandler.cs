@@ -18,11 +18,7 @@ public class VarDefinitionHandler : Handler
 
     protected override ParseNode? verifyTokens()
     {
-        if (CurrentToken.Type != Token.Types.D_COLON)
-        {
-            throw new SyntaxErrorException([":"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_COLON);
 
         TypeNode? dataType = getType();
         if (dataType == null) return null;

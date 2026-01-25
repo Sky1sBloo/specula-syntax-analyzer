@@ -19,11 +19,7 @@ public class BodyHandler : Handler
     {
         // reset statements for each new body parse to avoid leaking previous state
         statements = new PrintableList<Statement>();
-        if (CurrentToken.Type != Token.Types.D_CBRAC_OP)
-        {
-            throw new SyntaxErrorException(["{"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_CBRAC_OP);
         while (true)
         {
             if (!HasMoreTokens)
