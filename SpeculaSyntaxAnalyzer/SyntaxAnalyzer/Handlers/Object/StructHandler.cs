@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
