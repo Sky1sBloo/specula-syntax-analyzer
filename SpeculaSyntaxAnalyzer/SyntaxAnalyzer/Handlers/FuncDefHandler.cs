@@ -57,6 +57,13 @@ public class FuncDefHandler : Handler
         incrementIndex();
         FuncShapeNode? funcShape = (FuncShapeNode?)delegateToHandler(funcShapeHandler);
         if (funcShape == null) return null;
+        if (funcShape.ReturnType.DataType.DataType != DataTypes.VOID)
+        {
+            throw new SyntaxErrorException(
+                ["Thread return type must be VOID"],
+                CurrentToken
+            );
+        }
 
         return new ThreadDefNode(funcName, funcShape);
     }

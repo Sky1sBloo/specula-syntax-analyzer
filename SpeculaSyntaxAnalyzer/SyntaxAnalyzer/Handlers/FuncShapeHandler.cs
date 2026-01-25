@@ -14,19 +14,7 @@ public class FuncShapeHandler: Handler
 
     protected override ParseNode? verifyTokens()
     {
-        bool isAsync = false;
 
-        if (CurrentToken.Type == Token.Types.K_ASYNC)
-        {
-            isAsync = true;
-            incrementIndex();
-        }
-        if (CurrentToken.Type != Token.Types.IDENT)
-        {
-            throw new SyntaxErrorException(["IDENTIFIER"], CurrentToken);
-        }
-        string funcName = CurrentToken.Value;
-        incrementIndex();
 
         if (CurrentToken.Type != Token.Types.D_PAR_OP)
         {
