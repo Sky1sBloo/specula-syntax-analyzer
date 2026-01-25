@@ -61,6 +61,7 @@ public class ContractHandler : Handler
             if (eventNode == null) return null;
             eventsList.Add(eventNode);
         }
+        expectTokenType(Token.Types.D_CBRAC_CLO);
         return new ContractNode(
             contractName,
             initStateNode,
