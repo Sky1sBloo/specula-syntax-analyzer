@@ -4,10 +4,13 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class ExportHandler : Handler
 {
-    private readonly StatementHandler statementHandler;
+    private readonly FuncDefHandler funcDefHandler;
+    private readonly DeclarationHandler declarationHandler;
+    
     public ExportHandler(ErrorsHandler errors) : base(errors)
     {
-        statementHandler = new StatementHandler(errors);
+        funcDefHandler = new FuncDefHandler(errors);
+        declarationHandler = new DeclarationHandler(errors);
     }
 
     protected override ParseNode? verifyTokens()
@@ -17,40 +20,66 @@ public class ExportHandler : Handler
             throw new SyntaxErrorException(["["], CurrentToken);
         }
         incrementIndex();
+        
+        bool isDefault = false;
         switch (CurrentToken.Type)
         {
             case Token.Types.K_EXPORT:
-                return handleExportStatement();
+                incrementIndex();
+                break;
             case Token.Types.K_EXPORT_DEFAULT:
-                return handleExportDefaultStatement();
+                isDefault = true;
+                incrementIndex();
+                break;
             default:
                 throw new SyntaxErrorException(["export", "export default"], CurrentToken);
         }
-    }
-
-    private ExportModuleNode? handleExportStatement()
-    {
-        incrementIndex();
+        
         if (CurrentToken.Type != Token.Types.D_BRAC_CLO)
         {
             throw new SyntaxErrorException(["]"], CurrentToken);
         }
         incrementIndex();
-        ParseNode? stmt = delegateToHandler(statementHandler);
+        
+        // Parse the root statement that is being exported
+        RootStatement? stmt = parseExportedRootStatement();
         if (stmt == null) return null;
-        return new ExportNode((Statement)stmt);
+        
+        if (isDefault)
+        {
+            return new ExportDefaultNode(stmt);
+        }
+        else
+        {
+            return new ExportNode(stmt);
+        }
     }
 
-    private ExportModuleNode? handleExportDefaultStatement()
+    private RootStatement? parseExportedRootStatement()
     {
-        incrementIndex();
-        if (CurrentToken.Type != Token.Types.D_BRAC_CLO)
+        if (!HasMoreTokens)
         {
-            throw new SyntaxErrorException(["]"], CurrentToken);
+            throw new SyntaxErrorException(["statement", "declaration", "function"], CurrentToken);
         }
-        incrementIndex();
-        ParseNode? stmt = delegateToHandler(statementHandler);
-        if (stmt == null) return null;
-        return new ExportDefaultNode((Statement)stmt);
+
+        Token currentToken = CurrentToken;
+        switch (currentToken.Type)
+        {
+            case Token.Types.K_FN:
+            case Token.Types.K_THREAD:
+                return (RootStatement?)delegateToHandler(funcDefHandler);
+            case Token.Types.K_LET:
+                RootStatement? decl = (RootStatement?)delegateToHandler(declarationHandler);
+                // Declaration handler stops at semicolon, consume it
+                if (decl != null && HasMoreTokens && CurrentToken.Type == Token.Types.D_SEMICOLON)
+                {
+                    incrementIndex();
+                }
+                return decl;
+            default:
+                throw new SyntaxErrorException(
+                    ["fn", "thread", "let"],
+                    currentToken);
+        }
     }
 }
