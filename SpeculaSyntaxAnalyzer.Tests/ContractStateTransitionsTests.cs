@@ -98,6 +98,8 @@ public class ContractStateTransitionsTests
         var output = LexerFileReader.ParseFile("Samples/Contract/States/NoTransition.json");
         HandlerOutput node = stateTransitionsHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
-        Assert.That(node.node, Is.Null);
+        Assert.That(node.node, Is.TypeOf<StateTransitionsNode>());
+        var transitions = (StateTransitionsNode)node.node!;
+        Assert.That(transitions.Transitions.Count, Is.EqualTo(0));
     }
 }
