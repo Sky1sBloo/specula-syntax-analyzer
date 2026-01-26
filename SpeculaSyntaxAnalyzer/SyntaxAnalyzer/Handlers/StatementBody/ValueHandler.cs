@@ -26,11 +26,7 @@ public class ValueHandler : Handler
                 ParseNode? inner = delegateToHandler(new ExpressionHandler(errorHandler));
                 if (inner is not Movable innerVal)
                 {
-                    throw new SyntaxErrorException(["identifier", "function call", "member access"], CurrentToken);
-                }
-                if (innerVal is LiteralValue)
-                {
-                    throw new SyntaxErrorException(["identifier", "function call", "member access"], CurrentToken);
+                    throw new SyntaxErrorException(["identifier", "function call", "member access"], PrevToken);
                 }
 
                 return movementType switch

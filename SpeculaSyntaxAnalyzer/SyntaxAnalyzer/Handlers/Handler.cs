@@ -12,7 +12,17 @@ public abstract class Handler
     private int i;
     protected readonly ErrorsHandler errorHandler;
     private List<Token> tokens = new();
-    protected Token? prevToken = null;
+    protected Token? PrevToken
+    {
+        get
+        {
+            if (i == 0)
+            {
+                return null;
+            }
+            return tokens[i - 1];
+        }
+    }
 
     protected Token CurrentToken
     {
@@ -20,7 +30,7 @@ public abstract class Handler
         {
             if (i < 0 || i >= tokens.Count)
             {
-                throw new SyntaxErrorException(prevToken);
+                throw new SyntaxErrorException(PrevToken);
             }
             return tokens.ElementAt(i);
         }
@@ -61,9 +71,9 @@ public abstract class Handler
     {
         if (!HasMoreTokens)
         {
-            throw new SyntaxErrorException([TokenTypeToString(expectedType)], prevToken);
+            throw new SyntaxErrorException([TokenTypeToString(expectedType)], PrevToken);
         }
-        
+
         if (CurrentToken.Type != expectedType)
         {
             throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
@@ -83,7 +93,7 @@ public abstract class Handler
             string expected = string.Join(", ", typeNames);
             throw new SyntaxErrorException($"Expected token: {expected}, but reached end of file");
         }
-        
+
         bool found = false;
         foreach (var type in expectedTypes)
         {
@@ -93,7 +103,7 @@ public abstract class Handler
                 break;
             }
         }
-        
+
         if (!found)
         {
             var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
@@ -112,7 +122,7 @@ public abstract class Handler
         {
             throw new SyntaxErrorException($"Expected token: {TokenTypeToString(expectedType)}, but reached end of file");
         }
-        
+
         if (CurrentToken.Type != expectedType)
         {
             throw new SyntaxErrorException([TokenTypeToString(expectedType)], CurrentToken);
@@ -131,7 +141,7 @@ public abstract class Handler
             string expected = string.Join(", ", typeNames);
             throw new SyntaxErrorException($"Expected token: {expected}, but reached end of file");
         }
-        
+
         bool found = false;
         foreach (var type in expectedTypes)
         {
@@ -141,7 +151,7 @@ public abstract class Handler
                 break;
             }
         }
-        
+
         if (!found)
         {
             var typeNames = expectedTypes.Select(TokenTypeToString).ToList();
@@ -257,18 +267,15 @@ public abstract class Handler
     }
 
     protected int getIndex() { return i; }
-    
+
     protected void setIndex(int newIndex) { i = newIndex; }
 
     /// <summary>
     /// Increments the given index to the next
     /// </summary>
-    protected void incrementIndex() { 
-        if (HasMoreTokens)
-        {
-            prevToken = CurrentToken;
-        }
-        i++; 
+    protected void incrementIndex()
+    {
+        i++;
     }
 
     /// <summary>
