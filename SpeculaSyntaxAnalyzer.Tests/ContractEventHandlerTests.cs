@@ -27,7 +27,7 @@ public class ContractEventHandlerTests
         
         var failEvent = (ContractFailEventNode)node.node!;
         Assert.That(failEvent.Identifier, Is.EqualTo("low_battery"));
-        Assert.That(failEvent.Parameters.Count, Is.EqualTo(0));
+        Assert.That(failEvent.Parameters.Params.Count, Is.EqualTo(0));
     }
 
     [Test]
