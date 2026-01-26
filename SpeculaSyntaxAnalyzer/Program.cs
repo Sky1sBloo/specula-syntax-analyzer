@@ -9,30 +9,35 @@ foreach (string iFile in files)
     ErrorsHandler errorHandler = new();
     foreach (var error in output.Errors)
     {
-        errorHandler.AddError($"Lexer Error at line {error.Line}, char {error.CharPos}: {error.Message}");
+        errorHandler.AddError($"Lexer Error at {error.Line}:{error.CharPos}: {error.Message}");
     }
-    SyntaxAnalyzerRoot analyzer = new(errorHandler);
-    ParseNode? node = analyzer.ReadTokens(output.Tokens);
-    if (node != null) {
-        if (node is RootNode bodyNode)
+    if (output.Errors.Count == 0)
+    {
+        SyntaxAnalyzerRoot analyzer = new(errorHandler);
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        if (node != null && errorHandler.ErrorList.Count == 0)
         {
-            Console.WriteLine($"Body contains {bodyNode.Statements.Count} statements");
-            foreach (var stmt in bodyNode.Statements)
+            if (node is RootNode bodyNode)
             {
-                Console.WriteLine(stmt);
+                Console.WriteLine($"Body contains {bodyNode.Statements.Count} statements");
+                foreach (var stmt in bodyNode.Statements)
+                {
+                    Console.WriteLine(stmt);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Root node is not a BodyNode");
             }
         }
         else
         {
-            Console.WriteLine("Root node is not a BodyNode");
+            Console.WriteLine("No parse tree generated");
         }
-    } else
-    {
-        Console.WriteLine("No parse tree generated");
     }
-
     foreach (var error in errorHandler.ErrorList)
     {
         Console.WriteLine(error);
     }
 }
+

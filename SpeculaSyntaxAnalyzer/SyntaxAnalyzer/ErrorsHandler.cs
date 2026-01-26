@@ -7,7 +7,7 @@ public class ErrorsHandler
 
     public void AddError(string errorMsg)
     {
-        if (!SuppressErrors)
+        if (!SuppressErrors && !ErrorList.Contains(errorMsg))
         {
             ErrorList.Add(errorMsg);
         }
@@ -15,7 +15,7 @@ public class ErrorsHandler
 
     public void AddError(SyntaxErrorException exception)
     {
-        if (!SuppressErrors)
+        if (!SuppressErrors && !ErrorList.Contains(exception.Message))
         {
             ErrorList.Add(exception.Message);
         }
