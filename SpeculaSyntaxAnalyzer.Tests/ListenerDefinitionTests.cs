@@ -126,6 +126,25 @@ public class ListenerDefinitionTests
         Assert.That(failEvent.Parameters.Params[1].Identifier, Is.EqualTo("retries"));
     }
 
+    [Test]
+    public void ListenerWithFunctionDefinition()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Listener/Definition/WithFunctionDef.json");
+        HandlerOutput node = listenerHandler.HandleToken(output.Tokens, 0);
+        
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<ListenerNode>());
+        
+        var listener = (ListenerNode)node.node!;
+        Assert.That(listener.Name, Is.EqualTo("Server"));
+        Assert.That(listener.ContractName, Is.EqualTo("MotionControl"));
+        Assert.That(listener.Body.Count, Is.EqualTo(1));
+        Assert.That(listener.Body[0], Is.TypeOf<FuncDefNode>());
+        
+        var funcDef = (FuncDefNode)listener.Body[0];
+        Assert.That(funcDef.Identifier, Is.EqualTo("test"));
+    }
+
     // INVALID TEST CASES
 
     [Test]
