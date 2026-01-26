@@ -6,9 +6,9 @@ public class DoWhileLoopHandler : Handler
 {
     private readonly BodyHandler bodyHandler;
     private readonly ExpressionHandler expressionHandler;
-    public DoWhileLoopHandler(ErrorsHandler errors) : base(errors)
+    public DoWhileLoopHandler(ErrorsHandler errors, bool isListenerContext = false) : base(errors)
     {
-        bodyHandler = new(errors);
+        bodyHandler = new(errors, isListenerContext);
         expressionHandler = new(errors);
     }
 

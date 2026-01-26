@@ -23,11 +23,7 @@ public class ListenerMessageEventTests
     {
         var output = LexerFileReader.ParseFile("Samples/Listener/MessageEvents/BasicCase.json");
         HandlerOutput node = messageEventHandler.HandleToken(output.Tokens, 0);
-        foreach (var err in errorsHandler.ErrorList)
-        {
-            TestContext.WriteLine(err.ToString());
-        }
-        //Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         Assert.That(node.node, Is.TypeOf<ListenerMessageEventNode>());
         
         var messageEvent = (ListenerMessageEventNode)node.node!;
@@ -73,7 +69,11 @@ public class ListenerMessageEventTests
         Assert.That(node.node, Is.TypeOf<ListenerMessageEventNode>());
         
         var messageEvent = (ListenerMessageEventNode)node.node!;
-        Assert.That(messageEvent.Body.Body.Count, Is.EqualTo(0));
+        foreach (var statement in messageEvent.Body.Statements)
+        {
+            Console.WriteLine(statement);
+        }
+        Assert.That(messageEvent.Body.Statements.Count, Is.EqualTo(0));
     }
 
     [Test]
@@ -87,7 +87,7 @@ public class ListenerMessageEventTests
         var messageEvent = (ListenerMessageEventNode)node.node!;
         Assert.That(messageEvent.Name, Is.EqualTo("LogCommand"));
         // Body should have statements but no respond
-        Assert.That(messageEvent.Body.Body.Count, Is.GreaterThan(0));
+        Assert.That(messageEvent.Body.Statements.Count, Is.GreaterThan(0));
     }
 
     [Test]

@@ -12,10 +12,10 @@ public class ForLoopHandler : Handler
     private readonly DeclarationHandler declarationHandler;
     private readonly VarAssignHandler varAssignHandler;
 
-    public ForLoopHandler(ErrorsHandler errors) : base(errors)
+    public ForLoopHandler(ErrorsHandler errors, bool isListenerContext = false) : base(errors)
     {
         expressionHandler = new(errors);
-        bodyHandler = new(errors);
+        bodyHandler = new(errors, isListenerContext);
         declarationHandler = new(errors);
         varAssignHandler = new(errors);
     }
