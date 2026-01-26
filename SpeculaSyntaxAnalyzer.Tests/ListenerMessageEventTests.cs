@@ -94,9 +94,7 @@ public class ListenerMessageEventTests
     public void InvalidMissingName()
     {
         var output = LexerFileReader.ParseFile("Samples/Listener/MessageEvents/Invalid/NoName.json");
-        HandlerOutput node = messageEventHandler.HandleToken(output.Tokens, 0);
-        // Should have errors
-        Assert.That(errorsHandler.ErrorList.Count, Is.GreaterThan(0));
+        Assert.Throws<SyntaxErrorException>(() => messageEventHandler.HandleToken(output.Tokens, 0));
     }
 
     [Test]
