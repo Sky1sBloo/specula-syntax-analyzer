@@ -102,7 +102,7 @@ public class ValueHandler : Handler
                 }
             }
 
-            // Handle member access chaining: obj.member.member2
+            // Handle member access chaining: obj.member.member2 or obj.method()
             while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_PERIOD)
             {
                 incrementIndex();
@@ -112,7 +112,16 @@ public class ValueHandler : Handler
                 }
                 string member = CurrentToken.Value;
                 incrementIndex();
-                baseExpr = new MemberAccessValue(baseExpr!, member);
+                
+                // Check if this is a function call: obj.method()
+                if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
+                {
+                    baseExpr = handleMemberFunctionCall(baseExpr!, member);
+                }
+                else
+                {
+                    baseExpr = new MemberAccessValue(baseExpr!, member);
+                }
             }
 
             return (ParseNode?)baseExpr;
@@ -255,5 +264,67 @@ public class ValueHandler : Handler
 
         incrementIndex();
         return new StructInitialization(identifier, keys);
+    }
+
+    private MemberFunctionCallValue handleMemberFunctionCall(Expression obj, string method)
+    {
+        incrementIndex();
+        var parameters = new PrintableList<Expression>();
+
+        // For empty param list
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_CLO)
+        {
+            incrementIndex();
+            return new MemberFunctionCallValue(obj, method, parameters);
+        }
+
+        while (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            ExpressionHandler exprHandler = new ExpressionHandler(errorHandler);
+            ParseNode? paramExpr = delegateToHandler(exprHandler);
+
+            if (paramExpr is Expression expr)
+            {
+                parameters.Add(expr);
+            }
+            else
+            {
+                throw new SyntaxErrorException(["expression"], CurrentToken);
+            }
+
+            // Handle comma between parameters or closing paren; disallow trailing comma
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
+            {
+                incrementIndex();
+
+                    if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_PAR_CLO)
+                    {
+                        var ex = new SyntaxErrorException("Trailing comma in argument list.");
+                        errorHandler.AddError(ex);
+                        throw ex;
+                    }
+
+                continue;
+            }
+            else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+            {
+                throw new SyntaxErrorException([",", ")"], CurrentToken);
+            }
+        }
+
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            Token missing = new()
+            {
+                Type = Token.Types.UNKNOWN,
+                Line = getIndex(),
+                CharStart = 0,
+                CharEnd = 0
+            };
+            throw new SyntaxErrorException([")"], missing);
+        }
+
+        incrementIndex();
+        return new MemberFunctionCallValue(obj, method, parameters);
     }
 }
