@@ -8,3 +8,6 @@ public record FuncParams(PrintableList<FuncParam> Params) : ParseNode; // Used f
 public record FuncShapeNode(FuncParams Parameters, TypeDefinitionNode ReturnType, BodyNode Body) : ParseNode;
 public record FuncDefNode(string Identifier, bool IsAsync, FuncShapeNode FunctionNode) : FuncDef, ListenerBody;
 public record ThreadDefNode(string Identifier, FuncShapeNode FunctionNode) : FuncDef, ListenerBody;
+
+public record SpawnThreadNode(FunctionCallValue ThreadFunction) : Expression;
+public record AwaitNode(Expression AwaitedExpression) : Statement;

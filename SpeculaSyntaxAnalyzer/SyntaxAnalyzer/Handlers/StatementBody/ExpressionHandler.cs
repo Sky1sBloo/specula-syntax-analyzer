@@ -241,6 +241,15 @@ public class ExpressionHandler : Handler
     {
         switch (CurrentToken.Type)
         {
+            case Token.Types.K_SPAWN:
+                // Handle thread spawn as an expression: spawn funcCall(...)
+                incrementIndex();
+                Expression? spawned = (Expression?)delegateToHandler(valueHandler);
+                if (spawned is FunctionCallValue funcCall)
+                {
+                    return new SpawnThreadNode(funcCall);
+                }
+                throw new SyntaxErrorException(["function call"], PrevToken);
             case Token.Types.D_PAR_OP:
                 // Handle parenthesized expressions: (expression)
                 incrementIndex();
