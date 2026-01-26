@@ -36,7 +36,7 @@ public class ListenerDefinitionTests
         Assert.That(node.node, Is.TypeOf<ListenerNode>());
         
         var listener = (ListenerNode)node.node!;
-        Assert.That(listener.Name, Is.EqualTo("Robot"));
+        Assert.That(listener.Role.Name, Is.EqualTo("Robot"));
         Assert.That(listener.ContractName, Is.EqualTo("MotionControl"));
         Assert.That(listener.Body.Count, Is.EqualTo(1));
         Assert.That(listener.Body[0], Is.TypeOf<ListenerMessageEventNode>());
@@ -58,7 +58,7 @@ public class ListenerDefinitionTests
         Assert.That(node.node, Is.TypeOf<ListenerNode>());
         
         var listener = (ListenerNode)node.node!;
-        Assert.That(listener.Name, Is.EqualTo("Handler"));
+        Assert.That(listener.Role.Name, Is.EqualTo("Handler"));
         Assert.That(listener.ContractName, Is.EqualTo("EventHandler"));
         Assert.That(listener.Body.Count, Is.EqualTo(1));
         
@@ -85,7 +85,7 @@ public class ListenerDefinitionTests
         Assert.That(node.node, Is.TypeOf<ListenerNode>());
         
         var listener = (ListenerNode)node.node!;
-        Assert.That(listener.Name, Is.EqualTo("Watcher"));
+        Assert.That(listener.Role.Name, Is.EqualTo("Watcher"));
         Assert.That(listener.Body.Count, Is.EqualTo(2));
         
         Assert.That(listener.Body[0], Is.TypeOf<ListenerEventNode>());
@@ -115,7 +115,7 @@ public class ListenerDefinitionTests
         Assert.That(node.node, Is.TypeOf<ListenerNode>());
         
         var listener = (ListenerNode)node.node!;
-        Assert.That(listener.Name, Is.EqualTo("ErrHandler"));
+        Assert.That(listener.Role.Name, Is.EqualTo("ErrHandler"));
         Assert.That(listener.Body.Count, Is.EqualTo(1));
         
         Assert.That(listener.Body[0], Is.TypeOf<ListenerFailEventNode>());
@@ -136,7 +136,7 @@ public class ListenerDefinitionTests
         Assert.That(node.node, Is.TypeOf<ListenerNode>());
         
         var listener = (ListenerNode)node.node!;
-        Assert.That(listener.Name, Is.EqualTo("Server"));
+        Assert.That(listener.Role.Name, Is.EqualTo("Server"));
         Assert.That(listener.ContractName, Is.EqualTo("MotionControl"));
         Assert.That(listener.Body.Count, Is.EqualTo(1));
         Assert.That(listener.Body[0], Is.TypeOf<FuncDefNode>());
