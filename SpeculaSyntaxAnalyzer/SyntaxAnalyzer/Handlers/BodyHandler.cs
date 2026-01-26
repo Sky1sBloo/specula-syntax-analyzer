@@ -10,9 +10,9 @@ public class BodyHandler : Handler
     private PrintableList<Statement> statements = new();
     private readonly StatementHandler statementHandler;
     
-    public BodyHandler(ErrorsHandler err) : base(err)
+    public BodyHandler(ErrorsHandler err, bool isListenerContext = false) : base(err)
     {
-        statementHandler = new StatementHandler(err);
+        statementHandler = new StatementHandler(err, isListenerContext);
     }
 
     protected override ParseNode? verifyTokens()

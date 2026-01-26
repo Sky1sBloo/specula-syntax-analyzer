@@ -10,10 +10,10 @@ public class ConditionalStatementHandler : Handler
     private readonly ExpressionHandler expressionHandler;
     private readonly BodyHandler bodyHandler;
 
-    public ConditionalStatementHandler(ErrorsHandler errors) : base(errors)
+    public ConditionalStatementHandler(ErrorsHandler errors, bool isListenerContext = false) : base(errors)
     {
         expressionHandler = new(errors);
-        bodyHandler = new(errors);
+        bodyHandler = new(errors, isListenerContext);
     }
 
     protected override ParseNode? verifyTokens()

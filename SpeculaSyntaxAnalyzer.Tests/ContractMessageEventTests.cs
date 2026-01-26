@@ -27,7 +27,7 @@ public class ContractMessageEventTests
         
         var messageEvent = (ContractMessageEventNode)node.node!;
         Assert.That(messageEvent.Name, Is.EqualTo("MoveCommand"));
-        Assert.That(messageEvent.Parameters.Count, Is.EqualTo(2));
+        Assert.That(messageEvent.Parameters.Params.Count, Is.EqualTo(2));
         Assert.That(messageEvent.InitialState.Name, Is.EqualTo("Idle"));
         Assert.That(messageEvent.NextState.Name, Is.EqualTo("CommandSent"));
     }
@@ -42,7 +42,7 @@ public class ContractMessageEventTests
         
         var messageEvent = (ContractMessageEventNode)node.node!;
         Assert.That(messageEvent.Name, Is.EqualTo("UpdateStatus"));
-        Assert.That(messageEvent.Parameters.Count, Is.EqualTo(4));
+        Assert.That(messageEvent.Parameters.Params.Count, Is.EqualTo(4));
         Assert.That(messageEvent.InitialState.Name, Is.EqualTo("Acknowledged"));
         Assert.That(messageEvent.NextState.Name, Is.EqualTo("Completed"));
     }
@@ -57,7 +57,7 @@ public class ContractMessageEventTests
         
         var messageEvent = (ContractMessageEventNode)node.node!;
         Assert.That(messageEvent.Name, Is.EqualTo("Heartbeat"));
-        Assert.That(messageEvent.Parameters.Count, Is.EqualTo(0));
+        Assert.That(messageEvent.Parameters.Params.Count, Is.EqualTo(0));
         Assert.That(messageEvent.InitialState.Name, Is.EqualTo("Idle"));
         Assert.That(messageEvent.NextState.Name, Is.EqualTo("Idle"));
     }
@@ -126,8 +126,8 @@ public class ContractMessageEventTests
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
         
         var messageEvent = (ContractMessageEventNode)node.node!;
-        Assert.That(messageEvent.Parameters[0].Identifier, Is.EqualTo("code"));    // code: int
-        Assert.That(messageEvent.Parameters[1].Identifier, Is.EqualTo("message"));    // message: str
-        Assert.That(messageEvent.Parameters[2].Identifier, Is.EqualTo("timestamp"));  // timestamp: float
+        Assert.That(messageEvent.Parameters.Params[0].Identifier, Is.EqualTo("code"));    // code: int
+        Assert.That(messageEvent.Parameters.Params[1].Identifier, Is.EqualTo("message"));    // message: str
+        Assert.That(messageEvent.Parameters.Params[2].Identifier, Is.EqualTo("timestamp"));  // timestamp: float
     }
 }

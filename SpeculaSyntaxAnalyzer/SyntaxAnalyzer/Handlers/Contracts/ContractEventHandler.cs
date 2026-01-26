@@ -4,8 +4,10 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
 public class ContractEventHandler : Handler
 {
+    private readonly FuncParamsHandler paramsHandler;
     public ContractEventHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
     {
+        paramsHandler = new(errorsHandler, typesOptional: false);
     }
 
     protected override ParseNode? verifyTokens()
@@ -84,68 +86,13 @@ public class ContractEventHandler : Handler
         if (CurrentToken.Type == Token.Types.D_SEMICOLON)
         {
             incrementIndex();
-            return new ContractFailEventNode(identifier, new PrintableList<FuncParam>());
+            return new ContractFailEventNode(identifier, new FuncParams(new PrintableList<FuncParam>()));
         }
-        expectTokenType(Token.Types.D_CBRAC_OP);
-        var parameters = parseParameters();
+        
+        FuncParams? parameters = (FuncParams?)delegateToHandler(paramsHandler);
+        if (parameters == null) return null!;
+        
         expectTokenType(Token.Types.D_SEMICOLON);
         return new ContractFailEventNode(identifier, parameters);
-    }
-
-    private PrintableList<FuncParam> parseParameters()
-    {
-        var parameters = new PrintableList<FuncParam>();
-
-        while (CurrentToken.Type != Token.Types.D_CBRAC_CLO)
-        {
-            assertTokenType(Token.Types.IDENT);
-            string paramName = CurrentToken.Value;
-            incrementIndex();
-
-            expectTokenType(Token.Types.D_COLON);
-
-            TypeDefinitionNode? paramType = parseParameterType();
-            if (paramType != null)
-            {
-                parameters.Add(new FuncParam(paramName, paramType));
-            }
-
-            if (CurrentToken.Type == Token.Types.COMMA)
-            {
-                incrementIndex();
-            }
-            else if (CurrentToken.Type != Token.Types.D_CBRAC_CLO)
-            {
-                throw new SyntaxErrorException(["','", "'}'"], CurrentToken);
-            }
-        }
-        incrementIndex();
-
-        return parameters;
-    }
-
-    private TypeDefinitionNode? parseParameterType()
-    {
-        DataTypeHandler dataTypeHandler = new(errorHandler);
-        TypeNode? dataType = (TypeNode?)delegateToHandler(dataTypeHandler);
-
-        if (dataType == null)
-        {
-            return null;
-        }
-
-        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_BRAC_OP)
-        {
-            CapabilityHandler capabilityHandler = new(errorHandler);
-            Capabilities? capabilities = (Capabilities?)delegateToHandler(capabilityHandler);
-            if (capabilities == null)
-            {
-                return null;
-            }
-            return new TypeDefinitionNode(dataType, capabilities);
-        }
-
-        Capabilities defaultCapabilities = CapabilityHandler.GenerateDefaultCapabilities();
-        return new TypeDefinitionNode(dataType, defaultCapabilities);
     }
 }
