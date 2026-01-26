@@ -7,11 +7,8 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 /// </summary>
 public class ListenerRespondHandler : Handler
 {
-    private readonly FuncParamsHandler paramsHandler;
-    
     public ListenerRespondHandler(ErrorsHandler err) : base(err)
     {
-        paramsHandler = new FuncParamsHandler(err);
     }
 
     protected override ParseNode? verifyTokens()
@@ -25,23 +22,75 @@ public class ListenerRespondHandler : Handler
         string responseName = CurrentToken.Value;
         incrementIndex();
         
-        FuncParams? parameters;
+        PrintableList<Expression> arguments;
         
-        // Check if there are parameters
+        // Check if there are arguments
         if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
         {
-            parameters = (FuncParams?)delegateToHandler(paramsHandler);
-            if (parameters == null) return null;
+            incrementIndex();
+            arguments = parseArguments();
         }
         else
         {
-            parameters = new FuncParams(new PrintableList<FuncParam>());
+            arguments = new PrintableList<Expression>();
         }
         
         // expect semicolon
         assertTokenType(Token.Types.D_SEMICOLON);
         incrementIndex();
         
-        return new ListenerEventRespondNode(responseName, parameters);
+        return new ListenerEventRespondNode(responseName, arguments);
+    }
+
+    private PrintableList<Expression> parseArguments()
+    {
+        var arguments = new PrintableList<Expression>();
+
+        // For empty argument list
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_CLO)
+        {
+            incrementIndex();
+            return arguments;
+        }
+
+        while (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            ExpressionHandler exprHandler = new ExpressionHandler(errorHandler);
+            ParseNode? argExpr = delegateToHandler(exprHandler);
+            
+            if (argExpr is Expression expr)
+            {
+                arguments.Add(expr);
+            }
+            else
+            {
+                throw new SyntaxErrorException(["expression"], CurrentToken);
+            }
+
+            // Handle comma between arguments or closing paren
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.COMMA)
+            {
+                incrementIndex();
+            }
+            else if (HasMoreTokens && CurrentToken.Type != Token.Types.D_PAR_CLO)
+            {
+                throw new SyntaxErrorException([",", ")"], CurrentToken);
+            }
+        }
+
+        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_PAR_CLO)
+        {
+            Token missing = new()
+            {
+                Type = Token.Types.UNKNOWN,
+                Line = getIndex(),
+                CharStart = 0,
+                CharEnd = 0
+            };
+            throw new SyntaxErrorException([")"], missing);
+        }
+
+        incrementIndex();
+        return arguments;
     }
 }

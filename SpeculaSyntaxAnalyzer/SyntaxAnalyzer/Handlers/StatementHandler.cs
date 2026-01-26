@@ -124,22 +124,22 @@ public class StatementHandler : Handler
 
     private ParseNode? handleIfStatement()
     {
-        return delegateToHandler(new ConditionalStatementHandler(errorHandler));
+        return delegateToHandler(new ConditionalStatementHandler(errorHandler, isListenerContext));
     }
 
     private ParseNode? handleForLoop()
     {
-        return delegateToHandler(new ForLoopHandler(errorHandler));
+        return delegateToHandler(new ForLoopHandler(errorHandler, isListenerContext));
     }
 
     private ParseNode? handleDoWhileLoop()
     {
-        return delegateToHandler(new DoWhileLoopHandler(errorHandler));
+        return delegateToHandler(new DoWhileLoopHandler(errorHandler, isListenerContext));
     }
 
     private ParseNode? handleWhileLoop()
     {
-        return delegateToHandler(new WhileLoopHandler(errorHandler));
+        return delegateToHandler(new WhileLoopHandler(errorHandler, isListenerContext));
     }
 
     private ParseNode? tryHandleIdentifierStartWithResult()

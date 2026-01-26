@@ -13,13 +13,6 @@
             "value": "on"
         },
         {
-            "char_end": 8,
-            "char_start": 4,
-            "line": 1,
-            "type": "K_FAIL",
-            "value": "fail"
-        },
-        {
             "char_end": 20,
             "char_start": 9,
             "line": 1,

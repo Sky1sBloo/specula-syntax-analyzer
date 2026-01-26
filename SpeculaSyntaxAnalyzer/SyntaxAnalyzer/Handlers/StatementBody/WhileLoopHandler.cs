@@ -6,9 +6,9 @@ public class WhileLoopHandler : Handler
 {
     private readonly BodyHandler bodyHandler;
     private readonly ExpressionHandler expressionHandler;
-    public WhileLoopHandler(ErrorsHandler errors) : base(errors)
+    public WhileLoopHandler(ErrorsHandler errors, bool isListenerContext = false) : base(errors)
     {
-        bodyHandler = new(errors);
+        bodyHandler = new(errors, isListenerContext);
         expressionHandler = new(errors);
     }
 
