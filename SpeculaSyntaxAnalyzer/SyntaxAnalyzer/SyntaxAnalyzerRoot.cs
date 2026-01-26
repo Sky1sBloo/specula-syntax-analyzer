@@ -104,11 +104,11 @@ public class SyntaxAnalyzerRoot
                 catch (SyntaxErrorException ex)
                 {
                     ErrorHandler.AddError(ex);
-                    while (i < tokens.Count && tokens[i].Type != Token.Types.D_SEMICOLON)
+                    while (i < tokens.Count && (tokens[i].Type != Token.Types.D_SEMICOLON || tokens[i].Type != Token.Types.D_BRAC_CLO))
                     {
                         i++;
                     }
-                    if (i < tokens.Count && tokens[i].Type == Token.Types.D_SEMICOLON)
+                    if (i < tokens.Count && (tokens[i].Type == Token.Types.D_SEMICOLON || tokens[i].Type == Token.Types.D_BRAC_CLO))
                     {
                         i++;
                     }
