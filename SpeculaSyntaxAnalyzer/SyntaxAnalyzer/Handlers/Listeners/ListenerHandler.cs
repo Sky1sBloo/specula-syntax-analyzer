@@ -21,13 +21,18 @@ public class ListenerHandler : Handler
 
     private ListenerNode? parseListener()
     {
-        // Parse target: can be any value expression
+        // Parse target: target(expression)
+        expectTokenType(Token.Types.K_TARGET);
+        expectTokenType(Token.Types.D_PAR_OP);
+        
         ParseNode? targetNode = delegateToHandler(expressionHandler);
         if (targetNode == null)
             return null;
         
         ValueNode? target = (ValueNode?)targetNode;
         if (target == null) return null;
+
+        expectTokenType(Token.Types.D_PAR_CLO);
 
         // Expect 'using' keyword
         expectTokenType(Token.Types.K_USING);
