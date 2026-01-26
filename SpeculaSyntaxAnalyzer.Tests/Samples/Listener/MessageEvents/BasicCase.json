@@ -104,25 +104,39 @@
             "value": ")"
         },
         {
-            "char_end": 29,
+            "char_end": 25,
             "char_start": 25,
+            "line": 2,
+            "type": "D_CBRAC_OP",
+            "value": "{"
+        },
+        {
+            "char_end": 30,
+            "char_start": 26,
             "line": 2,
             "type": "K_FAIL",
             "value": "fail"
         },
         {
-            "char_end": 41,
-            "char_start": 30,
+            "char_end": 42,
+            "char_start": 31,
             "line": 2,
             "type": "IDENT",
             "value": "low_battery"
         },
         {
-            "char_end": 41,
-            "char_start": 41,
+            "char_end": 42,
+            "char_start": 42,
             "line": 2,
             "type": "D_SEMICOLON",
             "value": ";"
+        },
+        {
+            "char_end": 43,
+            "char_start": 43,
+            "line": 2,
+            "type": "D_CBRAC_CLO",
+            "value": "}"
         },
         {
             "char_end": 10,
