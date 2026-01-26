@@ -2,22 +2,24 @@ using SpeculaSyntaxAnalyzer.ParseTree;
 
 namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 
-public class ListenerMessageEventHandler : Handler
+public class ListenerFailEventHandler : Handler
 {
     private readonly BodyHandler bodyHandler;
-    private readonly FuncParamsHandler messageParamsHandler;
-    public ListenerMessageEventHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
+    private readonly FuncParamsHandler failParamsHandler;
+
+    public ListenerFailEventHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
     {
         bodyHandler = new(errorsHandler, true);
-        messageParamsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_CBRAC_OP, closingToken: Token.Types.D_CBRAC_CLO);
+        failParamsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_PAR_OP, closingToken: Token.Types.D_PAR_CLO);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        return parseMessageEvent();
+        expectTokenType(Token.Types.K_FAIL);
+        return parseFailEvent();
     }
 
-    private ListenerMessageEventNode? parseMessageEvent()
+    private ListenerFailEventNode? parseFailEvent()
     {
         assertTokenType(Token.Types.IDENT);
         string name = CurrentToken.Value;
@@ -25,17 +27,17 @@ public class ListenerMessageEventHandler : Handler
 
         FuncParams? parameters;
 
-        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_OP)
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
         {
             int savedIndex = getIndex();
             incrementIndex();
-            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_CLO)
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_CLO)
             {
                 incrementIndex(); 
-                if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_OP)
+                if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
                 {
                     setIndex(savedIndex);
-                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(messageParamsHandler);
+                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(failParamsHandler);
                     if (parsedParams == null)
                         return null;
                     parameters = parsedParams;
@@ -49,7 +51,7 @@ public class ListenerMessageEventHandler : Handler
             else
             {
                 setIndex(savedIndex);
-                FuncParams? parsedParams = (FuncParams?)delegateToHandler(messageParamsHandler);
+                FuncParams? parsedParams = (FuncParams?)delegateToHandler(failParamsHandler);
                 if (parsedParams == null)
                     return null;
                 parameters = parsedParams;
@@ -64,7 +66,7 @@ public class ListenerMessageEventHandler : Handler
         if (body == null)
             return null;
 
-        return new ListenerMessageEventNode(name, parameters, body);
+        return new ListenerFailEventNode(name, parameters, body);
     }
 
     private BodyNode? parseFunctionBody()
