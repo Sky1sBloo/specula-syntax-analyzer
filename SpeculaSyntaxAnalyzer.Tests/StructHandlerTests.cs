@@ -108,6 +108,7 @@ public class StructHandlerTests
     public void TrailingCommaInCapabilitiesThrows()
     {
         var output = LexerFileReader.ParseFile("Samples/Struct/Invalid/TrailingComma.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.GreaterThan(0), "Should have errors for trailing comma in capabilities");
     }
 }

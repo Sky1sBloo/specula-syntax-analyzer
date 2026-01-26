@@ -6,7 +6,12 @@ string[] files = args;
 foreach (string iFile in files)
 {
     LexerOutput output = LexerFileReader.ParseFile(iFile);
-    SyntaxAnalyzerRoot analyzer = new();
+    ErrorsHandler errorHandler = new();
+    foreach (var error in output.Errors)
+    {
+        errorHandler.AddError($"Lexer Error at line {error.Line}, char {error.CharPos}: {error.Message}");
+    }
+    SyntaxAnalyzerRoot analyzer = new(errorHandler);
     ParseNode? node = analyzer.ReadTokens(output.Tokens);
     if (node != null) {
         if (node is RootNode bodyNode)
@@ -26,7 +31,7 @@ foreach (string iFile in files)
         Console.WriteLine("No parse tree generated");
     }
 
-    foreach (var error in analyzer.ErrorHandler.ErrorList)
+    foreach (var error in errorHandler.ErrorList)
     {
         Console.WriteLine(error);
     }
