@@ -14,55 +14,67 @@ public class ValueHandler : Handler
         {
             Expression? baseExpr = null;
             string identifier = "";
-            DataTypes dataType = DataTypeHandler.InferDataTypeFromTokenLiteral(CurrentToken);
 
-            switch (dataType)
+            // treat identifier-based values for member access
+            if (CurrentToken.Type == Token.Types.K_SELF ||
+                CurrentToken.Type == Token.Types.K_THIS ||
+                CurrentToken.Type == Token.Types.K_NETWORK)
             {
-                case DataTypes.INT:
-                case DataTypes.FLOAT:
-                case DataTypes.DOUBLE:
-                case DataTypes.CHAR:
-                case DataTypes.BOOL:
-                case DataTypes.STRING:
-                case DataTypes.NULL:
-                    {
-                        baseExpr = new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
-                        incrementIndex();
-                        break;
-                    }
-                case DataTypes.VOID:
-                case DataTypes.UNKNOWN:
-                    throw new SyntaxErrorException(["Value"], CurrentToken);
+                identifier = CurrentToken.Value;
+                incrementIndex();
+                baseExpr = new IdentifierValue(identifier);
             }
 
             if (baseExpr == null)
             {
-                // Identifier or start of complex value
-                if (dataType == DataTypes.IDENTIFIER)
-                {
-                    identifier = CurrentToken.Value;
-                }
-                incrementIndex();
+                DataTypes dataType = DataTypeHandler.InferDataTypeFromTokenLiteral(CurrentToken);
 
-                // Function call or struct initialization based on next token
-                if (HasMoreTokens)
+                switch (dataType)
                 {
-                    switch (CurrentToken.Type)
-                    {
-                        case Token.Types.D_PAR_OP:
-                            baseExpr = handleFunctionCall(identifier);
-                            break;
-                        case Token.Types.D_CBRAC_OP:
-                            baseExpr = handleStructInitialization(identifier);
-                            break;
-                        default:
-                            baseExpr = new IdentifierValue(identifier);
-                            break;
-                    }
+                    case DataTypes.INT:
+                    case DataTypes.FLOAT:
+                    case DataTypes.DOUBLE:
+                    case DataTypes.CHAR:
+                    case DataTypes.BOOL:
+                    case DataTypes.STRING:
+                    case DataTypes.NULL:
+                        baseExpr = new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
+                        incrementIndex();
+                        break;
+                    case DataTypes.VOID:
+                    case DataTypes.UNKNOWN:
+                        throw new SyntaxErrorException(["Value"], CurrentToken);
                 }
-                else
+
+                if (baseExpr == null)
                 {
-                    baseExpr = new IdentifierValue(identifier);
+                    // Identifier or start of complex value
+                    if (dataType == DataTypes.IDENTIFIER)
+                    {
+                        identifier = CurrentToken.Value;
+                    }
+                    incrementIndex();
+
+                    // Function call or struct initialization based on next token
+                    if (HasMoreTokens)
+                    {
+                        switch (CurrentToken.Type)
+                        {
+                            case Token.Types.D_PAR_OP:
+                                baseExpr = handleFunctionCall(identifier);
+                                break;
+                            case Token.Types.D_CBRAC_OP:
+                                baseExpr = handleStructInitialization(identifier);
+                                break;
+                            default:
+                                baseExpr = new IdentifierValue(identifier);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        baseExpr = new IdentifierValue(identifier);
+                    }
                 }
             }
 
@@ -103,7 +115,7 @@ public class ValueHandler : Handler
         {
             ExpressionHandler exprHandler = new ExpressionHandler(errorHandler);
             ParseNode? paramExpr = delegateToHandler(exprHandler);
-            
+
             if (paramExpr is Expression expr)
             {
                 parameters.Add(expr);
