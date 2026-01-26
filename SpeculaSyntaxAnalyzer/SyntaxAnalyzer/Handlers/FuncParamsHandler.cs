@@ -91,6 +91,11 @@ public class FuncParamsHandler : Handler
             if (CurrentToken.Type == Token.Types.COMMA)
             {
                 incrementIndex();
+                
+                if (CurrentToken.Type == closingToken)
+                {
+                    throw new SyntaxErrorException(["parameter"], CurrentToken);
+                }
             }
             else if (CurrentToken.Type != closingToken)
             {

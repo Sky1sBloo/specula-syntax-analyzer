@@ -257,6 +257,8 @@ public abstract class Handler
     }
 
     protected int getIndex() { return i; }
+    
+    protected void setIndex(int newIndex) { i = newIndex; }
 
     /// <summary>
     /// Increments the given index to the next
