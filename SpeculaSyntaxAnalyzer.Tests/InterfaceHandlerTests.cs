@@ -101,6 +101,7 @@ public class InterfaceHandlerTests
     public void MergingFunctionsWithoutSemicolonThrows()
     {
         var output = LexerFileReader.ParseFile("Samples/Interface/Invalid/MergingFunctions.json");
-        Assert.Throws<SyntaxErrorException>(() => analyzer.ReadTokens(output.Tokens));
+        analyzer.ReadTokens(output.Tokens);
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.GreaterThan(0));
     }
 }

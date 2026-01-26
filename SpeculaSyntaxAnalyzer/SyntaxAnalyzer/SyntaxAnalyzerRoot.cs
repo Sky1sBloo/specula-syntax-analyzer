@@ -15,7 +15,7 @@ public class SyntaxAnalyzerRoot
     private readonly ImplHandler implHandler;
     private readonly ContractHandler contractHandler;
     private readonly ListenerHandler listenerHandler;
-    
+
     private PrintableList<RootStatement> statements = new();
     private List<Token> tokens = [];
     private int i = 0;
@@ -23,6 +23,20 @@ public class SyntaxAnalyzerRoot
     public SyntaxAnalyzerRoot()
     {
         ErrorHandler = new();
+        funcDefHandler = new FuncDefHandler(ErrorHandler);
+        declarationHandler = new DeclarationHandler(ErrorHandler);
+        importsHandler = new ImportsHandler(ErrorHandler);
+        exportHandler = new ExportHandler(ErrorHandler);
+        structHandler = new StructHandler(ErrorHandler);
+        interfaceHandler = new InterfaceHandler(ErrorHandler);
+        implHandler = new ImplHandler(ErrorHandler);
+        contractHandler = new ContractHandler(ErrorHandler);
+        listenerHandler = new ListenerHandler(ErrorHandler);
+    }
+
+    public SyntaxAnalyzerRoot(ErrorsHandler errors)
+    {
+        ErrorHandler = errors;
         funcDefHandler = new FuncDefHandler(ErrorHandler);
         declarationHandler = new DeclarationHandler(ErrorHandler);
         importsHandler = new ImportsHandler(ErrorHandler);
@@ -81,9 +95,25 @@ public class SyntaxAnalyzerRoot
             case Token.Types.K_LISTENER:
                 return (RootStatement?)delegateToHandler(listenerHandler);
             default:
-                throw new SyntaxErrorException(
-                    ["fn", "thread", "let", "import", "[", "struct", "interface", "impl", "contract", "listener"],
-                    currentToken);
+                try
+                {
+                    throw new SyntaxErrorException(
+                        ["fn", "thread", "let", "import", "[", "struct", "interface", "impl", "contract", "listener"],
+                        currentToken);
+                }
+                catch (SyntaxErrorException ex)
+                {
+                    ErrorHandler.AddError(ex);
+                    while (i < tokens.Count && tokens[i].Type != Token.Types.D_SEMICOLON)
+                    {
+                        i++;
+                    }
+                    if (i < tokens.Count && tokens[i].Type == Token.Types.D_SEMICOLON)
+                    {
+                        i++;
+                    }
+                    return null;
+                }
         }
     }
 
