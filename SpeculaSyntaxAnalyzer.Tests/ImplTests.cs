@@ -34,7 +34,7 @@ public class ImplTests
         var func = implDef!.Methods[0] as FuncDefNode;
         Assert.That(func, Is.Not.Null);
         Assert.That(func!.Identifier, Is.EqualTo("ping"));
-        Assert.That(func!.FunctionNode.Parameters.Count, Is.EqualTo(0));
+        Assert.That(func!.FunctionNode.Parameters.Params.Count, Is.EqualTo(0));
         Assert.That(func!.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.VOID));
         Assert.That(func!.FunctionNode.Body.Statements.Count, Is.EqualTo(0));
     }
@@ -56,9 +56,9 @@ public class ImplTests
         var func = implDef!.Methods[0] as FuncDefNode;
         Assert.That(func, Is.Not.Null);
         Assert.That(func!.Identifier, Is.EqualTo("add"));
-        Assert.That(func!.FunctionNode.Parameters.Count, Is.EqualTo(2));
-        Assert.That(func!.FunctionNode.Parameters[0].Identifier, Is.EqualTo("x"));
-        Assert.That(func!.FunctionNode.Parameters[1].Identifier, Is.EqualTo("y"));
+        Assert.That(func!.FunctionNode.Parameters.Params.Count, Is.EqualTo(2));
+        Assert.That(func!.FunctionNode.Parameters.Params[0].Identifier, Is.EqualTo("x"));
+        Assert.That(func!.FunctionNode.Parameters.Params[1].Identifier, Is.EqualTo("y"));
         Assert.That(func!.FunctionNode.ReturnType.DataType.DataType, Is.EqualTo(DataTypes.INT));
     }
 

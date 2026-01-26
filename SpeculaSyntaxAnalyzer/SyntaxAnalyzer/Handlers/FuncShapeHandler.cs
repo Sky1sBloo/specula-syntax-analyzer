@@ -6,16 +6,18 @@ public class FuncShapeHandler: Handler
 {
     private readonly VarDefinitionHandler varDefinitionHandler;
     private readonly BodyHandler bodyHandler;
+    private readonly FuncParamsHandler paramsHandler;
     public FuncShapeHandler(ErrorsHandler errors) : base(errors)
     {
         varDefinitionHandler = new(errors);
         bodyHandler = new(errors);
+        paramsHandler = new(errors, typesOptional: false);
     }
 
     protected override ParseNode? verifyTokens()
     {
-        expectTokenType(Token.Types.D_PAR_OP);
-        PrintableList<FuncParam> parameters = parseParameters();
+        FuncParams? parameters = (FuncParams?)delegateToHandler(paramsHandler);
+        if (parameters == null) return null;
 
         TypeDefinitionNode? returnType = getReturnType();
         if (returnType == null)
@@ -26,40 +28,6 @@ public class FuncShapeHandler: Handler
         if (body == null)
             return null;
         return new FuncShapeNode(parameters, returnType, body);
-    }
-
-    private PrintableList<FuncParam> parseParameters()
-    {
-        var parameters = new PrintableList<FuncParam>();
-
-        while (CurrentToken.Type != Token.Types.D_PAR_CLO)
-        {
-            assertTokenType(Token.Types.IDENT);
-            string paramName = CurrentToken.Value;
-            incrementIndex();
-
-            expectTokenType(Token.Types.D_COLON);
-
-            // Parse the type and its optional capabilities (without the leading colon)
-            TypeDefinitionNode? paramType = parseParameterType();
-            if (paramType != null)
-            {
-                parameters.Add(new FuncParam(paramName, paramType));
-            } 
-
-            if (CurrentToken.Type == Token.Types.COMMA)
-            {
-                incrementIndex();
-            }
-            else if (CurrentToken.Type != Token.Types.D_PAR_CLO)
-            {
-                throw new SyntaxErrorException(["','", "')'"], CurrentToken);
-            }
-        }
-
-        incrementIndex();
-
-        return parameters;
     }
 
     private TypeDefinitionNode? getReturnType()

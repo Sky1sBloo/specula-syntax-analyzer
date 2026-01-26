@@ -31,7 +31,7 @@ public class ContractMessageEventHandler : Handler
             new StateNode(targetState)
         );
     }
-    private PrintableList<FuncParam> parseParameters()
+    private FuncParams parseParameters()
     {
         var parameters = new PrintableList<FuncParam>();
 
@@ -60,7 +60,7 @@ public class ContractMessageEventHandler : Handler
         }
         incrementIndex();
 
-        return parameters;
+        return new FuncParams(parameters);
     }
 
     private TypeDefinitionNode? parseParameterType()
