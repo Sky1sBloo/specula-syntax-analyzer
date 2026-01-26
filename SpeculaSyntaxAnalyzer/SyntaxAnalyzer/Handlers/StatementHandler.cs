@@ -95,6 +95,17 @@ public class StatementHandler : Handler
                 return handleDoWhileLoop();
             case Token.Types.K_WHILE:
                 return handleWhileLoop();
+            case Token.Types.K_RET:
+                {
+                    incrementIndex();
+                    if (CurrentToken.Type == Token.Types.D_SEMICOLON)
+                    {
+                        return new ReturnNode(null);
+                    }
+                    Expression? returnValue = (Expression?)delegateToHandler(expressionHandler);
+                    expectTokenType(Token.Types.D_SEMICOLON);
+                    return new ReturnNode(returnValue);
+                }
             default:
                 ParseNode? stmtResult = tryHandleExpressionStmt();
                 if (stmtResult != null)
