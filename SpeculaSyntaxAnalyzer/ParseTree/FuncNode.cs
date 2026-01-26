@@ -6,5 +6,5 @@ public record FuncParam(string Identifier, TypeDefinitionNode Definition) : Para
 public record FuncParams(PrintableList<FuncParam> Params) : ParseNode; // Used for parsing parameter lists
 // Used for reusable function shapes (param) {body}
 public record FuncShapeNode(FuncParams Parameters, TypeDefinitionNode ReturnType, BodyNode Body) : ParseNode;
-public record FuncDefNode(string Identifier, bool IsAsync, FuncShapeNode FunctionNode) : FuncDef;
-public record ThreadDefNode(string Identifier, FuncShapeNode FunctionNode) : FuncDef;
+public record FuncDefNode(string Identifier, bool IsAsync, FuncShapeNode FunctionNode) : FuncDef, ListenerBody;
+public record ThreadDefNode(string Identifier, FuncShapeNode FunctionNode) : FuncDef, ListenerBody;
