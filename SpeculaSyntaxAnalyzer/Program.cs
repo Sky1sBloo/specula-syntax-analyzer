@@ -1,7 +1,12 @@
-﻿using SpeculaSyntaxAnalyzer.LexerReader;
+﻿using System.Text.Json;
+using SpeculaSyntaxAnalyzer.LexerReader;
 using SpeculaSyntaxAnalyzer.ParseTree;
 using SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
+
 string[] files = args;
+
+var results = new List<object>();
+var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
 foreach (string iFile in files)
 {
@@ -11,33 +16,39 @@ foreach (string iFile in files)
     {
         errorHandler.AddError($"Lexer Error at {error.Line}:{error.CharPos}: {error.Message}");
     }
+
+    object? rootSummary = null;
+
     if (output.Errors.Count == 0)
     {
         SyntaxAnalyzerRoot analyzer = new(errorHandler);
         ParseNode? node = analyzer.ReadTokens(output.Tokens);
         if (node != null && errorHandler.ErrorList.Count == 0)
         {
-            if (node is RootNode bodyNode)
-            {
-                Console.WriteLine($"Body contains {bodyNode.Statements.Count} statements");
-                foreach (var stmt in bodyNode.Statements)
-                {
-                    Console.WriteLine(stmt);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Root node is not a BodyNode");
-            }
-        }
-        else
-        {
-            Console.WriteLine("No parse tree generated");
+            rootSummary = BuildRootSummary(node);
         }
     }
-    foreach (var error in errorHandler.ErrorList)
+
+    results.Add(new
     {
-        Console.WriteLine(error);
+        file = output.FileInfo,
+        errors = errorHandler.ErrorList,
+        root = rootSummary
+    });
+}
+
+Console.WriteLine(JsonSerializer.Serialize(results.Count == 1 ? results[0] : results, jsonOptions));
+
+static object? BuildRootSummary(ParseNode node)
+{
+    if (node is RootNode root)
+    {
+        return new
+        {
+            statements = root.Statements.Select(stmt => stmt?.ToString()).ToList()
+        };
     }
+
+    return node.ToString();
 }
 
