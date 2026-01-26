@@ -216,7 +216,7 @@ public abstract class Handler
         catch (SyntaxErrorException ex)
         {
             errorHandler.AddError(ex);
-            while (HasMoreTokens && CurrentToken.Type != Token.Types.D_SEMICOLON)
+            while (HasMoreTokens && CurrentToken.Type != Token.Types.D_SEMICOLON && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
             {
                 incrementIndex();
             }
