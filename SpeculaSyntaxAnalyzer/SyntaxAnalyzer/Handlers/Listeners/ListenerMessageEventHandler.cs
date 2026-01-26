@@ -31,7 +31,6 @@ public class ListenerMessageEventHandler : Handler
 
     private ListenerMessageEventNode? parseMessageEvent()
     {
-        incrementIndex();
         assertTokenType(Token.Types.IDENT);
         string name = CurrentToken.Value;
         incrementIndex();
@@ -81,7 +80,6 @@ public class ListenerMessageEventHandler : Handler
     }
     private ListenerFailEventNode? parseFailEvent()
     {
-        incrementIndex();
         expectTokenType(Token.Types.K_FAIL);
         assertTokenType(Token.Types.IDENT);
         string name = CurrentToken.Value;
