@@ -46,25 +46,22 @@ public class ForLoopHandler : Handler
                 forInit = handleAssignment();
                 break;
         }
-        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
+        bool initConsumedSemicolon = PrevToken?.Type == Token.Types.D_SEMICOLON;
+
+        if (CurrentToken.Type == Token.Types.D_SEMICOLON)
         {
-            throw new SyntaxErrorException(["{"], CurrentToken);
+            expectTokenType(Token.Types.D_SEMICOLON);
         }
-        incrementIndex();
+        else if (!initConsumedSemicolon)
+        {
+            throw new SyntaxErrorException([";"], CurrentToken);
+        }
 
         expression = handleExpression();
-        if (CurrentToken.Type != Token.Types.D_SEMICOLON)
-        {
-            throw new SyntaxErrorException(["{"], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_SEMICOLON);
 
         assignment = handleAssignment();
-        if (CurrentToken.Type != Token.Types.D_PAR_CLO)
-        {
-            throw new SyntaxErrorException(["("], CurrentToken);
-        }
-        incrementIndex();
+        expectTokenType(Token.Types.D_PAR_CLO);
         body = handleBody();
 
         if (forInit is null || expression is null || assignment is null || body is null)

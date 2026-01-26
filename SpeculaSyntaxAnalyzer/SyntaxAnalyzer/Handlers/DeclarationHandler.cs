@@ -66,13 +66,6 @@ public class DeclarationHandler : Handler
         value = getVariableValue();
         if (value == null) return null;
 
-        // Only assert semicolon if we have more tokens
-        // (error recovery may have consumed it already)
-        if (!HasMoreTokens || CurrentToken.Type != Token.Types.D_SEMICOLON)
-        {
-            return null;
-        }
-
         if (typeDefinition == null)
         {
             TypeNode inferredType = InferTypeFromExpression(value);
@@ -104,6 +97,7 @@ public class DeclarationHandler : Handler
         {
             throw new InvalidOperationException("Tried to construct node of null datatype or value");
         }
+        expectTokenType(Token.Types.D_SEMICOLON);
         DeclarationStatementNode statementNode = new(identifier, typeDefinition, value);
         Reset();
         return statementNode;
