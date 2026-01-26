@@ -11,6 +11,7 @@ public enum DataTypes
     VOID,
     NULL,
     IDENTIFIER,
+    INFER, // for var type inference
     UNKNOWN
 }
 public record TypeNode(DataTypes DataType) : ParseNode;
