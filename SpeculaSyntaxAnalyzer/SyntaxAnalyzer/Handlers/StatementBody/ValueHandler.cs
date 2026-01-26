@@ -15,6 +15,34 @@ public class ValueHandler : Handler
             Expression? baseExpr = null;
             string identifier = "";
 
+            // Prefix movement/view keywords: move/share/ref/view <non-literal value>
+            if (CurrentToken.Type == Token.Types.K_MOVE ||
+                CurrentToken.Type == Token.Types.K_SHARE ||
+                CurrentToken.Type == Token.Types.K_REF ||
+                CurrentToken.Type == Token.Types.K_VIEW)
+            {
+                var movementType = CurrentToken.Type;
+                incrementIndex();
+                ParseNode? inner = delegateToHandler(new ExpressionHandler(errorHandler));
+                if (inner is not Movable innerVal)
+                {
+                    throw new SyntaxErrorException(["identifier", "function call", "member access"], CurrentToken);
+                }
+                if (innerVal is LiteralValue)
+                {
+                    throw new SyntaxErrorException(["identifier", "function call", "member access"], CurrentToken);
+                }
+
+                return movementType switch
+                {
+                    Token.Types.K_MOVE => new MoveValueNode(innerVal),
+                    Token.Types.K_SHARE => new ShareValueNode(innerVal),
+                    Token.Types.K_REF => new RefValueNode(innerVal),
+                    Token.Types.K_VIEW => new ViewValueNode(innerVal),
+                    _ => null
+                };
+            }
+
             // treat identifier-based values for member access
             if (CurrentToken.Type == Token.Types.K_SELF ||
                 CurrentToken.Type == Token.Types.K_THIS ||

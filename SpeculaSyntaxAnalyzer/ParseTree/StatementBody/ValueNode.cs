@@ -1,7 +1,7 @@
 namespace SpeculaSyntaxAnalyzer.ParseTree;
 
 public interface ValueNode : Expression;
-public interface Movable;  // be able to use move, ref, share assignments
+public interface Movable : ValueNode;  // be able to use move, ref, share assignments
 
 public record LiteralValue(TypeNode Type, string Value) : ValueNode;
 public record IdentifierValue(string Value) : ValueNode, Movable;

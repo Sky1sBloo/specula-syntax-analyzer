@@ -106,6 +106,17 @@ public class StatementHandler : Handler
                     expectTokenType(Token.Types.D_SEMICOLON);
                     return new ReturnNode(returnValue);
                 }
+            case Token.Types.K_SPAWN:
+            {
+                incrementIndex();
+                ParseNode? expr = delegateToHandler(expressionHandler);
+                if (expr is not FunctionCallValue funcCall)
+                {
+                    throw new SyntaxErrorException(["function call"], CurrentToken);
+                }
+                requireSemicolon();
+                return new SpawnThreadNode(funcCall);
+            }
             default:
                 ParseNode? stmtResult = tryHandleExpressionStmt();
                 if (stmtResult != null)
