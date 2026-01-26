@@ -7,7 +7,6 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 /// </summary>
 public class ListenerBodyHandler : Handler
 {
-    private PrintableList<ListenerBodyContent> statements = new();
     private readonly StatementHandler statementHandler;
     private readonly ListenerRespondHandler respondHandler;
     private readonly ListenerFailHandler failHandler;
@@ -22,7 +21,7 @@ public class ListenerBodyHandler : Handler
     protected override ParseNode? verifyTokens()
     {
         // reset statements for each new body parse to avoid leaking previous state
-        statements = new PrintableList<ListenerBodyContent>();
+        var statements = new PrintableList<ListenerBodyContent>();
         expectTokenType(Token.Types.D_CBRAC_OP);
         
         int initialErrorCount = errorHandler.ErrorList.Count;

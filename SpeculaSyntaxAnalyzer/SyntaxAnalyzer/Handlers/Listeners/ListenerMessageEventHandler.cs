@@ -9,7 +9,7 @@ public class ListenerMessageEventHandler : Handler
     public ListenerMessageEventHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
     {
         bodyHandler = new(errorsHandler);
-        paramsHandler = new(errorsHandler, typesOptional: true);
+        paramsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_CBRAC_OP, closingToken: Token.Types.D_CBRAC_CLO);
     }
 
     protected override ParseNode? verifyTokens()

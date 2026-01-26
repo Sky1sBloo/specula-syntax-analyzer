@@ -9,20 +9,28 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class FuncParamsHandler : Handler
 {
     private readonly bool typesOptional;
+    private readonly Token.Types openingToken;
+    private readonly Token.Types closingToken;
 
-    public FuncParamsHandler(ErrorsHandler err, bool typesOptional = false) : base(err)
+    public FuncParamsHandler(ErrorsHandler err, 
+        bool typesOptional = false,
+        Token.Types openingToken = Token.Types.D_PAR_OP,
+        Token.Types closingToken = Token.Types.D_PAR_CLO
+        ) : base(err)
     {
         this.typesOptional = typesOptional;
+        this.openingToken = openingToken;
+        this.closingToken = closingToken;
     }
 
     protected override ParseNode? verifyTokens()
     {
-        assertTokenType(Token.Types.D_PAR_OP);
+        assertTokenType(openingToken);
         incrementIndex();
 
         PrintableList<FuncParam> parameters = parseParameters();
 
-        assertTokenType(Token.Types.D_PAR_CLO);
+        assertTokenType(closingToken);
         incrementIndex();
 
         return new FuncParams(parameters);
