@@ -249,7 +249,7 @@ public class ExpressionHandler : Handler
                 {
                     return new SpawnThreadNode(funcCall);
                 }
-                throw new SyntaxErrorException(["function call"], CurrentToken);
+                throw new SyntaxErrorException(["function call"], PrevToken);
             case Token.Types.D_PAR_OP:
                 // Handle parenthesized expressions: (expression)
                 incrementIndex();
