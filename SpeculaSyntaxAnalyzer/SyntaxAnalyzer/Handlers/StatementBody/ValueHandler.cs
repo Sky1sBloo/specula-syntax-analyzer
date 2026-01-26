@@ -154,19 +154,12 @@ public class ValueHandler : Handler
             {
                 incrementIndex();
 
-                if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_PAR_CLO)
-                {
-                    Token missing = new()
+                    if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_PAR_CLO)
                     {
-                        Type = Token.Types.UNKNOWN,
-                        Line = getIndex(),
-                        CharStart = 0,
-                        CharEnd = 0
-                    };
-                    var ex = new SyntaxErrorException(["expression"], missing);
-                    errorHandler.AddError(ex);
-                    throw ex;
-                }
+                        var ex = new SyntaxErrorException("Trailing comma in argument list.");
+                        errorHandler.AddError(ex);
+                        throw ex;
+                    }
 
                 continue;
             }
@@ -234,19 +227,12 @@ public class ValueHandler : Handler
             {
                 incrementIndex();
 
-                if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_CBRAC_CLO)
-                {
-                    Token missing = new()
+                    if (!HasMoreTokens || CurrentToken.Type == Token.Types.D_CBRAC_CLO)
                     {
-                        Type = Token.Types.UNKNOWN,
-                        Line = getIndex(),
-                        CharStart = 0,
-                        CharEnd = 0
-                    };
-                    var ex = new SyntaxErrorException(["identifier"], missing);
-                    errorHandler.AddError(ex);
-                    throw ex;
-                }
+                        var ex = new SyntaxErrorException("Trailing comma in struct initialization.");
+                        errorHandler.AddError(ex);
+                        throw ex;
+                    }
 
                 continue;
             }

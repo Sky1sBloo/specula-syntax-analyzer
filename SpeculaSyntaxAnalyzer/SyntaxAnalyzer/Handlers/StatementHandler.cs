@@ -61,10 +61,6 @@ public class StatementHandler : Handler
             case Token.Types.K_LET:
                 {
                     ParseNode? declStmt = handleDeclarationStmt();
-                    if (declStmt != null)
-                    {
-                        requireSemicolon();
-                    }
                     return declStmt;
                 }
             case Token.Types.IDENT:

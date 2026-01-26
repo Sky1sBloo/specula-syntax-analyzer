@@ -55,6 +55,12 @@ public class VarAssignHandler : Handler
             case Token.Types.OP_MOD_EQ:
                 incrementIndex();
                 return new AssignModEqNode(identifier, handleExpressionAfterOperator());
+            case Token.Types.OP_INCR:
+                incrementIndex();
+                return new AssignPlusEqNode(identifier, new LiteralValue(new TypeNode(DataTypes.INT), "1"));
+            case Token.Types.OP_DECR:
+                incrementIndex();
+                return new AssignMinusEqNode(identifier, new LiteralValue(new TypeNode(DataTypes.INT), "1"));
         }
 
         return null;

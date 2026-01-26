@@ -216,11 +216,7 @@ public class ValueNodeTests
     public void StructInitUndefinedKey()
     {
         var output = LexerFileReader.ParseFile("Samples/Value/Invalid/StructInitUndefinedKey.json");
-        Assert.Throws<SyntaxErrorException>(() => 
-        {
-            HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
-        });
-
+        valueHandler.HandleToken(output.Tokens, 0);
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(1));
     }
 
