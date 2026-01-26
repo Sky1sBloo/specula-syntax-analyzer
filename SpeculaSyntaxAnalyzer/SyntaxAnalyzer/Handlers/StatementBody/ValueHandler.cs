@@ -12,8 +12,10 @@ public class ValueHandler : Handler
     {
         try
         {
+            Expression? baseExpr = null;
             string identifier = "";
             DataTypes dataType = DataTypeHandler.InferDataTypeFromTokenLiteral(CurrentToken);
+
             switch (dataType)
             {
                 case DataTypes.INT:
@@ -24,34 +26,62 @@ public class ValueHandler : Handler
                 case DataTypes.STRING:
                 case DataTypes.NULL:
                     {
-                        var literalValue = new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
+                        baseExpr = new LiteralValue(new TypeNode(dataType), CurrentToken.Value);
                         incrementIndex();
-                        return literalValue;
+                        break;
                     }
                 case DataTypes.VOID:
                 case DataTypes.UNKNOWN:
                     throw new SyntaxErrorException(["Value"], CurrentToken);
             }
 
-            if (dataType == DataTypes.IDENTIFIER)
+            if (baseExpr == null)
             {
-                identifier = CurrentToken.Value;
-            }
-            incrementIndex();
-
-            // Check if we're at the end of tokens before accessing CurrentToken
-            if (HasMoreTokens)
-            {
-                switch (CurrentToken.Type)
+                // Identifier or start of complex value
+                if (dataType == DataTypes.IDENTIFIER)
                 {
-                    case Token.Types.D_PAR_OP:
-                        return handleFunctionCall(identifier);
-                    case Token.Types.D_CBRAC_OP:
-                        return handleStructInitialization(identifier);
+                    identifier = CurrentToken.Value;
+                }
+                incrementIndex();
+
+                // Function call or struct initialization based on next token
+                if (HasMoreTokens)
+                {
+                    switch (CurrentToken.Type)
+                    {
+                        case Token.Types.D_PAR_OP:
+                            baseExpr = handleFunctionCall(identifier);
+                            break;
+                        case Token.Types.D_CBRAC_OP:
+                            baseExpr = handleStructInitialization(identifier);
+                            break;
+                        default:
+                            baseExpr = new IdentifierValue(identifier);
+                            break;
+                    }
+                }
+                else
+                {
+                    baseExpr = new IdentifierValue(identifier);
                 }
             }
-            return new IdentifierValue(identifier);
-        } catch (ArgumentException)
+
+            // Handle member access chaining: obj.member.member2
+            while (HasMoreTokens && CurrentToken.Type == Token.Types.OP_PERIOD)
+            {
+                incrementIndex();
+                if (!HasMoreTokens || CurrentToken.Type != Token.Types.IDENT)
+                {
+                    throw new SyntaxErrorException(["identifier"], CurrentToken);
+                }
+                string member = CurrentToken.Value;
+                incrementIndex();
+                baseExpr = new MemberAccessValue(baseExpr!, member);
+            }
+
+            return (ParseNode?)baseExpr;
+        }
+        catch (ArgumentException)
         {
             throw new SyntaxErrorException(["Value Type"], CurrentToken);
         }
