@@ -40,8 +40,13 @@ public class FuncParamsHandler : Handler
     {
         var parameters = new PrintableList<FuncParam>();
 
-        while (CurrentToken.Type != Token.Types.D_PAR_CLO)
+        while (CurrentToken.Type != closingToken)
         {
+            if (CurrentToken.Type == closingToken)
+            {
+                break;
+            }
+            
             assertTokenType(Token.Types.IDENT);
             string paramName = CurrentToken.Value;
             incrementIndex();
@@ -56,10 +61,22 @@ public class FuncParamsHandler : Handler
                 {
                     parameters.Add(new FuncParam(paramName, paramType));
                 }
+                else
+                {
+                    // If type parsing failed, still add the parameter with inferred type if optional
+                    if (typesOptional)
+                    {
+                        TypeDefinitionNode inferredType = new TypeDefinitionNode(
+                            new TypeNode(DataTypes.INFER), 
+                            CapabilityHandler.GenerateDefaultCapabilities()
+                        );
+                        parameters.Add(new FuncParam(paramName, inferredType));
+                    }
+                }
             }
             else if (typesOptional)
             {
-                // Create an inferred type when types are optional
+                // Create an inferred type when types are optional and no colon present
                 TypeDefinitionNode inferredType = new TypeDefinitionNode(
                     new TypeNode(DataTypes.INFER), 
                     CapabilityHandler.GenerateDefaultCapabilities()
@@ -75,7 +92,7 @@ public class FuncParamsHandler : Handler
             {
                 incrementIndex();
             }
-            else if (CurrentToken.Type != Token.Types.D_PAR_CLO)
+            else if (CurrentToken.Type != closingToken)
             {
                 throw new SyntaxErrorException(["','", "')'"], CurrentToken);
             }

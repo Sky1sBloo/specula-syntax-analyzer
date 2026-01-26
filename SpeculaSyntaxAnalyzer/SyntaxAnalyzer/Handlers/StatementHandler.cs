@@ -9,16 +9,43 @@ public class StatementHandler : Handler
 {
     private readonly IdentifierStartHandler identifierStartHandler;
     private readonly ExpressionHandler expressionHandler;
-    public StatementHandler(ErrorsHandler err) : base(err)
+    private readonly ListenerRespondHandler? respondHandler;
+    private readonly ListenerFailHandler? failHandler;
+    private readonly bool isListenerContext;
+    
+    public StatementHandler(ErrorsHandler err, bool isListenerContext = false) : base(err)
     {
         expressionHandler = new(err);
         identifierStartHandler = new(err);
+        this.isListenerContext = isListenerContext;
+        
+        if (isListenerContext)
+        {
+            respondHandler = new ListenerRespondHandler(err);
+            failHandler = new ListenerFailHandler(err);
+        }
     }
 
     protected override ParseNode? verifyTokens()
     {
         switch (CurrentToken.Type)
         {
+            case Token.Types.K_RESPOND:
+                if (isListenerContext && respondHandler != null)
+                {
+                    return delegateToHandler(respondHandler);
+                }
+                throw new SyntaxErrorException(
+                    ["statement"],
+                    CurrentToken);
+            case Token.Types.K_FAIL:
+                if (isListenerContext && failHandler != null)
+                {
+                    return delegateToHandler(failHandler);
+                }
+                throw new SyntaxErrorException(
+                    ["statement"],
+                    CurrentToken);
             case Token.Types.K_LET:
                 {
                     ParseNode? declStmt = handleDeclarationStmt();

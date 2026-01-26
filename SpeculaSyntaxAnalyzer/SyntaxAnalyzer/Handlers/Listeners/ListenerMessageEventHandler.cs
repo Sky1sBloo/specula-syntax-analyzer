@@ -20,10 +20,13 @@ public class ListenerMessageEventHandler : Handler
         incrementIndex();
         
         FuncParams? parameters = (FuncParams?)delegateToHandler(paramsHandler);
-        if (parameters == null) return null;
+        if (parameters == null) 
+            return null;
         
         ListenerBodyNode? body = parseFunctionBody();
-        if (body == null) return null;
+        if (body == null) 
+            return null;
+        
         return new ListenerMessageEventNode(name, parameters, body);
     }
 
