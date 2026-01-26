@@ -84,4 +84,61 @@ public class MemberAccessTests
         var func = (FunctionCallValue)access.Object;
         Assert.That(func.Identifier, Is.EqualTo("getServer"));
     }
+
+    [Test]
+    public void MemberFunctionCall()
+    {
+        var output = LexerFileReader.ParseFile("Samples/MemberAccess/MemberFunctionCall.json");
+        HandlerOutput node = exprHandler.HandleToken(output.Tokens, 0);
+
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MemberFunctionCallValue>());
+
+        var call = (MemberFunctionCallValue)node.node!;
+        Assert.That(call.Method, Is.EqualTo("send"));
+        Assert.That(call.Parameters.Count, Is.EqualTo(0));
+        var obj = (IdentifierValue)call.Object;
+        Assert.That(obj.Value, Is.EqualTo("test"));
+    }
+
+    [Test]
+    public void MemberFunctionCallWithParameters()
+    {
+        var output = LexerFileReader.ParseFile("Samples/MemberAccess/MemberFunctionCallWithArgs.json");
+        HandlerOutput node = exprHandler.HandleToken(output.Tokens, 0);
+
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MemberFunctionCallValue>());
+
+        var call = (MemberFunctionCallValue)node.node!;
+        Assert.That(call.Method, Is.EqualTo("setAge"));
+        Assert.That(call.Parameters.Count, Is.EqualTo(1));
+        
+        var param = (LiteralValue)call.Parameters[0];
+        Assert.That(param.Value, Is.EqualTo("25"));
+        
+        var obj = (IdentifierValue)call.Object;
+        Assert.That(obj.Value, Is.EqualTo("user"));
+    }
+
+    [Test]
+    public void ChainedMemberFunctionCalls()
+    {
+        var output = LexerFileReader.ParseFile("Samples/MemberAccess/ChainedMemberFunctionCalls.json");
+        HandlerOutput node = exprHandler.HandleToken(output.Tokens, 0);
+
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<MemberFunctionCallValue>());
+
+        var processCall = (MemberFunctionCallValue)node.node!;
+        Assert.That(processCall.Method, Is.EqualTo("process"));
+        Assert.That(processCall.Parameters.Count, Is.EqualTo(0));
+        
+        var getDataCall = (MemberFunctionCallValue)processCall.Object;
+        Assert.That(getDataCall.Method, Is.EqualTo("getData"));
+        Assert.That(getDataCall.Parameters.Count, Is.EqualTo(0));
+        
+        var userObj = (IdentifierValue)getDataCall.Object;
+        Assert.That(userObj.Value, Is.EqualTo("user"));
+    }
 }

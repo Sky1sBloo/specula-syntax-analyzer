@@ -10,3 +10,4 @@ public record FunctionCallValue(string Identifier, PrintableList<Expression> Par
 public record StructKey(string Key, Expression Value);
 public record StructInitialization(string Identifier, PrintableList<StructKey> Keys) : ValueNode;
 public record MemberAccessValue(Expression Object, string Member) : ValueNode, Movable;
+public record MemberFunctionCallValue(Expression Object, string Method, PrintableList<Expression> Parameters) : ValueNode, Movable;
