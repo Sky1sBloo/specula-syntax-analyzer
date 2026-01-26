@@ -21,7 +21,6 @@ public class ListenerHandler : Handler
 
     private ListenerNode? parseListener()
     {
-        // Parse target: target(expression)
         expectTokenType(Token.Types.K_TARGET);
         expectTokenType(Token.Types.D_PAR_OP);
         
@@ -34,26 +33,21 @@ public class ListenerHandler : Handler
 
         expectTokenType(Token.Types.D_PAR_CLO);
 
-        // Expect 'using' keyword
         expectTokenType(Token.Types.K_USING);
 
-        // Parse contract type (IDENT)
         assertTokenType(Token.Types.IDENT);
         string contractName = CurrentToken.Value;
         incrementIndex();
 
-        // Expect 'as' keyword
         expectTokenType(Token.Types.K_AS);
 
-        // Parse listener name (IDENT)
         assertTokenType(Token.Types.IDENT);
-        string listenerName = CurrentToken.Value;
+        string roleName = CurrentToken.Value;
         incrementIndex();
+        var role = new RoleNode(roleName);
 
-        // Expect opening brace for body
         expectTokenType(Token.Types.D_CBRAC_OP);
 
-        // Parse body
         PrintableList<ListenerBody> bodyItems = new();
         while (HasMoreTokens && CurrentToken.Type != Token.Types.D_CBRAC_CLO)
         {
@@ -71,9 +65,8 @@ public class ListenerHandler : Handler
             }
         }
 
-        // Expect closing brace
         expectTokenType(Token.Types.D_CBRAC_CLO);
 
-        return new ListenerNode(listenerName, contractName, target, bodyItems);
+        return new ListenerNode(role, contractName, target, bodyItems);
     }
 }

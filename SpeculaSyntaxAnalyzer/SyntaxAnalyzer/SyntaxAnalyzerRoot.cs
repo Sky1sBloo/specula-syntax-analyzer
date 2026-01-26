@@ -14,6 +14,7 @@ public class SyntaxAnalyzerRoot
     private readonly InterfaceHandler interfaceHandler;
     private readonly ImplHandler implHandler;
     private readonly ContractHandler contractHandler;
+    private readonly ListenerHandler listenerHandler;
     
     private PrintableList<RootStatement> statements = new();
     private List<Token> tokens = [];
@@ -30,6 +31,7 @@ public class SyntaxAnalyzerRoot
         interfaceHandler = new InterfaceHandler(ErrorHandler);
         implHandler = new ImplHandler(ErrorHandler);
         contractHandler = new ContractHandler(ErrorHandler);
+        listenerHandler = new ListenerHandler(ErrorHandler);
     }
 
     public ParseNode? ReadTokens(List<Token> tokens)
@@ -76,9 +78,11 @@ public class SyntaxAnalyzerRoot
                 return handleImpl();
             case Token.Types.K_CONTRACT:
                 return handleContract();
+            case Token.Types.K_LISTENER:
+                return (RootStatement?)delegateToHandler(listenerHandler);
             default:
                 throw new SyntaxErrorException(
-                    ["fn", "thread", "let", "import", "[", "struct", "interface", "impl"],
+                    ["fn", "thread", "let", "import", "[", "struct", "interface", "impl", "contract", "listener"],
                     currentToken);
         }
     }
