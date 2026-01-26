@@ -66,12 +66,6 @@ Request body (`test.json`):
 }
 ```
 
-```bash
-curl -X POST http://localhost:5000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d @test.json
-```
-
 Response includes parsed AST with `$type` fields for each node (e.g., `FuncDefNode`, `BodyNode`, etc.).
 
 ## Notes
