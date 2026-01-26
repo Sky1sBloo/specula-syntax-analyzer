@@ -15,33 +15,38 @@ public class ListenerMessageEventHandler : Handler
     protected override ParseNode? verifyTokens()
     {
         expectTokenType(Token.Types.K_ON);
+        switch (CurrentToken.Type)
+        {
+            case Token.Types.IDENT:
+                return parseMessageEvent();
+            case Token.Types.K_FAIL:
+                return parseFailEvent();
+            default:
+                throw new SyntaxErrorException(
+                    ["IDENT", "fail"],
+                    CurrentToken
+                );
+        }
+    }
+
+    private ListenerMessageEventNode? parseMessageEvent()
+    {
+        incrementIndex();
         assertTokenType(Token.Types.IDENT);
         string name = CurrentToken.Value;
         incrementIndex();
-        
+
         FuncParams? parameters;
-        
-        // Check if there's a parameter block (opening brace with actual parameters or followed by another brace)
+
         if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_OP)
         {
-            // Peek ahead to see if there's content before the closing brace
-            // If next token after { is }, then this is an empty parameter list (or could be the body)
-            // We need to look further to disambiguate
             int savedIndex = getIndex();
-            incrementIndex(); // consume the opening brace
-            
+            incrementIndex();
             if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_CLO)
             {
-                // Empty braces { } - this could be:
-                // 1. Empty parameters with a body following: { } { body }
-                // 2. Just the body with no parameters: { body }
-                // Look ahead one more token
-                incrementIndex(); // consume the closing brace
-                
+                incrementIndex(); 
                 if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_OP)
                 {
-                    // It's empty parameters followed by body
-                    // Reset to before the first {
                     setIndex(savedIndex);
                     FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
                     if (parsedParams == null)
@@ -50,16 +55,12 @@ public class ListenerMessageEventHandler : Handler
                 }
                 else
                 {
-                    // Empty {} is the body, not parameters
-                    // Reset to before the first {
                     setIndex(savedIndex);
                     parameters = new FuncParams(new PrintableList<FuncParam>());
                 }
             }
             else
             {
-                // There's content between { and }, so parse as parameters
-                // Reset to before the first {
                 setIndex(savedIndex);
                 FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
                 if (parsedParams == null)
@@ -69,15 +70,65 @@ public class ListenerMessageEventHandler : Handler
         }
         else
         {
-            // No opening brace, use empty parameters
             parameters = new FuncParams(new PrintableList<FuncParam>());
         }
-        
+
         BodyNode? body = parseFunctionBody();
-        if (body == null) 
+        if (body == null)
             return null;
-        
+
         return new ListenerMessageEventNode(name, parameters, body);
+    }
+    private ListenerFailEventNode? parseFailEvent()
+    {
+        incrementIndex();
+        expectTokenType(Token.Types.K_FAIL);
+        assertTokenType(Token.Types.IDENT);
+        string name = CurrentToken.Value;
+        incrementIndex();
+
+        FuncParams? parameters;
+
+        if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
+        {
+            int savedIndex = getIndex();
+            incrementIndex();
+            if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_CLO)
+            {
+                incrementIndex(); 
+                if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
+                {
+                    setIndex(savedIndex);
+                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                    if (parsedParams == null)
+                        return null;
+                    parameters = parsedParams;
+                }
+                else
+                {
+                    setIndex(savedIndex);
+                    parameters = new FuncParams(new PrintableList<FuncParam>());
+                }
+            }
+            else
+            {
+                setIndex(savedIndex);
+                FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                if (parsedParams == null)
+                    return null;
+                parameters = parsedParams;
+            }
+        }
+        else
+        {
+            parameters = new FuncParams(new PrintableList<FuncParam>());
+        }
+
+        BodyNode? body = parseFunctionBody();
+        if (body == null)
+            return null;
+
+        return new ListenerFailEventNode(name, parameters, body);
     }
 
     private BodyNode? parseFunctionBody()
