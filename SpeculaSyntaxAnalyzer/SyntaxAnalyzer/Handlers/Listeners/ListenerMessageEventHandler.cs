@@ -5,11 +5,13 @@ namespace SpeculaSyntaxAnalyzer.SyntaxAnalyzer;
 public class ListenerMessageEventHandler : Handler
 {
     private readonly BodyHandler bodyHandler;
-    private readonly FuncParamsHandler paramsHandler;
+    private readonly FuncParamsHandler messageParamsHandler;
+    private readonly FuncParamsHandler failParamsHandler;
     public ListenerMessageEventHandler(ErrorsHandler errorsHandler) : base(errorsHandler)
     {
         bodyHandler = new(errorsHandler, true);
-        paramsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_CBRAC_OP, closingToken: Token.Types.D_CBRAC_CLO);
+        messageParamsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_CBRAC_OP, closingToken: Token.Types.D_CBRAC_CLO);
+        failParamsHandler = new(errorsHandler, typesOptional: true, openingToken: Token.Types.D_PAR_OP, closingToken: Token.Types.D_PAR_CLO);
     }
 
     protected override ParseNode? verifyTokens()
@@ -47,7 +49,7 @@ public class ListenerMessageEventHandler : Handler
                 if (HasMoreTokens && CurrentToken.Type == Token.Types.D_CBRAC_OP)
                 {
                     setIndex(savedIndex);
-                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(messageParamsHandler);
                     if (parsedParams == null)
                         return null;
                     parameters = parsedParams;
@@ -61,7 +63,7 @@ public class ListenerMessageEventHandler : Handler
             else
             {
                 setIndex(savedIndex);
-                FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                FuncParams? parsedParams = (FuncParams?)delegateToHandler(messageParamsHandler);
                 if (parsedParams == null)
                     return null;
                 parameters = parsedParams;
@@ -97,7 +99,7 @@ public class ListenerMessageEventHandler : Handler
                 if (HasMoreTokens && CurrentToken.Type == Token.Types.D_PAR_OP)
                 {
                     setIndex(savedIndex);
-                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                    FuncParams? parsedParams = (FuncParams?)delegateToHandler(failParamsHandler);
                     if (parsedParams == null)
                         return null;
                     parameters = parsedParams;
@@ -111,7 +113,7 @@ public class ListenerMessageEventHandler : Handler
             else
             {
                 setIndex(savedIndex);
-                FuncParams? parsedParams = (FuncParams?)delegateToHandler(paramsHandler);
+                FuncParams? parsedParams = (FuncParams?)delegateToHandler(failParamsHandler);
                 if (parsedParams == null)
                     return null;
                 parameters = parsedParams;
