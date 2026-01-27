@@ -78,6 +78,7 @@ public class DeclarationHandler : Handler
 
     private TypeNode InferTypeFromExpression(Expression expr)
     {
+        /*
         if (expr is LiteralValue literal)
         {
             return literal.Type;
@@ -85,10 +86,10 @@ public class DeclarationHandler : Handler
 
         if (expr is IdentifierValue)
         {
-            return new TypeNode(DataTypes.IDENTIFIER);
-        }
+            return new TypeNode(DataTypes.INFER);
+        } */
 
-        return new TypeNode(DataTypes.UNKNOWN);
+        return new TypeNode(DataTypes.INFER);
     }
 
     private DeclarationStatementNode ConstructNode()
