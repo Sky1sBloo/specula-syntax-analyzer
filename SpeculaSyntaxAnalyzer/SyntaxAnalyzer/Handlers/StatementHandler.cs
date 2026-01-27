@@ -114,6 +114,9 @@ public class StatementHandler : Handler
                     expectTokenType(Token.Types.D_SEMICOLON);
                     return new ReturnNode(returnValue);
                 }
+            case Token.Types.D_SEMICOLON:
+                incrementIndex();
+                return null;
             default:
                 ParseNode? stmtResult = tryHandleExpressionStmt();
                 if (stmtResult != null)
