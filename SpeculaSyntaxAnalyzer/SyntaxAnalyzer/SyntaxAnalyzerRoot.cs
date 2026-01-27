@@ -93,6 +93,9 @@ public class SyntaxAnalyzerRoot
                 return handleContract();
             case Token.Types.K_LISTENER:
                 return (RootStatement?)delegateToHandler(listenerHandler);
+            case Token.Types.D_SEMICOLON:
+                i++;
+                return null;
             default:
                 try
                 {
