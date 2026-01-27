@@ -117,4 +117,41 @@ public class DeclarationStatementTests
         }
         Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(7));
     }
+
+    [Test]
+    public void ArrayTypeDeclaration()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/ArrayTypeDeclaration.json");
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is RootNode rootNode)
+        {
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var decl = (DeclarationStatementNode)rootNode.Statements[0];
+            Assert.That(decl.VarDefinition.DataType.DataType, Is.EqualTo(DataTypes.ARRAY));
+            Assert.That(decl.VarDefinition.DataType.GenericType, Is.Not.Null);
+            Assert.That(decl.VarDefinition.DataType.GenericType!.DataType, Is.EqualTo(DataTypes.INT));
+        }
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void ArrayTypeDeclarationWithValue()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Declaration/ArrayTypeDeclarationWithValue.json");
+        ParseNode? node = analyzer.ReadTokens(output.Tokens);
+        Assert.That(node, Is.Not.Null);
+        if (node is RootNode rootNode)
+        {
+            Assert.That(rootNode.Statements.Count, Is.EqualTo(1));
+            var decl = (DeclarationStatementNode)rootNode.Statements[0];
+            Assert.That(decl.VarDefinition.DataType.DataType, Is.EqualTo(DataTypes.ARRAY));
+            Assert.That(decl.VarDefinition.DataType.GenericType, Is.Not.Null);
+            Assert.That(decl.VarDefinition.DataType.GenericType!.DataType, Is.EqualTo(DataTypes.INT));
+            Assert.That(decl.Value, Is.TypeOf<ArrayLiteral>());
+            var arrayLiteral = (ArrayLiteral)decl.Value;
+            Assert.That(arrayLiteral.Elements.Count, Is.EqualTo(3));
+        }
+        Assert.That(analyzer.ErrorHandler.ErrorList.Count, Is.EqualTo(0));
+    }
 }

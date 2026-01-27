@@ -231,4 +231,52 @@ public class ValueNodeTests
 
         Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(1));
     }
+
+    [Test]
+    public void ArrayLiteralEmpty()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Value/ArrayLiteralEmpty.json");
+        HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<ArrayLiteral>());
+        
+        var arrayLiteral = (ArrayLiteral)node.node!;
+        Assert.That(arrayLiteral.Elements.Count, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void ArrayLiteralInt()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Value/ArrayLiteralInt.json");
+        HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<ArrayLiteral>());
+        
+        var arrayLiteral = (ArrayLiteral)node.node!;
+        Assert.That(arrayLiteral.Elements.Count, Is.EqualTo(3));
+        Assert.That(arrayLiteral.Elements[0], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[0]).Value, Is.EqualTo("1"));
+        Assert.That(arrayLiteral.Elements[1], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[1]).Value, Is.EqualTo("2"));
+        Assert.That(arrayLiteral.Elements[2], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[2]).Value, Is.EqualTo("3"));
+    }
+
+    [Test]
+    public void ArrayLiteralMixed()
+    {
+        var output = LexerFileReader.ParseFile("Samples/Value/ArrayLiteralMixed.json");
+        HandlerOutput node = valueHandler.HandleToken(output.Tokens, 0);
+        Assert.That(errorsHandler.ErrorList.Count, Is.EqualTo(0));
+        Assert.That(node.node, Is.TypeOf<ArrayLiteral>());
+        
+        var arrayLiteral = (ArrayLiteral)node.node!;
+        Assert.That(arrayLiteral.Elements.Count, Is.EqualTo(3));
+        Assert.That(arrayLiteral.Elements[0], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[0]).Type.DataType, Is.EqualTo(DataTypes.INT));
+        Assert.That(arrayLiteral.Elements[1], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[1]).Type.DataType, Is.EqualTo(DataTypes.STRING));
+        Assert.That(arrayLiteral.Elements[2], Is.TypeOf<LiteralValue>());
+        Assert.That(((LiteralValue)arrayLiteral.Elements[2]).Type.DataType, Is.EqualTo(DataTypes.BOOL));
+    }
 }
